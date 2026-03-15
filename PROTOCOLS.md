@@ -21,17 +21,18 @@ Target protocols for both adults and children, in both Israel and USA.
 | Snakebite | F | F | - | - |
 | Heart Attack / Chest Pain | F | F | - | - |
 | Stroke | F | F | - | - |
-| Hypothermia / Cold Exposure | - | - | - | - |
+| Hypothermia / Cold Exposure | F | F | - | - |
 | Scorpion Stings | F | F | - | - |
-| Spider Bites | - | - | - | - |
+| Spider Bites | F | F | - | - |
 | Diabetic Emergencies | F | F | - | - |
-| Eye Injuries | - | - | - | - |
+| Eye Injuries | F | F | - | - |
 | Head / Spinal Injury | F | F | - | - |
-| Recovery Position / Unconscious Casualty | - | - | - | - |
-| Asthma Attack | - | - | - | - |
-| Dehydration | - | - | - | - |
-| Blast / Shrapnel Injuries | - | - | - | - |
-| Tourniquet Application | - | - | - | - |
-| Smoke / Tear Gas Inhalation | - | - | - | - |
+| Recovery Position / Unconscious Casualty | F | F | - | - |
+| Asthma Attack | F | F | - | - |
+| Dehydration | F | F | - | - |
+| Blast / Shrapnel Injuries | F | F | - | - |
+| Tourniquet Application | F | F | - | - |
+| Smoke / Tear Gas Inhalation | F | F | - | - |
+| AED Operation | F | F | - | - |
 
 Legend: `-` = not yet imported, `R` = reference gathered, `J` = JSON created, `F` = flowchart generated
