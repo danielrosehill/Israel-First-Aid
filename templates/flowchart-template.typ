@@ -1,8 +1,9 @@
 // First Aid Protocol Flowchart Template
 // Designed for A4 printing, readable under stress
+// Font: IBM Plex Sans (excellent readability) with Hebrew fallback
 
 #set page(paper: "a4", margin: 1.5cm)
-#set text(font: "Noto Sans", size: 11pt)
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
 
 // === CONFIGURATION (replace these per protocol) ===
 #let protocol-title = "PROTOCOL TITLE"
@@ -10,10 +11,22 @@
 #let country = "Israel"
 #let age-group = "Adult"
 #let emergency-number = "101"
-#let emergency-service = "MDA"
+#let emergency-service = "MDA (מד״א)"
 #let source-authority = "Magen David Adom"
 #let source-date = "2024-01-01"
 #let last-verified = "2026-03-15"
+
+// === EMERGENCY NUMBERS (Israel) ===
+// MDA (Magen David Adom / מגן דוד אדום): 101
+// Police (משטרה): 100
+// Fire (כיבוי אש): 102
+// United Hatzalah (איחוד הצלה): 1221
+
+// === HEBREW HELPER ===
+// Use #heb[מגן דוד אדום] for inline Hebrew text
+#let heb(content) = {
+  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
+}
 
 // === STYLES ===
 #let emergency-box(number, service) = {
@@ -27,6 +40,24 @@
     #align(center)[
       CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
     ]
+  ]
+}
+
+#let all-emergency-numbers() = {
+  rect(
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 6pt,
+    width: 100%,
+    inset: 8pt,
+  )[
+    #set text(size: 10pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
+      [#strong[MDA (#heb[מד״א]):] 101],
+      [#strong[Police (#heb[משטרה]):] 100],
+      [#strong[Fire (#heb[כיבוי]):] 102],
+      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+    )
   ]
 }
 
@@ -47,7 +78,7 @@
     #if warning != none [
       #v(4pt)
       #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[⚠ #warning]
+        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
       ]
     ]
   ]
@@ -102,7 +133,24 @@
     #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
     #v(4pt)
     #for item in items [
-      #text(fill: rgb("#dc2626"))[✗] #item \
+      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
+    ]
+  ]
+}
+
+#let equipment-box(items) = {
+  rect(
+    fill: rgb("#fefce8"),
+    stroke: 1pt + rgb("#ca8a04"),
+    radius: 6pt,
+    width: 100%,
+    inset: 10pt,
+  )[
+    #set text(size: 10pt)
+    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
+    #v(4pt)
+    #for item in items [
+      — #item \
     ]
   ]
 }
@@ -118,15 +166,22 @@
 
 #v(8pt)
 
-// Emergency number
+// Emergency number (primary)
 #emergency-box(emergency-number, emergency-service)
+
+#v(4pt)
+
+// All emergency numbers reference strip
+#all-emergency-numbers()
 
 #v(8pt)
 
 // --- INSERT PROTOCOL STEPS HERE ---
 // Use the components above to build the flowchart:
 //
-// #step-box(1, "Check for responsiveness", detail: "Tap shoulder and shout", warning: "Do not move if spinal injury suspected")
+// #step-box(1, "Check for responsiveness",
+//   detail: "Tap shoulder and shout",
+//   warning: "Do not move if spinal injury suspected")
 //
 // #v(6pt)
 //
@@ -140,6 +195,12 @@
 // #v(6pt)
 //
 // #do-not-box(("Move the casualty unnecessarily", "Give food or water to unconscious person"))
+//
+// #v(6pt)
+//
+// #equipment-box(("Gloves", "AED", "Barrier device"))
+//
+// For Hebrew terms inline: #heb[מגן דוד אדום]
 
 // --- END PROTOCOL STEPS ---
 

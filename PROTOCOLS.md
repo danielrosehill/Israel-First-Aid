@@ -8,7 +8,7 @@ Target protocols for both adults and children, in both Israel and USA.
 |----------|----------|----------|----------|----------|
 | CPR (Cardiopulmonary Resuscitation) | F | F | - | - |
 | Choking (Airway Obstruction) | F | F | - | - |
-| Shock | - | - | - | - |
+| Shock | F | F | - | - |
 | Burns | F | F | - | - |
 | Electrocution | - | - | - | - |
 | Severe Bleeding | F | F | - | - |
@@ -16,11 +16,11 @@ Target protocols for both adults and children, in both Israel and USA.
 | Heatstroke / Heat Exhaustion | F | F | - | - |
 | Fractures / Sprains | - | - | - | - |
 | Poisoning | - | - | - | - |
-| Seizures | - | - | - | - |
-| Drowning | - | - | - | - |
-| Snakebite | - | - | - | - |
-| Heart Attack / Chest Pain | - | - | - | - |
-| Stroke | - | - | - | - |
+| Seizures | F | F | - | - |
+| Drowning | F | F | - | - |
+| Snakebite | F | F | - | - |
+| Heart Attack / Chest Pain | F | F | - | - |
+| Stroke | F | F | - | - |
 | Hypothermia / Cold Exposure | - | - | - | - |
 | Scorpion Stings | - | - | - | - |
 | Spider Bites | - | - | - | - |
