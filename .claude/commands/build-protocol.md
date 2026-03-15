@@ -5,6 +5,6 @@ user_invocable: true
 
 Build a structured JSON protocol from reference material for: $ARGUMENTS
 
-Use the protocol-builder agent to read reference material from `reference/` and create a JSON protocol file conforming to `schemas/protocol-schema.json`. The file should be saved to the correct path under `protocols/`.
+Use the protocol-builder agent to read reference material from `reference/` and create a JSON protocol file conforming to `schemas/protocol-schema.json`. The file should be saved to the correct path under `protocols/`. For Israeli protocols, unify MDA and Hatzalah sources into one recommendation set (MDA as default authority). Update PROTOCOLS.md tracker status to `J`.
 
 If no specific country or age group is mentioned, build protocols for all available reference material on the given topic.

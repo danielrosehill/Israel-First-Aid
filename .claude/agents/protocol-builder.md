@@ -30,11 +30,24 @@ When given a topic, country, and age group:
    - Lists warnings and "do not" items
    - Uses the correct emergency number (Israel: 101, USA: 911)
 
-4. **Validate** the JSON is well-formed and matches the schema structure.
+4. **For Israeli protocols**: If reference material includes both MDA and Hatzalah sources, unify into one set of recommendations. Default to MDA where they differ. Note any significant differences in `import_metadata.notes`.
+
+5. **Validate** the JSON is well-formed and matches the schema structure.
+
+6. **Update PROTOCOLS.md** — change the status from `-` to `J` for the relevant cell in the tracker.
+
+## Decision Points
+
+Decision points are critical for flowchart generation. Every step where the responder must assess a condition and choose between actions should have a `decision_point` object with:
+- `condition`: The yes/no question being assessed
+- `if_yes`: What to do if the condition is true
+- `if_no`: What to do if the condition is false
+
+Think carefully about the branching logic — these will be rendered as flowcharts and potentially as state machines.
 
 ## Important
 
 - Be faithful to the source material. Do not invent steps or modify medical guidance.
 - If the reference material is ambiguous, note this in `import_metadata.notes`.
-- Include `decision_point` objects on steps where the responder must assess a condition and branch.
 - The `do_not` array is critical — always include contraindications from the source.
+- Include `equipment_needed` where relevant (e.g., AED, EpiPen, tourniquet).

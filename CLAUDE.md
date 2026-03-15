@@ -16,15 +16,15 @@ Personal collection of first aid protocols from Israel (Magen David Adom) and th
 
 ## Authorities
 
-- **Israel**: Magen David Adom (MDA) — primary authority for Israeli first aid protocols
+- **Israel**: Magen David Adom (MDA) and United Hatzalah — unified into one set of recommendations per country (MDA as authoritative default)
 - **USA**: American Heart Association (AHA) and American Red Cross (ARC) — consensus first aid and CPR guidelines
 
 ## Workflow
 
 1. Gather source material into `reference/`
 2. Structure protocols as JSON in `protocols/`
-3. Generate flowchart documents using TIPST into `output/flowcharts/`
+3. Generate flowchart documents using Typst into `output/flowcharts/`
 
 ## Output Generation
 
-Use **TIPST** (T-I-P-S-T) to generate flowchart decision-making documents from the structured JSON protocols. Output goes in `output/flowcharts/`.
+Use **Typst** to generate flowchart decision-making documents from the structured JSON protocols. Output goes in `output/flowcharts/`.
