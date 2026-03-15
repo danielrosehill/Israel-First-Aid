@@ -10,23 +10,23 @@ Target protocols for both adults and children, in both Israel and USA.
 | Choking (Airway Obstruction) | F | F | - | - |
 | Shock | F | F | - | - |
 | Burns | F | F | - | - |
-| Electrocution | - | - | - | - |
+| Electrocution | F | F | - | - |
 | Severe Bleeding | F | F | - | - |
 | Allergic Reaction / Anaphylaxis | F | F | - | - |
 | Heatstroke / Heat Exhaustion | F | F | - | - |
-| Fractures / Sprains | - | - | - | - |
-| Poisoning | - | - | - | - |
+| Fractures / Sprains | F | F | - | - |
+| Poisoning | F | F | - | - |
 | Seizures | F | F | - | - |
 | Drowning | F | F | - | - |
 | Snakebite | F | F | - | - |
 | Heart Attack / Chest Pain | F | F | - | - |
 | Stroke | F | F | - | - |
 | Hypothermia / Cold Exposure | - | - | - | - |
-| Scorpion Stings | - | - | - | - |
+| Scorpion Stings | F | F | - | - |
 | Spider Bites | - | - | - | - |
-| Diabetic Emergencies | - | - | - | - |
+| Diabetic Emergencies | F | F | - | - |
 | Eye Injuries | - | - | - | - |
-| Head / Spinal Injury | - | - | - | - |
+| Head / Spinal Injury | F | F | - | - |
 | Recovery Position / Unconscious Casualty | - | - | - | - |
 | Asthma Attack | - | - | - | - |
 | Dehydration | - | - | - | - |
