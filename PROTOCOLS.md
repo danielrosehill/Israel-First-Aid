@@ -6,14 +6,14 @@ Target protocols for both adults and children, in both Israel and USA.
 
 | Category | IL Adult | IL Child | US Adult | US Child |
 |----------|----------|----------|----------|----------|
-| CPR (Cardiopulmonary Resuscitation) | - | - | - | - |
-| Choking (Airway Obstruction) | - | - | - | - |
+| CPR (Cardiopulmonary Resuscitation) | F | F | - | - |
+| Choking (Airway Obstruction) | F | F | - | - |
 | Shock | - | - | - | - |
-| Burns | - | - | - | - |
+| Burns | F | F | - | - |
 | Electrocution | - | - | - | - |
-| Severe Bleeding | - | - | - | - |
-| Allergic Reaction / Anaphylaxis | - | - | - | - |
-| Heatstroke / Heat Exhaustion | - | - | - | - |
+| Severe Bleeding | F | F | - | - |
+| Allergic Reaction / Anaphylaxis | F | F | - | - |
+| Heatstroke / Heat Exhaustion | F | F | - | - |
 | Fractures / Sprains | - | - | - | - |
 | Poisoning | - | - | - | - |
 | Seizures | - | - | - | - |
