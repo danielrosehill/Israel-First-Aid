@@ -47,27 +47,37 @@ Sample V1 PDFs saved in `output/pdf/v1-archive/` for version comparison.
 - Consider using `#set text(dir: ltr)` as document default with explicit RTL spans
 - Test with mixed content like: `MDA (מד״א) — Call 101`
 
-## Tool Exploration for V2
+### 7. Paper Size
+- Standardise on **A4** (210 x 297 mm) for all output
+- All margins, layout, and font sizing should be optimised for A4 printing
 
-Not limited to Typst. Consider:
-- **Typst + fletcher**: Native Typst package for diagrams with nodes/edges
-- **Typst + cetz**: General drawing library (TikZ-like)
-- **Mermaid**: Markdown-based flowcharts, renders to SVG/PNG
-- **Graphviz/dot**: Mature graph layout engine
-- **LaTeX + TikZ**: Gold standard for academic/medical flowcharts
-- **draw.io / diagrams.net**: Visual editor, exports to SVG/PDF
-- **Python + matplotlib/graphviz**: Programmatic generation from JSON
+## V2 Approach — Decided
 
-Key criteria:
-- Must support multi-page output for long protocols
-- Must handle colour coding (red warnings, blue decisions, green outcomes)
-- Must produce print-quality A4 PDF
-- Ideally can be driven programmatically from our JSON protocol files
-- Hebrew text support is a requirement
+**Hybrid: Typst for typesetting + fletcher for diagrams.**
+
+Typst handles page layout, headers/footers, fonts, and page breaks. The `fletcher` package (preview/fletcher:0.5.7) provides proper arrow-connected flowchart diagrams with nodes and labelled edges (YES/NO). This keeps everything in one toolchain — no external rendering pipeline needed.
+
+Tested and confirmed working with IBM Plex Sans + IBM Plex Sans Hebrew on this system.
+
+## Alternative Tools (Evaluated, Not Selected)
+
+- **Mermaid**: Good for simple flowcharts but poor multi-page support and limited styling
+- **Graphviz/dot**: Mature but rigid layout, no page-level control
+- **LaTeX + TikZ**: Powerful but heavy toolchain, slower compilation
+- **draw.io**: Manual, not programmatic
+- **Python + graphviz**: Extra dependency, harder to maintain
+
+Key criteria met by Typst + fletcher:
+- Multi-page output with proper page breaks
+- Colour coding (red warnings, blue decisions, green outcomes)
+- Print-quality A4 PDF
+- Programmatically driven from JSON protocol files (via subagents)
+- Hebrew text support (IBM Plex Sans Hebrew)
+- Single toolchain, fast compilation
 
 ## Version History
 
 | Version | Date | Notes |
 |---------|------|-------|
 | V1 | 2026-03-15 | Initial generation. Linear layout with side-by-side YES/NO boxes. Noto Sans (batch 1) then IBM Plex Sans (batch 2+). No page numbering, no version tracking. |
-| V2 | TBD | Addressing all feedback above. |
+| V2 | 2026-03-16 | Typst + fletcher. Proper arrows, page numbering, action highlighting, A4 standardised, metadata in footer, RTL fix. |
