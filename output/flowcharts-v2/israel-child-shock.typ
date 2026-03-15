@@ -1,0 +1,365 @@
+// Israel Child Shock Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-CHILD-SHOCK-001
+
+#import "@preview/fletcher:0.5.7": diagram, node, edge
+
+#let protocol-id = "IL-CHILD-SHOCK-001"
+#let protocol-title = "Shock (Helem) — Child"
+#let protocol-subject = "SHOCK"
+#let age-group = "CHILD"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
+#let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
+
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(columns: (1fr, auto, 1fr), gutter: 0pt,
+      align(left)[#text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[#upper(age-group) — #upper(protocol-subject)]],
+      align(center)[#rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[#text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]]],
+      align(right)[#rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[#text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]]],
+    )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(columns: (1fr, auto, 1fr), gutter: 0pt,
+      align(left)[#text(size: 7pt, fill: rgb("#9ca3af"))[#protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)]],
+      align(center)[#text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[Personal reference only — not medical advice]],
+      align(right)[#rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[#text(weight: "bold", size: 8pt)[#page-num / #page-total]]],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
+}
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
+      #v(4pt)
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
+      ]
+    ]
+  ]
+}
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
+    ]
+  ]
+}
+#let emergency-numbers-strip() = {
+  rect(
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
+    radius: 6pt,
+    width: 100%,
+    inset: 10pt,
+  )[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1
+// ============================================================
+
+#align(center)[
+  #text(size: 20pt, weight: "bold")[#protocol-title]
+  #v(2pt)
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) IMMEDIATELY]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  Child showing signs of inadequate tissue perfusion: tachycardia (earliest sign), pale/cool skin, prolonged capillary refill (over 2 seconds), cold clammy extremities, rapid shallow breathing, mottled skin, altered mental status. Children have much smaller total blood volumes (newborn ~240 mL, one-year-old ~800 mL).
+]
+
+#v(8pt)
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Response (Steps 1--5)]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 1:* #action[CALL] 101 immediately. \
+      State child's age. Shock is \
+      a time-critical emergency.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Children can appear \
+      deceptively stable during \
+      compensated shock, then \
+      deteriorate suddenly.]
+    ], shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning, width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Step 2:* #action[ASSESS] ABC. \
+      Check airway, breathing, \
+      circulation.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Is the child breathing?*
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 2), align(center)[Continue to Step 3.], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 2), align(center)[#action[BEGIN] CPR immediately.], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 3:* #action[CONTROL] any visible \
+      bleeding. Apply direct pressure.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 4:* #action[POSITION] the child.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    node((0, 5), align(center)[
+      *Is the child conscious?*
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 5), align(center)[
+      Lay flat on back. \
+      #action[ELEVATE] legs above \
+      head level.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 5), align(center)[
+      *Step 5:* Spinal injury \
+      suspected? \
+      Yes: do NOT move. \
+      No: recovery position.
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Care and Monitoring
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Ongoing Care (Steps 6--10)]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 6:* #action[KEEP] child warm. \
+      Cover with blanket. Insulate \
+      from cold ground. Even in \
+      warm weather, shock causes \
+      hypothermia.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Step 7:* #action[LOOSEN] restrictive \
+      clothing. Belts, collars, \
+      tight waistbands.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Step 8:* #action[CALM] and reassure \
+      the child. Involve parent \
+      or caregiver.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 9:* #action[MOISTEN] lips with \
+      water only. Do NOT give \
+      food or drink.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 10:* #action[MONITOR] continuously \
+      until EMS arrives. Track \
+      breathing, pulse, skin colour, \
+      consciousness.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Bradycardia (slow heart \
+      rate) is a PRE-ARREST \
+      sign in children. If \
+      bradycardia develops, \
+      be ready for CPR.]
+    ], shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning, width: 48mm, inset: 6pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    node((0, 5), align(center)[
+      *Is the child's condition* \
+      *worsening?*
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 5), align(center)[
+      #action[UPDATE] 101 dispatcher. \
+      Maintain legs elevated / \
+      airway protected. \
+      Re-check bleeding. \
+      Prepare for CPR.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 5), align(center)[
+      Continue monitoring, \
+      warmth, positioning, \
+      and reassurance.
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+  )
+]
+
+#v(10pt)
+
+#do-not-box((
+  "Do not sit the child upright -- reduces blood flow to the brain.",
+  "Do not give the child anything to eat or drink -- moisten lips only.",
+  "Do not leave the child unattended -- continuous monitoring essential.",
+  "Do not delay calling 101 -- early IV fluids are critical for survival.",
+  "Do not assume normal blood pressure means no shock -- children compensate then suddenly decompensate.",
+  "Do not attribute tachycardia solely to anxiety or pain -- suspect shock.",
+  "Do not move a child with suspected spinal injury.",
+  "Do not remove blood-soaked dressings -- add layers on top.",
+))
+
+#v(10pt)
+
+#equipment-box((
+  "Blanket or coat (for warmth and insulation from ground)",
+  "Sterile gauze or clean cloth (for bleeding control)",
+  "Disposable gloves",
+  "Pillow or folded blanket (for leg elevation)",
+))
+
+#v(10pt)
+
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — BLS Guide 2016; MDA 101 First Aid Public Guidance \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Tachycardia is the earliest and most reliable sign. Hypotension is a late, pre-arrest sign. Children compensate longer, then decompensate rapidly.
+]
