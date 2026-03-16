@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -169,7 +169,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -179,7 +179,7 @@
     call out and tap shoulders.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -188,7 +188,7 @@
     Does the person respond?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (1, 1), "->",
     label: yes-label,
@@ -202,7 +202,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->",
     label: no-label,
@@ -215,7 +215,7 @@
     visible debris.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -226,7 +226,7 @@
     Max 10 seconds.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -235,7 +235,7 @@
     Is the person breathing?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (-1, 4), "->",
     label: no-label,
@@ -247,7 +247,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->",
     label: yes-label,
@@ -266,7 +266,7 @@
     unconscious but breathing.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (0, 6), "->"),
 
@@ -277,7 +277,7 @@
     head/neck)
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (1, 6), "->",
     label: yes-label,
@@ -292,7 +292,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (0, 7), "->",
     label: no-label,
@@ -304,7 +304,7 @@
     See Page 2.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -319,7 +319,7 @@
 
 #block(breakable: false)[
   #diagram(
-    spacing: (10mm, 8mm),
+    spacing: (8mm, 5mm),
     node-stroke: 1pt,
     edge-stroke: 1.5pt,
 
@@ -417,7 +417,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 8), (-1, 8), "->",
       label: no-label,
@@ -431,7 +431,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
   )
 ]
 

@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -172,7 +172,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -182,7 +182,7 @@
     Wear gloves if available.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -198,7 +198,7 @@
     State child's age and weight.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->"),
 
@@ -209,7 +209,7 @@
     Shield from sight of blood.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -219,7 +219,7 @@
     object in wound?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (1, 3), "->",
     label: yes-label,
@@ -234,7 +234,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->",
     label: no-label,
@@ -247,7 +247,7 @@
     Maintain continuous pressure.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->"),
 
@@ -257,7 +257,7 @@
     controlling bleeding?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (1, 5), "->",
     label: yes-label,
@@ -270,7 +270,7 @@
     Continue to shock monitoring.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 5), (0.5, 7), "->",
     stroke: 1pt + clr-rejoin,
@@ -287,7 +287,7 @@
     Bandage (pressure dressing).
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (0, 7), "->"),
 
@@ -297,7 +297,7 @@
     controlling bleeding?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 7), (1, 7), "->",
     label: yes-label,
@@ -310,7 +310,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 7), (-1, 7), "->",
     label: no-label,
@@ -322,7 +322,7 @@
     Escalation.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -336,7 +336,7 @@
 #v(6pt)
 
 #diagram(
-  spacing: (10mm, 8mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -346,7 +346,7 @@
     a limb (arm or leg)?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (1, 0), "->",
     label: yes-label,
@@ -358,7 +358,7 @@
     and limb size.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 0), (1, 1), "->"),
 
@@ -368,13 +368,13 @@
     circumference 13 cm+?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((1, 1), (2, 1), "->",
+  edge((1, 1), (0, 2), "->",
     label: yes-label,
     label-side: center),
 
-  node((2, 1), align(center)[
+  node((0, 2), align(center)[
     #action[APPLY] CAT Gen 7 \
     tourniquet 5–10 cm \
     above wound. \
@@ -383,9 +383,9 @@
     #action[RECORD] time (TQ HHMM).
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((2, 1), (1.5, 3), "->",
+  edge((0, 2), (0, 3), "->",
     stroke: 1pt + clr-rejoin,
     dash: "dashed"),
 
@@ -401,9 +401,9 @@
     medical direction.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((1, 2), (1, 3), "->",
+  edge((1, 2), (0.5, 3), "->",
     stroke: 1pt + clr-rejoin,
     dash: "dashed"),
 
@@ -417,7 +417,7 @@
     (groin, neck, axilla, shoulder).
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 0), (-1, 1), "->"),
 
@@ -430,7 +430,7 @@
     #action[TIGHTEN] bandage straps.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 1), (0, 3), "->",
     stroke: 1pt + clr-rejoin,
@@ -443,7 +443,7 @@
     skin, confusion, rapid breathing.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -453,7 +453,7 @@
     of shock?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (1, 4), "->",
     label: yes-label,
@@ -470,7 +470,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (-1, 4), "->",
     label: no-label,
@@ -484,7 +484,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================

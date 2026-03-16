@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -170,7 +170,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -181,7 +181,7 @@
     "Are you okay?"
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -190,7 +190,7 @@
     Is the person responsive?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (1, 1), "->",
     label: yes-label,
@@ -205,7 +205,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->",
     label: no-label,
@@ -218,7 +218,7 @@
     Look, listen, feel.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -228,7 +228,7 @@
     (Gasping is NOT normal)
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (1, 3), "->",
     label: yes-label,
@@ -242,7 +242,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->",
     label: no-label,
@@ -262,7 +262,7 @@
     Request AED.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->"),
 
@@ -271,7 +271,7 @@
     Another person available?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (1, 5), "->",
     label: yes-label,
@@ -283,7 +283,7 @@
     Begin compressions.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 5), (0.5, 6), "->",
     stroke: 1pt + clr-rejoin,
@@ -300,7 +300,7 @@
     Begin compressions.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 5), (-0.5, 6), "->",
     stroke: 1pt + clr-rejoin,
@@ -315,7 +315,7 @@
     on centre of chest.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -329,7 +329,7 @@
 #v(6pt)
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -340,7 +340,7 @@
     Full recoil. Arms locked.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -350,7 +350,7 @@
     willing to give breaths?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (1, 1), "->",
     label: yes-label,
@@ -365,7 +365,7 @@
     Continue 30:2 cycles.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 1), (0.5, 2), "->",
     stroke: 1pt + clr-rejoin,
@@ -382,7 +382,7 @@
     No breaths needed.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 1), (-0.5, 2), "->",
     stroke: 1pt + clr-rejoin,
@@ -398,7 +398,7 @@
     left below armpit.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -407,7 +407,7 @@
     AED advises shock?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (1, 3), "->",
     label: yes-label,
@@ -419,7 +419,7 @@
     Resume CPR immediately.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 3), (0.5, 4), "->",
     stroke: 1pt + clr-rejoin,
@@ -435,7 +435,7 @@
     re-analyses in 2 min.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 3), (-0.5, 4), "->",
     stroke: 1pt + clr-rejoin,
@@ -450,7 +450,7 @@
     2 min if 2+ rescuers.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->"),
 
@@ -460,7 +460,7 @@
     normally on their own?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (1, 5), "->",
     label: yes-label,
@@ -475,7 +475,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (-1, 5), "->",
     label: no-label,
@@ -489,7 +489,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================

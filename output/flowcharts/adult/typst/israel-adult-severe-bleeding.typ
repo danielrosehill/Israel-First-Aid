@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -172,7 +172,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -182,7 +182,7 @@
     Wear gloves if available.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -198,7 +198,7 @@
     #icon-phone #action[CALL] 101 immediately.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->"),
 
@@ -208,7 +208,7 @@
     in the wound?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (1, 2), "->",
     label: yes-label,
@@ -223,7 +223,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->",
     label: no-label,
@@ -236,7 +236,7 @@
     gloved hand or sterile gauze.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -247,7 +247,7 @@
     Never remove original.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->"),
 
@@ -257,7 +257,7 @@
     controlled bleeding?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (1, 5), "->",
     label: yes-label,
@@ -272,7 +272,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (0, 6), "->",
     label: no-label,
@@ -286,7 +286,7 @@
     pressure bar, secure.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (0, 7), "->"),
 
@@ -296,7 +296,7 @@
     controlled bleeding?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 7), (1, 7), "->",
     label: yes-label,
@@ -309,7 +309,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 7), (0, 8), "->",
     label: no-label,
@@ -320,7 +320,7 @@
     (tourniquet / wound packing).
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -345,7 +345,7 @@
       (arm or leg)?
     ],
       shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 58mm, inset: 8pt, corner-radius: 6pt),
+      width: 52mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 0), (1, 0), "->",
       label: yes-label,

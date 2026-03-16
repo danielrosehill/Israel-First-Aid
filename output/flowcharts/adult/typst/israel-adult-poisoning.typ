@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -171,7 +171,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -182,7 +182,7 @@
     contamination.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -200,7 +200,7 @@
     04-7771900.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->"),
 
@@ -211,7 +211,7 @@
     remaining material.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -221,7 +221,7 @@
     ingested (swallowed)?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   // YES — ingestion pathway
   edge((0, 3), (-1, 3), "->",
@@ -233,7 +233,7 @@
     See Page 2.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 42mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   // NO — check inhalation
   edge((0, 3), (1, 3), "->",
@@ -245,7 +245,7 @@
     inhaled (fumes, gas)?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 3), (1, 4), "->",
     label: yes-label,
@@ -256,43 +256,43 @@
     See Page 2.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((1, 3), (2, 3), "->",
+  edge((1, 3), (0, 5), "->",
     label: no-label,
     label-side: center),
 
   // Skin / eye contact?
-  node((2, 3), align(center)[
+  node((0, 5), align(center)[
     Skin or eye contact?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((2, 3), (2, 4), "->",
+  edge((0, 5), (1, 5), "->",
     label: yes-label,
-    label-side: left),
+    label-side: center),
 
-  node((2, 4), align(center)[
+  node((1, 5), align(center)[
     #icon-drop #action[FLUSH] with running \
-    water 15-20 min. \
+    water 15--20 min. \
     Remove contaminated \
     clothing.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((2, 3), (2, 2.3), "->",
+  edge((0, 5), (-1, 5), "->",
     label: no-label,
-    label-side: left),
+    label-side: center),
 
-  node((2, 2.3), align(center)[
+  node((-1, 5), align(center)[
     Other route (injection, \
     bite). #action[MONITOR] and \
     await MDA.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -307,7 +307,7 @@
 
 #block(breakable: false)[
   #diagram(
-    spacing: (10mm, 8mm),
+    spacing: (8mm, 5mm),
     node-stroke: 1pt,
     edge-stroke: 1.5pt,
 
@@ -330,7 +330,7 @@
       milk to dilute.
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 0), (1, 0), "->",
       label: no-label,
@@ -343,7 +343,7 @@
       Poison Center.
     ],
       shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     // Rejoin
     edge((-1, 0), (0, 1), "->",
@@ -381,7 +381,7 @@
       Keep calm and warm.
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 2), (-1, 2), "->",
       label: no-label,
@@ -394,7 +394,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     // Consciousness check
     edge((0, 2), (0, 3), "->"),
@@ -417,7 +417,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 3), (-1, 3), "->",
       label: no-label,
@@ -428,7 +428,7 @@
       Unconscious — breathing?
     ],
       shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((-1, 3), (-1, 4), "->",
       label: yes-label,
@@ -441,19 +441,19 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
-    edge((-1, 3), (-2, 3), "->",
+    edge((-1, 3), (-1, 5), "->",
       label: no-label,
-      label-side: center),
+      label-side: left),
 
-    node((-2, 3), align(center)[
+    node((-1, 5), align(center)[
       #action[BEGIN] CPR immediately.
       #v(2pt)
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 40mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
   )
 ]
 

@@ -22,7 +22,7 @@
 #let generation-date = "2026-03-16"
 #let version = "3.0"
 
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 #let icon-phone = text(size: 12pt)[#emoji.phone]
 #let icon-breath = text(size: 12pt)[#emoji.wind]
@@ -159,7 +159,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -170,7 +170,7 @@
     structural collapse, fire.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -187,7 +187,7 @@
     location, casualties, children.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->"),
 
@@ -198,7 +198,7 @@
     Jaw thrust if spinal injury suspected.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -207,7 +207,7 @@
     Airway clear and open?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (1, 3), "->",
     label: yes-label,
@@ -218,7 +218,7 @@
     assessment.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (-1, 3), "->",
     label: no-label,
@@ -230,7 +230,7 @@
     Position head to open airway.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   // Rejoin
   edge((-1, 3), (-0.5, 4), "->",
@@ -245,7 +245,7 @@
     Look for accessory muscle use.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->"),
 
@@ -255,7 +255,7 @@
     with symmetric chest rise?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (1, 5), "->",
     label: yes-label,
@@ -266,7 +266,7 @@
     assessment.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (-1, 5), "->",
     label: no-label,
@@ -278,7 +278,7 @@
     pneumothorax -- injured side down.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   // Rejoin
   edge((1, 5), (0.5, 6), "->",
@@ -292,7 +292,7 @@
     Check for massive haemorrhage.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (0, 7), "->"),
 
@@ -302,7 +302,7 @@
     haemorrhage?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 7), (1, 7), "->",
     label: yes-label,
@@ -314,7 +314,7 @@
     Record time.
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 7), (-1, 7), "->",
     label: no-label,
@@ -326,7 +326,7 @@
     Elevate if no fracture.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================

@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -168,7 +168,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -180,7 +180,7 @@
     Tap shoulders / flick sole of foot.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -190,7 +190,7 @@
     available to help?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (1, 1), "->",
     label: yes-label,
@@ -242,7 +242,7 @@
     Infant (under 1): two-finger, 4 cm depth.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->"),
 
@@ -254,7 +254,7 @@
     Follow voice instructions.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -264,7 +264,7 @@
     or paediatric pads available?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (1, 4), "->",
     label: yes-label,
@@ -275,7 +275,7 @@
     mode / use paediatric pads.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (-1, 4), "->",
     label: no-label,
@@ -286,7 +286,7 @@
     Proceed without delay.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   // Rejoin
   edge((1, 4), (0.5, 5), "->",
@@ -302,7 +302,7 @@
     Dry skin. Remove patches.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (0, 6), "->"),
 
@@ -313,7 +313,7 @@
     (2.5 cm gap, no overlap)?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (1, 6), "->",
     label: yes-label,
@@ -325,7 +325,7 @@
     Pad 2 L side below armpit.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (-1, 6), "->",
     label: no-label,
@@ -337,7 +337,7 @@
     Back pad between shoulder blades.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -384,7 +384,7 @@
       #action[PRESS] shock button.
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 1), (-1, 1), "->",
       label: no-label,
@@ -395,7 +395,7 @@
       #action[RESUME] CPR immediately.
     ],
       shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     // Rejoin
     edge((1, 1), (0.5, 2), "->",
@@ -440,7 +440,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 3), (-1, 3), "->",
       label: no-label,
@@ -456,7 +456,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
   )
 ]
 

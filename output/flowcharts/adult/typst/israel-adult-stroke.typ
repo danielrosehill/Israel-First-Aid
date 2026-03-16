@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -171,7 +171,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -236,7 +236,7 @@
     slightly raised and supported.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (-1, 3), "->",
     label: no-label,
@@ -246,92 +246,101 @@
     #icon-breath Breathing?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 42mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((-1, 3), (-1, 4), "->",
+  edge((-1, 3), (-0.6, 3.6), "->",
     label: yes-label,
     label-side: center),
 
-  node((-1, 4), align(center)[
+  node((-0.6, 3.6), align(center)[
     #action[PLACE] in recovery \
     position (on side).
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((-1, 3), (-2, 3.5), "->",
+  edge((-1, 3), (-1.4, 3.6), "->",
     label: no-label,
     label-side: center),
 
-  node((-2, 3.5), align(center)[
+  node((-1.4, 3.6), align(center)[
     #icon-heart #action[BEGIN] CPR \
     immediately.
     #v(2pt)
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 42mm, inset: 8pt, corner-radius: 6pt),
+    width: 38mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((1, 3), (0.5, 4), "->",
+  edge((1, 3), (0.5, 4.8), "->",
     stroke: 1pt + clr-rejoin,
     dash: "dashed"),
-  edge((-1, 4), (-0.5, 4.5), "->",
-    stroke: 1pt + clr-rejoin,
-    dash: "dashed"),
-
-  edge((0, 3), (0, 4.5), "->"),
-
-  // Decision: Vomiting?
-  node((0, 4.5), align(center)[
-    Vomiting or risk of vomiting?
-  ],
-    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 62mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((0, 4.5), (1, 4.5), "->",
-    label: yes-label,
-    label-side: center),
-
-  node((1, 4.5), align(center)[
-    #action[PLACE] on side \
-    (recovery position) \
-    to protect airway.
-  ],
-    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((0, 4.5), (-1, 4.5), "->",
-    label: no-label,
-    label-side: center),
-
-  node((-1, 4.5), align(center)[
-    #action[KEEP] lying down, \
-    head slightly raised.
-  ],
-    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((1, 4.5), (0.5, 5.5), "->",
-    stroke: 1pt + clr-rejoin,
-    dash: "dashed"),
-  edge((-1, 4.5), (-0.5, 5.5), "->",
+  edge((-0.6, 3.6), (-0.5, 4.8), "->",
     stroke: 1pt + clr-rejoin,
     dash: "dashed"),
 
-  edge((0, 4.5), (0, 5.5), "->"),
+  edge((0, 3), (0, 4.8), "->"),
 
   // Loosen clothing
-  node((0, 5.5), align(center)[
+  node((0, 4.8), align(center)[
     #action[LOOSEN] restrictive clothing: \
     scarves, ties, tight collars.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
     width: 62mm, inset: 8pt, corner-radius: 6pt),
+)
 
-  edge((0, 5.5), (0, 6.5), "->"),
+// ============================================================
+// PAGE 1b: Vomiting decision, Monitor
+// ============================================================
+#pagebreak()
+
+#diagram(
+  spacing: (8mm, 5mm),
+  node-stroke: 1pt,
+  edge-stroke: 1.5pt,
+
+  // Decision: Vomiting?
+  node((0, 0), align(center)[
+    Vomiting or risk of vomiting?
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 62mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 0), (1, 0), "->",
+    label: yes-label,
+    label-side: center),
+
+  node((1, 0), align(center)[
+    #action[PLACE] on side \
+    (recovery position) \
+    to protect airway.
+  ],
+    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+  edge((0, 0), (-1, 0), "->",
+    label: no-label,
+    label-side: center),
+
+  node((-1, 0), align(center)[
+    #action[KEEP] lying down, \
+    head slightly raised.
+  ],
+    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+  edge((1, 0), (0.5, 1), "->",
+    stroke: 1pt + clr-rejoin,
+    dash: "dashed"),
+  edge((-1, 0), (-0.5, 1), "->",
+    stroke: 1pt + clr-rejoin,
+    dash: "dashed"),
+
+  edge((0, 0), (0, 1), "->"),
 
   // Monitor continuously
-  node((0, 6.5), align(center)[
+  node((0, 1), align(center)[
     #icon-monitor #action[MONITOR] continuously. \
     Watch for consciousness changes, \
     breathing difficulty. \
@@ -342,7 +351,7 @@
 )
 
 // ============================================================
-// PAGE 2: Continued monitoring and handover
+// PAGE 3: Continued monitoring and handover
 // ============================================================
 #pagebreak()
 
@@ -353,7 +362,7 @@
 
 #block(breakable: false)[
   #diagram(
-    spacing: (10mm, 8mm),
+    spacing: (8mm, 5mm),
     node-stroke: 1pt,
     edge-stroke: 1.5pt,
 
@@ -381,7 +390,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 52mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 0), (-1, 0), "->",
       label: no-label,
@@ -393,7 +402,7 @@
       paramedics arrive.
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 50mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 8pt, corner-radius: 6pt),
 
     edge((-1, 0), (0, 1), "->",
       stroke: 1pt + clr-rejoin,
@@ -420,7 +429,7 @@
 ]
 
 // ============================================================
-// PAGE 3: Reference Notes
+// PAGE 4: Reference Notes
 // ============================================================
 #pagebreak()
 

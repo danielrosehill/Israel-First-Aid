@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -171,7 +171,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -182,7 +182,7 @@
     (smoke rises).
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -192,7 +192,7 @@
     (fire/fumes)?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (-1, 1), "->",
     label: no-label,
@@ -203,7 +203,7 @@
     See Page 2.
   ],
     shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->",
     label: yes-label,
@@ -215,7 +215,7 @@
     the person to fresh air?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (1, 2), "->",
     label: yes-label,
@@ -226,7 +226,7 @@
     immediately.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (-1, 2), "->",
     label: no-label,
@@ -247,7 +247,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 2), (0.5, 3), "->",
     stroke: 1pt + clr-rejoin,
@@ -268,7 +268,7 @@
     Report location and casualties.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -277,7 +277,7 @@
     #icon-monitor Is the person conscious?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (1, 4), "->",
     label: yes-label,
@@ -288,7 +288,7 @@
     for easier breathing.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (-1, 4), "->",
     label: no-label,
@@ -298,7 +298,7 @@
     #icon-breath Breathing?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 4), (-1, 5), "->",
     label: yes-label,
@@ -309,20 +309,20 @@
     position (on side).
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
-  edge((-1, 4), (-2, 4.5), "->",
+  edge((-1, 4), (-1, 6), "->",
     label: no-label,
-    label-side: center),
+    label-side: left),
 
-  node((-2, 4.5), align(center)[
+  node((-1, 6), align(center)[
     #icon-heart #action[BEGIN] CPR \
     immediately (30:2).
     #v(2pt)
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 42mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 4), (0.5, 5), "->",
     stroke: 1pt + clr-rejoin,
@@ -341,7 +341,7 @@
     Cool burns with clean water.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5.5), (0, 6.5), "->"),
 
@@ -353,7 +353,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -368,7 +368,7 @@
 
 #block(breakable: false)[
   #diagram(
-    spacing: (10mm, 8mm),
+    spacing: (8mm, 5mm),
     node-stroke: 1pt,
     edge-stroke: 1.5pt,
 

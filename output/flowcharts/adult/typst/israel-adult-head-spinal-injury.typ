@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -172,7 +172,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -183,7 +183,7 @@
     shooting, structural collapse)
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (1, 0), "->",
     label: yes-label,
@@ -195,7 +195,7 @@
     keeping spine aligned.
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->",
     label: no-label,
@@ -219,7 +219,7 @@
     consciousness, bleeding.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (0, 2), "->"),
 
@@ -230,7 +230,7 @@
     blunt component?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (1, 2), "->",
     label: yes-label,
@@ -243,7 +243,7 @@
     and bleeding.
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (0, 3), "->",
     label: no-label,
@@ -258,7 +258,7 @@
     Maintain until EMS arrives.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -268,7 +268,7 @@
     and talking?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (1, 4), "->",
     label: yes-label,
@@ -281,7 +281,7 @@
     control (Page 2).
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (0, 5), "->",
     label: no-label,
@@ -295,7 +295,7 @@
     Do NOT tilt head.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (0, 6), "->"),
 
@@ -305,7 +305,7 @@
     and has pulse?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (1, 6), "->",
     label: yes-label,
@@ -319,7 +319,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 6), (-1, 6), "->",
     label: no-label,
@@ -334,7 +334,7 @@
     #line(length: 100%, stroke: 1.5pt + clr-terminal)
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 48mm, inset: 8pt, corner-radius: 6pt),
+    width: 42mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -373,7 +373,7 @@
       Allow ear/nose drainage.
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 0), (-1, 0), "->",
       label: no-label,
@@ -386,7 +386,7 @@
       dressing.
     ],
       shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((1, 0), (0.5, 1), "->",
       stroke: 1pt + clr-rejoin,
@@ -456,7 +456,7 @@
       other removes helmet.
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 4), (-1, 4), "->",
       label: no-label,
@@ -470,7 +470,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((1, 4), (0.5, 5), "->",
       stroke: 1pt + clr-rejoin,

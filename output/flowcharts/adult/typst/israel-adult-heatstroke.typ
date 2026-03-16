@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -171,7 +171,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -181,7 +181,7 @@
     Heat exhaustion or heat stroke?
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -192,7 +192,7 @@
     loss of consciousness?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   // YES — heat stroke pathway
   edge((0, 1), (-1, 1), "->",
@@ -212,7 +212,7 @@
     Life-threatening emergency.
   ],
     shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 1), (-1, 2), "->"),
 
@@ -221,7 +221,7 @@
     or air-conditioned area.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 2), (-1, 3), "->"),
 
@@ -230,7 +230,7 @@
     clothing.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 3), (-1, 4), "->"),
 
@@ -241,60 +241,16 @@
     Fan vigorously.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((-1, 4), (-1, 5), "->"),
 
-  // Decision: conscious and able to swallow?
   node((-1, 5), align(center)[
-    Fully conscious \
-    and able to swallow?
-  ],
-    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((-1, 5), (0, 5), "->",
-    label: yes-label,
-    label-side: center),
-
-  node((0, 5), align(center)[
-    #icon-drop #action[OFFER] small sips \
-    of cool water continuously.
-  ],
-    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 42mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((-1, 5), (-2, 5), "->",
-    label: no-label,
-    label-side: center),
-
-  node((-2, 5), align(center)[
-    #action[PLACE] in recovery \
-    position if breathing. \
-    Monitor airway.
-  ],
-    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 42mm, inset: 8pt, corner-radius: 6pt),
-
-  // Rejoin to monitoring
-  edge((0, 5), (-1, 6), "->",
-    stroke: 1pt + clr-rejoin,
-    dash: "dashed"),
-  edge((-2, 5), (-1, 6), "->",
-    stroke: 1pt + clr-rejoin,
-    dash: "dashed"),
-
-  edge((-1, 5), (-1, 6), "->"),
-
-  // Monitor continuously
-  node((-1, 6), align(center)[
-    #icon-monitor #action[MONITOR] continuously \
-    until MDA arrives.
-    #v(2pt)
-    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+    Heat stroke pathway \
+    continues on Page 2.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   // NO — heat exhaustion pathway (right side)
   edge((0, 1), (1, 1), "->",
@@ -307,7 +263,7 @@
     air-conditioned location.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 1), (1, 2), "->"),
 
@@ -316,7 +272,7 @@
     Elevate legs slightly.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 2), (1, 3), "->"),
 
@@ -326,100 +282,191 @@
     spray cool water, fan.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 
   edge((1, 3), (1, 4), "->"),
 
-  // Decision: conscious and can swallow?
   node((1, 4), align(center)[
-    Fully conscious \
-    and able to swallow?
+    Heat exhaustion pathway \
+    continues on Page 2.
   ],
-    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((1, 4), (2, 4), "->",
-    label: yes-label,
-    label-side: center),
-
-  node((2, 4), align(center)[
-    #icon-drop #action[OFFER] small sips \
-    of cool water.
-  ],
-    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((1, 4), (1, 4.8), "->",
-    label: no-label,
-    label-side: left),
-
-  // MDA logo above call box
-  node((1, 4.35), align(center)[
-    #image(mda-logo, width: 20pt)
-  ],
-    shape: rect, fill: none, stroke: none,
-    width: 14mm, inset: 0pt),
-
-  node((1, 4.8), align(center)[
-    #icon-phone #action[CALL] 101. \
-    No fluids.
-  ],
-    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
-
-  // Rejoin
-  edge((2, 4), (1, 5.5), "->",
-    stroke: 1pt + clr-rejoin,
-    dash: "dashed"),
-  edge((1, 4.8), (1, 5.5), "->",
-    stroke: 1pt + clr-rejoin,
-    dash: "dashed"),
-
-  // Decision: improving?
-  node((1, 5.5), align(center)[
-    Symptoms improving \
-    with first aid?
-  ],
-    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((1, 5.5), (2, 5.5), "->",
-    label: yes-label,
-    label-side: center),
-
-  node((2, 5.5), align(center)[
-    #icon-monitor #action[CONTINUE] \
-    cooling and hydration.
-    #v(2pt)
-    #line(length: 100%, stroke: 1.5pt + clr-terminal)
-  ],
-    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-    width: 40mm, inset: 8pt, corner-radius: 6pt),
-
-  edge((1, 5.5), (1, 6.3), "->",
-    label: no-label,
-    label-side: left),
-
-  // MDA logo
-  node((1, 5.9), align(center)[
-    #image(mda-logo, width: 20pt)
-  ],
-    shape: rect, fill: none, stroke: none,
-    width: 14mm, inset: 0pt),
-
-  node((1, 6.3), align(center)[
-    #icon-phone #action[CALL] 101. \
-    May be progressing \
-    to heat stroke. Reassess.
-    #v(2pt)
-    #line(length: 100%, stroke: 1.5pt + clr-terminal)
-  ],
-    shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-    width: 46mm, inset: 8pt, corner-radius: 6pt),
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 40mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
-// PAGE 2: Continued Monitoring — Heat Stroke
+// PAGE 2: Heat Stroke (continued) + Heat Exhaustion (continued)
+// ============================================================
+#pagebreak()
+
+#align(center)[
+  #text(size: 16pt, weight: "bold", fill: clr-condition)[Heat Stroke — Continued]
+]
+#v(6pt)
+
+#block(breakable: false)[
+  #diagram(
+    spacing: (8mm, 5mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Decision: conscious and able to swallow?
+    node((0, 0), align(center)[
+      Fully conscious \
+      and able to swallow?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+    edge((0, 0), (1, 0), "->",
+      label: yes-label,
+      label-side: center),
+
+    node((1, 0), align(center)[
+      #icon-drop #action[OFFER] small sips \
+      of cool water continuously.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+    edge((0, 0), (-1, 0), "->",
+      label: no-label,
+      label-side: center),
+
+    node((-1, 0), align(center)[
+      #action[PLACE] in recovery \
+      position if breathing. \
+      Monitor airway.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+    // Rejoin to monitoring
+    edge((1, 0), (0, 1), "->",
+      stroke: 1pt + clr-rejoin,
+      dash: "dashed"),
+    edge((-1, 0), (0, 1), "->",
+      stroke: 1pt + clr-rejoin,
+      dash: "dashed"),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Monitor continuously
+    node((0, 1), align(center)[
+      #icon-monitor #action[MONITOR] continuously \
+      until MDA arrives.
+      #v(2pt)
+      #line(length: 100%, stroke: 1.5pt + clr-terminal)
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
+  )
+]
+
+#v(12pt)
+
+#align(center)[
+  #text(size: 16pt, weight: "bold", fill: clr-condition)[Heat Exhaustion — Continued]
+]
+#v(6pt)
+
+#block(breakable: false)[
+  #diagram(
+    spacing: (8mm, 5mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Decision: conscious and can swallow?
+    node((0, 0), align(center)[
+      Fully conscious \
+      and able to swallow?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+    edge((0, 0), (1, 0), "->",
+      label: yes-label,
+      label-side: center),
+
+    node((1, 0), align(center)[
+      #icon-drop #action[OFFER] small sips \
+      of cool water.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 40mm, inset: 6pt, corner-radius: 6pt),
+
+    edge((0, 0), (0, 0.8), "->",
+      label: no-label,
+      label-side: left),
+
+    // MDA logo above call box
+    node((0, 0.35), align(center)[
+      #image(mda-logo, width: 20pt)
+    ],
+      shape: rect, fill: none, stroke: none,
+      width: 14mm, inset: 0pt),
+
+    node((0, 0.8), align(center)[
+      #icon-phone #action[CALL] 101. \
+      No fluids.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 40mm, inset: 6pt, corner-radius: 6pt),
+
+    // Rejoin
+    edge((1, 0), (0, 1.5), "->",
+      stroke: 1pt + clr-rejoin,
+      dash: "dashed"),
+    edge((0, 0.8), (0, 1.5), "->",
+      stroke: 1pt + clr-rejoin,
+      dash: "dashed"),
+
+    // Decision: improving?
+    node((0, 1.5), align(center)[
+      Symptoms improving \
+      with first aid?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
+
+    edge((0, 1.5), (1, 1.5), "->",
+      label: yes-label,
+      label-side: center),
+
+    node((1, 1.5), align(center)[
+      #icon-monitor #action[CONTINUE] \
+      cooling and hydration.
+      #v(2pt)
+      #line(length: 100%, stroke: 1.5pt + clr-terminal)
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 40mm, inset: 6pt, corner-radius: 6pt),
+
+    edge((0, 1.5), (0, 2.3), "->",
+      label: no-label,
+      label-side: left),
+
+    // MDA logo
+    node((0, 1.9), align(center)[
+      #image(mda-logo, width: 20pt)
+    ],
+      shape: rect, fill: none, stroke: none,
+      width: 14mm, inset: 0pt),
+
+    node((0, 2.3), align(center)[
+      #icon-phone #action[CALL] 101. \
+      May be progressing \
+      to heat stroke. Reassess.
+      #v(2pt)
+      #line(length: 100%, stroke: 1.5pt + clr-terminal)
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 40mm, inset: 6pt, corner-radius: 6pt),
+  )
+]
+
+// ============================================================
+// PAGE 3: Continued Monitoring — Heat Stroke
 // ============================================================
 #pagebreak()
 
@@ -472,7 +519,7 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 1), (-1, 1), "->",
       label: no-label,
@@ -488,12 +535,12 @@
       #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
       shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt, corner-radius: 6pt),
+      width: 42mm, inset: 6pt, corner-radius: 6pt),
   )
 ]
 
 // ============================================================
-// PAGE 3: Reference Notes
+// PAGE 4: Reference Notes
 // ============================================================
 #pagebreak()
 

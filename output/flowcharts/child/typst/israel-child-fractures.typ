@@ -23,7 +23,7 @@
 #let version = "3.0"
 
 // === ICON PATHS ===
-#let mda-logo = "../../icons/mda/mda.png"
+#let mda-logo = "../../../../icons/mda/mda.png"
 
 // === ICONS (inline helpers) ===
 #let icon-phone = text(size: 12pt)[#emoji.phone]
@@ -170,7 +170,7 @@
 // ============================================================
 
 #diagram(
-  spacing: (10mm, 7mm),
+  spacing: (8mm, 5mm),
   node-stroke: 1pt,
   edge-stroke: 1.5pt,
 
@@ -181,7 +181,7 @@
     Use distraction techniques.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 0), (0, 1), "->"),
 
@@ -192,7 +192,7 @@
     (open/compound fracture)
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 1), (1, 1), "->",
     label: yes-label,
@@ -225,7 +225,7 @@
     (fall from height, MVA)
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 2), (1, 2), "->",
     label: yes-label,
@@ -253,7 +253,7 @@
     maximum stability.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 3), (0, 4), "->"),
 
@@ -263,7 +263,7 @@
     or leg injury?
   ],
     shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 4), (1, 4), "->",
     label: rect(fill: clr-step-stroke, radius: 10pt, inset: (x: 4pt, y: 2pt))[#text(fill: white, weight: "bold", size: 9pt)[ARM]],
@@ -300,7 +300,7 @@
     15 min on, 15 min off.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 
   edge((0, 5), (0, 6), "->"),
 
@@ -311,7 +311,7 @@
     before swelling increases.
   ],
     shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-    width: 58mm, inset: 8pt, corner-radius: 6pt),
+    width: 52mm, inset: 6pt, corner-radius: 6pt),
 )
 
 // ============================================================
@@ -336,7 +336,7 @@
       injury or vomiting?
     ],
       shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 58mm, inset: 8pt, corner-radius: 6pt),
+      width: 52mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 0), (1, 0), "->",
       label: yes-label,
@@ -362,7 +362,7 @@
       legs slightly.
     ],
       shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 58mm, inset: 8pt, corner-radius: 6pt),
+      width: 52mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 1), (0, 2), "->"),
 
@@ -373,7 +373,7 @@
       (Surgery may be needed.)
     ],
       shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 58mm, inset: 8pt, corner-radius: 6pt),
+      width: 52mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 2), (0, 3), "->"),
 
@@ -384,7 +384,7 @@
       circulation below injury?
     ],
       shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 58mm, inset: 8pt, corner-radius: 6pt),
+      width: 52mm, inset: 6pt, corner-radius: 6pt),
 
     edge((0, 3), (1, 3), "->",
       label: yes-label,
