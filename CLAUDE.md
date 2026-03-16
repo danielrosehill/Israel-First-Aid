@@ -14,6 +14,11 @@ Personal collection of first aid protocols from Israel (Magen David Adom) and th
 - **Emergency numbers**: Israel = 101 (MDA), USA = 911.
 - **This is a personal project** — always maintain the disclaimer that this is not medical advice.
 
+
+## PDF Format Organisation
+
+- Top level subfolders for children and adult protocols 
+
 ## Authorities
 
 - **Israel**: Magen David Adom (MDA) and United Hatzalah — unified into one set of recommendations per country (MDA as authoritative default)
@@ -25,6 +30,18 @@ Personal collection of first aid protocols from Israel (Magen David Adom) and th
 2. Structure protocols as JSON in `protocols/`
 3. Generate flowchart documents using Typst into `output/flowcharts/`
 
+
+## Incrementing Releases
+
 ## Output Generation
 
 Use **Typst** to generate flowchart decision-making documents from the structured JSON protocols. Output goes in `output/flowcharts/`.
+
+## Flowchart Design Directions
+
+All flowchart design instructions are maintained in **`STYLE_GUIDE.md`** — refer to that file for the complete, authoritative style guide. Key principles:
+
+- Action-positive framing: flowchart boxes say what TO DO, not what not to do.
+- Warnings/rationale go only on the separate Reference Notes page.
+- Header uses distinct colours per segment (patient type / condition / scenario) for quick scanning.
+- See `STYLE_GUIDE.md` for full details on layout, colours, icons, labels, and page structure.

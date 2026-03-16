@@ -1,14 +1,17 @@
-// Israel Child Asthma Flowchart -- V2
+// Israel Child Asthma Flowchart — V3
 // Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
 // Protocol ID: IL-CHILD-ASTHMA-001
+// SOP: 031
 
 #import "@preview/fletcher:0.5.7": diagram, node, edge
 
 // === METADATA ===
 #let protocol-id = "IL-CHILD-ASTHMA-001"
-#let protocol-title = "Asthma Attack First Aid -- Child"
+#let sop-number = "031"
+#let protocol-title = "Asthma — Acute Attack"
 #let protocol-subject = "ASTHMA"
+#let scenario = "ACUTE ATTACK"
 #let age-group = "CHILD"
 #let country = "Israel"
 #let emergency-number = "101"
@@ -17,67 +20,20 @@
 #let source-date = "2024-04-01"
 #let last-verified = "2026-03-16"
 #let generation-date = "2026-03-16"
-#let version = "2.0"
+#let version = "3.0"
 
-// === PAGE SETUP (A4) ===
-#set page(
-  paper: "a4",
-  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
-  header: context {
-    let page-num = counter(page).get().first()
-    let page-total = counter(page).final().first()
-    grid(
-      columns: (1fr, auto, 1fr),
-      gutter: 0pt,
-      align(left)[
-        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
-          #upper(age-group) — #upper(protocol-subject)
-        ]
-      ],
-      align(center)[
-        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
-          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
-        ]
-      ],
-      align(right)[
-        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
-          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
-        ]
-      ],
-    )
-    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
-  },
-  footer: context {
-    let page-num = counter(page).get().first()
-    let page-total = counter(page).final().first()
-    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-    v(3pt)
-    grid(
-      columns: (1fr, auto, 1fr),
-      gutter: 0pt,
-      align(left)[
-        #text(size: 7pt, fill: rgb("#9ca3af"))[
-          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
-        ]
-      ],
-      align(center)[
-        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
-          Personal reference only — not medical advice
-        ]
-      ],
-      align(right)[
-        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
-          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
-        ]
-      ],
-    )
-  },
-)
+// === ICON PATHS ===
+#let mda-logo = "../../icons/mda/mda.png"
 
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+// === ICONS (inline helpers) ===
+#let icon-phone = text(size: 12pt)[#emoji.phone]
+#let icon-breath = text(size: 12pt)[#emoji.wind]
+#let icon-med = text(size: 12pt)[#emoji.pill]
+#let icon-monitor = text(size: 12pt)[#emoji.eye]
+#let icon-calm = text(size: 12pt)[#emoji.hands.open]
+#let icon-sit = text(size: 12pt)[#emoji.person]
 
-#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
-
+// === COLOURS ===
 #let clr-step = rgb("#f0f9ff")
 #let clr-step-stroke = rgb("#3b82f6")
 #let clr-decision = rgb("#eff6ff")
@@ -90,6 +46,94 @@
 #let clr-warning-fill = rgb("#fef2f2")
 #let clr-equip = rgb("#92400e")
 #let clr-equip-fill = rgb("#fefce8")
+#let clr-terminal = rgb("#1e3a5f")
+#let clr-rejoin = rgb("#b0b8c4")
+
+#let clr-age-child = rgb("#0d9488")
+#let clr-condition = rgb("#1e40af")
+#let clr-scenario = rgb("#4b5563")
+
+#let clr-page-bg = rgb("#1e293b")
+#let clr-page-fg = white
+
+#let clr-header-bg = rgb("#f8f9fb")
+#let clr-header-border = rgb("#e2e5ea")
+
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.8cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    rect(fill: clr-age-child, width: 100%, height: 3pt, radius: (top: 2pt, bottom: 0pt))[]
+    rect(fill: clr-header-bg, width: 100%, inset: (x: 10pt, y: 6pt), stroke: (bottom: 1pt + clr-header-border))[
+      #grid(
+        columns: (60pt, 1fr, 60pt),
+        gutter: 0pt,
+        [],
+        align(center)[
+          #text(size: 15pt, weight: "bold", fill: clr-age-child, tracking: 0.5pt)[#upper(age-group)]
+          #h(5pt)
+          #text(size: 11pt, fill: rgb("#94a3b8"))[#sym.triangle.stroked.r]
+          #h(5pt)
+          #text(size: 15pt, weight: "bold", fill: clr-condition, tracking: 0.5pt)[#upper(protocol-subject)]
+          #h(5pt)
+          #text(size: 11pt, fill: rgb("#94a3b8"))[#sym.triangle.stroked.r]
+          #h(5pt)
+          #text(size: 15pt, weight: "bold", fill: clr-scenario, tracking: 0.5pt)[#upper(scenario)]
+          #v(3pt)
+          #text(size: 8pt, fill: rgb("#94a3b8"), tracking: 1pt)[SOP #sop-number]
+        ],
+        align(right + horizon)[
+          #rect(fill: clr-page-bg, radius: 4pt, inset: (x: 10pt, y: 5pt))[
+            #text(fill: clr-page-fg, weight: "bold", size: 14pt)[#page-num]#text(fill: rgb("#94a3b8"), weight: "bold", size: 14pt)[ \/ ]#text(fill: clr-page-fg, weight: "bold", size: 14pt)[#page-total]
+          ]
+        ],
+      )
+    ]
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    rect(fill: clr-header-bg, width: 100%, inset: (x: 10pt, y: 6pt), stroke: (top: 1pt + clr-header-border, bottom: 0pt), radius: (top: 0pt, bottom: 2pt))[
+      #grid(
+        columns: (1fr, auto, 1fr),
+        gutter: 0pt,
+        align(left + horizon)[
+          #text(size: 7pt, fill: rgb("#94a3b8"))[
+            #text(weight: "bold", fill: rgb("#64748b"))[#protocol-id] · v#version \
+            #generation-date · #source-authority
+          ]
+        ],
+        align(center + horizon)[
+          #rect(fill: rgb("#fef3c7"), radius: 3pt, inset: (x: 8pt, y: 3pt), stroke: 0.5pt + rgb("#f59e0b"))[
+            #text(size: 7pt, fill: rgb("#92400e"), weight: "bold")[
+              Personal reference only — not medical advice
+            ]
+          ]
+          #v(2pt)
+          #text(size: 5.5pt, fill: rgb("#94a3b8"))[
+            Daniel Rosehill · share with attribution
+          ]
+        ],
+        align(right + horizon)[
+          #rect(fill: clr-page-bg, radius: 3pt, inset: (x: 8pt, y: 3pt))[
+            #text(fill: clr-page-fg, weight: "bold", size: 11pt)[#page-num]#text(fill: rgb("#94a3b8"), weight: "bold", size: 11pt)[ \/ ]#text(fill: clr-page-fg, weight: "bold", size: 11pt)[#page-total]
+          ]
+        ],
+      )
+    ]
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === HELPERS ===
+#let action(word) = { text(weight: "bold", fill: clr-condition, size: 11pt)[#upper(word)] }
+
+#let yes-label = rect(fill: clr-yes, radius: 10pt, inset: (x: 6pt, y: 2pt))[#text(fill: white, weight: "bold", size: 11pt)[Y]]
+#let no-label = rect(fill: clr-no, radius: 10pt, inset: (x: 6pt, y: 2pt))[#text(fill: white, weight: "bold", size: 11pt)[N]]
 
 #let keep-together(body) = { block(breakable: false)[#body] }
 
@@ -100,7 +144,7 @@
       #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
       #for item in items [
-        #text(fill: clr-warning, weight: "bold")[X] #item \
+        #text(fill: clr-warning, weight: "bold")[#emoji.crossmark] #item \
       ]
     ]
   ]
@@ -117,267 +161,209 @@
   ]
 }
 
-#let emergency-numbers-strip() = {
-  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
-    #set text(size: 9pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
-      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
-    )
-  ]
-}
+// ============================================================
+// PAGE 1: Flowchart — Initial response through inhaler
+// ============================================================
 
-#let when-to-apply(content) = {
-  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
-    #set text(size: 10pt)
-    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+#diagram(
+  spacing: (10mm, 7mm),
+  node-stroke: 1pt,
+  edge-stroke: 1.5pt,
+
+  // Position upright
+  node((0, 0), align(center)[
+    #icon-sit #action[HELP] sit upright \
+    or lean slightly forward.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 0), (0, 1), "->"),
+
+  // Reassure
+  node((0, 1), align(center)[
+    #icon-calm #action[REASSURE] and calm. \
+    Speak directly to the child.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 1), (0, 2), "->"),
+
+  // Decision: Inhaler available?
+  node((0, 2), align(center)[
+    #icon-breath Prescribed rescue inhaler \
+    (Ventolin) available?
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 2), (1, 2), "->",
+    label: yes-label,
+    label-side: center),
+
+  node((1, 2), align(center)[
+    #icon-med #action[ASSIST] with inhaler. \
+    2-4 puffs, 30-60 sec apart.
     #v(3pt)
-    #content
-  ]
-}
+    Under 6: use spacer device.
+  ],
+    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
+
+  // Rejoin
+  edge((1, 2), (0.5, 3), "->",
+    stroke: 1pt + clr-rejoin, dash: "dashed"),
+
+  edge((0, 2), (-1, 2), "->",
+    label: no-label,
+    label-side: center),
+
+  // MDA logo above NO/call box
+  node((-1, 1.5), align(center)[
+    #image(mda-logo, width: 24pt)
+  ],
+    shape: rect, fill: none, stroke: none,
+    width: 14mm, inset: 0pt),
+
+  node((-1, 2), align(center)[
+    #icon-phone #action[CALL] 101 \
+    immediately.
+    #v(3pt)
+    Keep upright and calm.
+  ],
+    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 2), (0, 3), "->"),
+
+  // Reassess after inhaler
+  node((0, 3), align(center)[
+    #icon-monitor #action[REASSESS] breathing \
+    after 5-10 minutes.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 3), (0, 4), "->"),
+
+  // Decision: Breathing improved?
+  node((0, 4), align(center)[
+    #icon-breath Breathing improved \
+    after inhaler use?
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 4), (1, 4), "->",
+    label: yes-label,
+    label-side: center),
+
+  node((1, 4), align(center)[
+    #icon-monitor #action[CONTINUE] monitoring.
+    #v(3pt)
+    Second dose after 10-15 min \
+    if needed. Follow up with doctor.
+    #v(2pt)
+    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+  ],
+    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 4), (-1, 4), "->",
+    label: no-label,
+    label-side: center),
+
+  // MDA logo above call box
+  node((-1, 3.5), align(center)[
+    #image(mda-logo, width: 24pt)
+  ],
+    shape: rect, fill: none, stroke: none,
+    width: 14mm, inset: 0pt),
+
+  node((-1, 4), align(center)[
+    #icon-phone #action[CALL] 101 immediately. \
+    Keep upright and calm.
+  ],
+    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
+
+  // Rejoin
+  edge((-1, 4), (-0.5, 5), "->",
+    stroke: 1pt + clr-rejoin, dash: "dashed"),
+
+  edge((0, 4), (0, 5), "->"),
+
+  // MDA logo above life-threatening section
+  node((0, 4.5), align(center)[
+    #image(mda-logo, width: 24pt)
+  ],
+    shape: rect, fill: none, stroke: none,
+    width: 14mm, inset: 0pt),
+
+  // Life-threatening signs
+  node((0, 5), align(center)[
+    *Silent chest? Drowsiness?*
+    #v(2pt)
+    *Cannot speak? Cyanosis?*
+    #v(2pt)
+    *Exhaustion?*
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 5), (1, 5), "->",
+    label: yes-label,
+    label-side: center),
+
+  node((1, 5), align(center)[
+    Life-threatening.
+    #v(3pt)
+    #action[CALL] 101 immediately. \
+    #action[CONTINUE] inhaler every \
+    5-10 min. Be ready for CPR.
+    #v(2pt)
+    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+  ],
+    shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
+
+  edge((0, 5), (-1, 5), "->",
+    label: no-label,
+    label-side: center),
+
+  node((-1, 5), align(center)[
+    #icon-monitor #action[TRANSPORT] to medical \
+    facility. Keep upright. \
+    Bring inhaler.
+    #v(2pt)
+    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+  ],
+    shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
+)
 
 // ============================================================
-// PAGE 1
-// ============================================================
-
-#align(center)[
-  #text(size: 20pt, weight: "bold")[#protocol-title]
-  #v(2pt)
-  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
-]
-#v(6pt)
-#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
-  #set text(fill: white, weight: "bold", size: 16pt)
-  #align(center)[CALL #emergency-number (#emergency-service) IF NO IMPROVEMENT]
-]
-#v(4pt)
-#emergency-numbers-strip()
-#v(6pt)
-
-#when-to-apply[
-  When a child is experiencing an asthma attack: persistent cough, wheezing, difficulty breathing (especially exhaling), chest tightness, lip cyanosis, accessory muscle use, intercostal retractions, nasal flaring. Asthma is the most common chronic disease in Israeli children (5--10% prevalence).
-]
-
-#v(6pt)
-
-#rect(fill: rgb("#f0fdf4"), stroke: 1pt + rgb("#16a34a"), radius: 6pt, width: 100%, inset: 10pt)[
-  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
-  Sit upright. Calm the child. Assist with rescue inhaler (2--4 puffs, spacer for under 6). Monitor for improvement. Call 101 if no improvement or worsening. A "silent chest" is a danger sign.
-]
-
-#v(8pt)
-
-#block(breakable: false)[
-  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Treatment -- Steps 1-4]
-  #v(4pt)
-
-  #diagram(
-    spacing: (12mm, 10mm),
-    node-stroke: 1pt,
-    edge-stroke: 1.5pt,
-
-    node((0, 0), align(center)[
-      *Step 1:* #action[HELP] the child \
-      sit upright to maximise \
-      lung expansion. Do NOT \
-      lay the child down.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 0), (0, 1), "->"),
-
-    node((0, 1), align(center)[
-      *Step 2:* #action[CALM] and reassure \
-      the child. Speak directly \
-      to the child in calm voice. \
-      Anxiety worsens bronchospasm.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 1), (0, 2), "->"),
-
-    node((0, 2), align(center)[
-      *Does the child have a* \
-      *prescribed rescue inhaler?*
-    ],
-      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 2), (1, 2), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
-      label-side: center),
-
-    node((1, 2), align(center)[
-      *Step 3:* #action[ASSIST] with \
-      inhaler. 2--4 puffs, \
-      30--60 sec between puffs. \
-      Under 6: use spacer \
-      device.
-    ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
-
-    edge((0, 2), (-1, 2), "->",
-      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
-      label-side: center),
-
-    node((-1, 2), align(center)[
-      Keep child calm and \
-      upright. #action[CALL] 101 \
-      immediately. Do not \
-      use someone else's \
-      inhaler.
-    ],
-      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt),
-
-    edge((0, 2), (0, 3), "->"),
-
-    node((0, 3), align(center)[
-      *Step 4:* #action[ADMINISTER] \
-      high-concentration O2 \
-      if available (10 L/min \
-      via face mask).
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-  )
-]
-
-// ============================================================
-// PAGE 2: Monitoring and Life-Threatening Assessment
+// PAGE 2: Reference Notes
 // ============================================================
 #pagebreak()
 
-#block(breakable: false)[
-  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Monitoring and Escalation -- Steps 5-8]
-  #v(4pt)
-
-  #diagram(
-    spacing: (12mm, 10mm),
-    node-stroke: 1pt,
-    edge-stroke: 1.5pt,
-
-    node((0, 0), align(center)[
-      *Step 5:* #action[OBTAIN] medical \
-      history: known asthmatic? \
-      Medications? Hospitalised \
-      before? What triggered this?
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 0), (0, 1), "->"),
-
-    node((0, 1), align(center)[
-      *Step 6:* #action[REASSESS] after \
-      5--10 minutes. Has breathing \
-      improved after inhaler?
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 1), (0, 2), "->"),
-
-    node((0, 2), align(center)[
-      *Has breathing improved?*
-    ],
-      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 2), (1, 2), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
-      label-side: center),
-
-    node((1, 2), align(center)[
-      Continue monitoring. \
-      Second inhaler dose \
-      after 10--15 min if \
-      needed. Follow up \
-      with child's doctor.
-    ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
-
-    edge((0, 2), (-1, 2), "->",
-      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
-      label-side: center),
-
-    node((-1, 2), align(center)[
-      #action[CALL] 101 immediately. \
-      Child needs advanced \
-      medical care. Keep \
-      upright and calm.
-    ],
-      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt),
-
-    edge((0, 2), (0, 3), "->"),
-
-    node((0, 3), align(center)[
-      *Step 7:* Is the child showing \
-      *life-threatening signs?* \
-      #text(size: 8pt)[(silent chest, drowsiness, \
-      exhaustion, inability to speak, \
-      cyanosis)]
-    ],
-      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 3), (1, 3), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
-      label-side: center),
-
-    node((1, 3), align(center)[
-      Life-threatening emergency. \
-      #action[CALL] 101 immediately. \
-      Be prepared for CPR. \
-      Continue inhaler every \
-      5--10 min until help.
-    ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
-
-    node((-1, 3), align(center)[
-      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
-      #text(size: 8pt)[A "silent chest" (no \
-      wheeze despite distress) \
-      means airways too \
-      constricted for air. \
-      This is WORSE than \
-      audible wheezing. \
-      Drowsiness = CO2 buildup.]
-    ],
-      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 6pt),
-
-    edge((0, 3), (0, 4), "->"),
-
-    node((0, 4), align(center)[
-      *Step 8:* #action[TRANSPORT] to \
-      medical facility. Keep \
-      upright. Bring inhaler \
-      and medication docs.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-  )
+#align(center)[
+  #text(size: 16pt, weight: "bold", fill: clr-condition)[Reference Notes]
 ]
-
-#v(10pt)
+#v(8pt)
 
 #do-not-box((
-  "Do NOT lay the child down -- upright position is essential for breathing.",
-  "Do NOT give cold drinks during an attack -- cold can worsen bronchospasm.",
-  "Do NOT leave the child alone during an attack.",
-  "Do NOT administer someone else's prescription inhaler without medical direction.",
-  "Do NOT delay calling 101 if the child is not improving.",
-  "Do NOT ignore drowsiness during an asthma attack -- dangerous sign of CO2 buildup.",
-  "Do NOT assume a quiet chest means improvement -- silent chest during distress is life-threatening.",
+  [#underline(stroke: 1.5pt)[*Do NOT lay the child down*] -- upright position is essential for breathing.],
+  [#underline(stroke: 1.5pt)[*Do NOT give cold drinks*] during an attack -- cold can worsen bronchospasm.],
+  [#underline(stroke: 1.5pt)[*Do NOT leave the child alone*] during an attack.],
+  [#underline(stroke: 1.5pt)[*Do NOT administer someone else's prescription inhaler*] without medical direction.],
+  [#underline(stroke: 1.5pt)[*Do NOT delay calling 101*] if the child is not improving.],
+  [#underline(stroke: 1.5pt)[*Do NOT ignore drowsiness*] during an asthma attack -- dangerous sign of CO2 buildup requiring immediate intervention.],
+  [#underline(stroke: 1.5pt)[*Do NOT assume a quiet chest means improvement*] -- a silent chest during distress is a life-threatening sign.],
 ))
 
-#v(10pt)
+#v(12pt)
 
 #equipment-box((
   "Rescue inhaler (Ventolin/salbutamol) -- child's own prescribed inhaler",
@@ -387,13 +373,42 @@
   "Phone (to call 101)",
 ))
 
-#v(10pt)
+#v(12pt)
+
+// === HEBREW TERMINOLOGY PHRASEBOOK ===
+#rect(fill: rgb("#f0f4ff"), stroke: 1pt + rgb("#6366f1"), radius: 6pt, width: 100%, inset: 10pt)[
+  #text(fill: rgb("#4338ca"), weight: "bold", size: 14pt)[Hebrew Terminology — #text(dir: rtl)[מונחים בעברית]]
+  #v(6pt)
+  #set text(size: 10pt)
+  #table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left, right, left),
+    stroke: 0.5pt + rgb("#c7d2fe"),
+    inset: 6pt,
+    fill: (x, y) => if y == 0 { rgb("#e0e7ff") } else { none },
+    [*English*], [*עברית*], [*Pronunciation*],
+    [Inhaler], [משאף], [mash-AF],
+    [Spacer], [מרחב], [mer-KHAV],
+    [Hard to breathe], [קשה לנשום], [ka-SHE lin-SHOM],
+    [Asthma], [אסתמה], [AST-ma],
+    [Asthma attack], [התקף אסתמה], [het-KEF AST-ma],
+    [Wheezing], [צפצופים], [tsif-tsu-FIM],
+    [Chest tightness], [לחץ בחזה], [LA-khats ba-kha-ZE],
+    [Puffs (doses)], [שאיפות], [she-i-FOT],
+    [Child], [ילד / ילדה], [YE-led / yal-DA],
+    [Ambulance], [אמבולנס], [am-bu-LANS],
+    [Emergency], [חירום], [khe-RUM],
+    [Can you breathe?], [?אתה יכול לנשום], [a-TA ya-KHOL lin-SHOM?],
+    [Where is the inhaler?], [?איפה המשאף], [EI-fo ha-mash-AF?],
+  )
+]
+
+#v(12pt)
 
 #rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
   #set text(size: 8pt, fill: rgb("#6b7280"))
-  #strong[Source:] Magen David Adom (MDA) -- ALS Professional Manual (April 2024), supplemented by Ichud Hatzalah asthma and respiratory distress guidelines \
+  #strong[Source:] Magen David Adom (MDA) -- ALS Professional Manual (April 2024), supplemented by Ichud Hatzalah guidelines \
   #strong[URL:] https://www.mdais.org/101/first-aid \
   #strong[Publication date:] 2024-04-01 \
-  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
-  #strong[Notes:] Unified from MDA and United Hatzalah sources. Asthma is the most common chronic disease in Israeli children (5--10% prevalence).
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16
 ]

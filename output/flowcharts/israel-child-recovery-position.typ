@@ -1,14 +1,17 @@
-// Israel Child Recovery Position Flowchart -- V2
+// Israel Child Recovery Position Flowchart — V3
 // Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
 // Protocol ID: IL-CHILD-RECOVERY-POSITION-001
+// SOP: 047
 
 #import "@preview/fletcher:0.5.7": diagram, node, edge
 
 // === METADATA ===
 #let protocol-id = "IL-CHILD-RECOVERY-POSITION-001"
-#let protocol-title = "Recovery Position -- Child"
+#let sop-number = "047"
+#let protocol-title = "Recovery Position"
 #let protocol-subject = "RECOVERY POSITION"
+#let scenario = "UNCONSCIOUS BREATHING"
 #let age-group = "CHILD"
 #let country = "Israel"
 #let emergency-number = "101"
@@ -17,67 +20,20 @@
 #let source-date = "2016-01-01"
 #let last-verified = "2026-03-16"
 #let generation-date = "2026-03-16"
-#let version = "2.0"
+#let version = "3.0"
 
-// === PAGE SETUP (A4) ===
-#set page(
-  paper: "a4",
-  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
-  header: context {
-    let page-num = counter(page).get().first()
-    let page-total = counter(page).final().first()
-    grid(
-      columns: (1fr, auto, 1fr),
-      gutter: 0pt,
-      align(left)[
-        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
-          #upper(age-group) — #upper(protocol-subject)
-        ]
-      ],
-      align(center)[
-        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
-          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
-        ]
-      ],
-      align(right)[
-        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
-          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
-        ]
-      ],
-    )
-    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
-  },
-  footer: context {
-    let page-num = counter(page).get().first()
-    let page-total = counter(page).final().first()
-    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-    v(3pt)
-    grid(
-      columns: (1fr, auto, 1fr),
-      gutter: 0pt,
-      align(left)[
-        #text(size: 7pt, fill: rgb("#9ca3af"))[
-          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
-        ]
-      ],
-      align(center)[
-        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
-          Personal reference only — not medical advice
-        ]
-      ],
-      align(right)[
-        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
-          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
-        ]
-      ],
-    )
-  },
-)
+// === ICON PATHS ===
+#let mda-logo = "../../icons/mda/mda.png"
 
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+// === ICONS (inline helpers) ===
+#let icon-phone = text(size: 12pt)[#emoji.phone]
+#let icon-breath = text(size: 12pt)[#emoji.wind]
+#let icon-monitor = text(size: 12pt)[#emoji.eye]
+#let icon-calm = text(size: 12pt)[#emoji.hands.open]
+#let icon-person = text(size: 12pt)[#emoji.person]
+#let icon-heart = text(size: 12pt)[#emoji.heart]
 
-#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
-
+// === COLOURS ===
 #let clr-step = rgb("#f0f9ff")
 #let clr-step-stroke = rgb("#3b82f6")
 #let clr-decision = rgb("#eff6ff")
@@ -90,6 +46,98 @@
 #let clr-warning-fill = rgb("#fef2f2")
 #let clr-equip = rgb("#92400e")
 #let clr-equip-fill = rgb("#fefce8")
+#let clr-terminal = rgb("#1e3a5f")
+#let clr-rejoin = rgb("#b0b8c4")
+
+// Header segment colours
+#let clr-age-adult = rgb("#ea580c")
+#let clr-age-child = rgb("#0d9488")
+#let clr-condition = rgb("#1e40af")
+#let clr-scenario = rgb("#4b5563")
+
+// Page number badge
+#let clr-page-bg = rgb("#1e293b")
+#let clr-page-fg = white
+
+// Header/footer chrome
+#let clr-header-bg = rgb("#f8f9fb")
+#let clr-header-border = rgb("#e2e5ea")
+
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.8cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    rect(fill: clr-age-child, width: 100%, height: 3pt, radius: (top: 2pt, bottom: 0pt))[]
+    rect(fill: clr-header-bg, width: 100%, inset: (x: 10pt, y: 6pt), stroke: (bottom: 1pt + clr-header-border))[
+      #grid(
+        columns: (60pt, 1fr, 60pt),
+        gutter: 0pt,
+        [],
+        align(center)[
+          #text(size: 15pt, weight: "bold", fill: clr-age-child, tracking: 0.5pt)[#upper(age-group)]
+          #h(5pt)
+          #text(size: 11pt, fill: rgb("#94a3b8"))[#sym.triangle.stroked.r]
+          #h(5pt)
+          #text(size: 15pt, weight: "bold", fill: clr-condition, tracking: 0.5pt)[#upper(protocol-subject)]
+          #h(5pt)
+          #text(size: 11pt, fill: rgb("#94a3b8"))[#sym.triangle.stroked.r]
+          #h(5pt)
+          #text(size: 15pt, weight: "bold", fill: clr-scenario, tracking: 0.5pt)[#upper(scenario)]
+          #v(3pt)
+          #text(size: 8pt, fill: rgb("#94a3b8"), tracking: 1pt)[SOP #sop-number]
+        ],
+        align(right + horizon)[
+          #rect(fill: clr-page-bg, radius: 4pt, inset: (x: 10pt, y: 5pt))[
+            #text(fill: clr-page-fg, weight: "bold", size: 14pt)[#page-num]#text(fill: rgb("#94a3b8"), weight: "bold", size: 14pt)[ \/ ]#text(fill: clr-page-fg, weight: "bold", size: 14pt)[#page-total]
+          ]
+        ],
+      )
+    ]
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    rect(fill: clr-header-bg, width: 100%, inset: (x: 10pt, y: 6pt), stroke: (top: 1pt + clr-header-border, bottom: 0pt), radius: (top: 0pt, bottom: 2pt))[
+      #grid(
+        columns: (1fr, auto, 1fr),
+        gutter: 0pt,
+        align(left + horizon)[
+          #text(size: 7pt, fill: rgb("#94a3b8"))[
+            #text(weight: "bold", fill: rgb("#64748b"))[#protocol-id] · v#version \
+            #generation-date · #source-authority
+          ]
+        ],
+        align(center + horizon)[
+          #rect(fill: rgb("#fef3c7"), radius: 3pt, inset: (x: 8pt, y: 3pt), stroke: 0.5pt + rgb("#f59e0b"))[
+            #text(size: 7pt, fill: rgb("#92400e"), weight: "bold")[
+              Personal reference only — not medical advice
+            ]
+          ]
+          #v(2pt)
+          #text(size: 5.5pt, fill: rgb("#94a3b8"))[
+            Daniel Rosehill · share with attribution
+          ]
+        ],
+        align(right + horizon)[
+          #rect(fill: clr-page-bg, radius: 3pt, inset: (x: 8pt, y: 3pt))[
+            #text(fill: clr-page-fg, weight: "bold", size: 11pt)[#page-num]#text(fill: rgb("#94a3b8"), weight: "bold", size: 11pt)[ \/ ]#text(fill: clr-page-fg, weight: "bold", size: 11pt)[#page-total]
+          ]
+        ],
+      )
+    ]
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === HELPERS ===
+#let action(word) = { text(weight: "bold", fill: clr-condition, size: 11pt)[#upper(word)] }
+
+#let yes-label = rect(fill: clr-yes, radius: 10pt, inset: (x: 6pt, y: 2pt))[#text(fill: white, weight: "bold", size: 11pt)[Y]]
+#let no-label = rect(fill: clr-no, radius: 10pt, inset: (x: 6pt, y: 2pt))[#text(fill: white, weight: "bold", size: 11pt)[N]]
 
 #let keep-together(body) = { block(breakable: false)[#body] }
 
@@ -100,7 +148,7 @@
       #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
       #for item in items [
-        #text(fill: clr-warning, weight: "bold")[X] #item \
+        #text(fill: clr-warning, weight: "bold")[#emoji.crossmark] #item \
       ]
     ]
   ]
@@ -117,330 +165,282 @@
   ]
 }
 
-#let emergency-numbers-strip() = {
-  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
-    #set text(size: 9pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
-      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
-    )
-  ]
-}
-
-#let when-to-apply(content) = {
-  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
-    #set text(size: 10pt)
-    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
-    #v(3pt)
-    #content
-  ]
-}
-
 // ============================================================
-// PAGE 1
+// PAGE 1: Flowchart — Assessment and age-based branching
 // ============================================================
 
-#align(center)[
-  #text(size: 20pt, weight: "bold")[#protocol-title]
-  #v(2pt)
-  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
-]
-#v(6pt)
-#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
-  #set text(fill: white, weight: "bold", size: 16pt)
-  #align(center)[CALL #emergency-number (#emergency-service) FOR ANY UNCONSCIOUS CHILD]
-]
-#v(4pt)
-#emergency-numbers-strip()
-#v(6pt)
+#diagram(
+  spacing: (10mm, 7mm),
+  node-stroke: 1pt,
+  edge-stroke: 1.5pt,
 
-#when-to-apply[
-  When a child is unconscious but breathing normally and has no suspected spinal injury. Maintains an open airway, facilitates drainage of secretions, and reduces aspiration risk. Do NOT use if spinal injury is suspected.
-]
+  // Confirm unconscious but breathing
+  node((0, 0), align(center)[
+    #icon-breath #action[CONFIRM] child is \
+    unconscious but breathing. \
+    Check chest rise for \
+    up to 10 seconds.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
 
-#v(6pt)
+  edge((0, 0), (0, 1), "->"),
 
-#rect(fill: rgb("#f0fdf4"), stroke: 1pt + rgb("#16a34a"), radius: 6pt, width: 100%, inset: 10pt)[
-  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
-  Children aged 1--8: standard lateral recovery position (more gently than adults). Infants under 1: cradle/arm position (face-down on rescuer's forearm). Children have proportionally larger heads -- position carefully to avoid neck flexion.
-]
+  // Decision: Breathing normally?
+  node((0, 1), align(center)[
+    Is the child \
+    breathing normally?
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
 
-#v(8pt)
+  edge((0, 1), (1, 1), "->",
+    label: no-label,
+    label-side: center),
 
-#block(breakable: false)[
-  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Assessment -- Steps 1-3]
-  #v(4pt)
+  node((1, 1), align(center)[
+    Not breathing / gasping: \
+    #icon-heart #action[BEGIN] CPR.
+    #v(2pt)
+    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+  ],
+    shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
 
-  #diagram(
-    spacing: (12mm, 10mm),
-    node-stroke: 1pt,
-    edge-stroke: 1.5pt,
+  edge((0, 1), (0, 2), "->",
+    label: yes-label,
+    label-side: center),
 
-    node((0, 0), align(center)[
-      *Step 1:* #action[CONFIRM] child \
-      is unconscious but \
-      breathing normally.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
+  // MDA logo
+  node((-1, 1.5), align(center)[
+    #image(mda-logo, width: 24pt)
+  ],
+    shape: rect, fill: none, stroke: none,
+    width: 14mm, inset: 0pt),
 
-    edge((0, 0), (0, 1), "->"),
+  // Call 101
+  node((-1, 2), align(center)[
+    #icon-phone #action[CALL] 101 \
+    for any unconscious child.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
 
-    node((0, 1), align(center)[
-      *Is the child breathing* \
-      *normally?*
-    ],
-      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
+  // Decision: Spinal injury suspected?
+  node((0, 2), align(center)[
+    Is spinal injury \
+    suspected? (fall, collision, \
+    head/neck trauma)
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 1), (1, 1), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
-      label-side: center),
+  edge((0, 2), (1, 2), "->",
+    label: yes-label,
+    label-side: center),
 
-    node((1, 1), align(center)[
-      Proceed with recovery \
-      position. #action[CALL] 101.
-    ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
+  node((1, 2), align(center)[
+    #action[STABILISE] head and \
+    spine in position found. \
+    Jaw thrust for airway. \
+    Wait for MDA.
+    #v(2pt)
+    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+  ],
+    shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 1), (-1, 1), "->",
-      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
-      label-side: center),
+  edge((0, 2), (0, 3), "->",
+    label: no-label,
+    label-side: center),
 
-    node((-1, 1), align(center)[
-      Not breathing or gasping: \
-      #action[BEGIN] CPR immediately. \
-      Do NOT place in \
-      recovery position.
-    ],
-      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt),
+  // Decision: Under 1 year?
+  node((0, 3), align(center)[
+    Is the child under \
+    1 year of age (infant)?
+  ],
+    shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 1), (0, 2), "->"),
+  edge((0, 3), (1, 3), "->",
+    label: yes-label,
+    label-side: center),
 
-    node((0, 2), align(center)[
-      *Step 2:* Is spinal injury \
-      *suspected?*
-    ],
-      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
+  node((1, 3), align(center)[
+    #icon-person #action[HOLD] infant face-down \
+    on your forearm. \
+    Head lower than body. \
+    Support jaw with hand.
+    #v(2pt)
+    #line(length: 100%, stroke: 1.5pt + clr-terminal)
+  ],
+    shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+    width: 46mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 2), (1, 2), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
-      label-side: center),
+  edge((0, 3), (0, 4), "->",
+    label: no-label,
+    label-side: center),
 
-    node((1, 2), align(center)[
-      Do NOT move child. \
-      #action[STABILISE] head/spine \
-      in position found. \
-      Use jaw thrust for \
-      airway. Wait for EMS.
-    ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
+  // Standard lateral position steps
+  node((0, 4), align(center)[
+    #icon-person #action[KNEEL] beside the child. \
+    Place near arm at right \
+    angle, palm up.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 2), (0, 3), "->",
-      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
-      label-side: center),
+  edge((0, 4), (0, 5), "->"),
 
-    node((0, 3), align(center)[
-      *Step 3:* Is the child \
-      *under 1 year (infant)?*
-    ],
-      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
+  node((0, 5), align(center)[
+    #action[BRING] far arm across chest. \
+    Hold hand against cheek. \
+    Bend far knee. \
+    #action[ROLL] child towards you.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 3), (1, 3), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
-      label-side: center),
+  edge((0, 5), (0, 6), "->"),
 
-    node((1, 3), align(center)[
-      Use infant position: \
-      Step 7 (forearm cradle). \
-      See below.
-    ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
-
-    edge((0, 3), (-1, 3), "->",
-      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
-      label-side: center),
-
-    node((-1, 3), align(center)[
-      Use standard lateral \
-      position for ages 1--8. \
-      Proceed to Step 4.
-    ],
-      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt),
-  )
-]
+  node((0, 6), align(center)[
+    #action[ADJUST] upper leg: hip \
+    and knee at right angles. \
+    #action[TILT] head back gently \
+    to keep airway open.
+  ],
+    shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+    width: 58mm, inset: 8pt, corner-radius: 6pt),
+)
 
 // ============================================================
-// PAGE 2: Technique Steps 4-8, Reference
+// PAGE 2: Monitoring
 // ============================================================
 #pagebreak()
 
-#block(breakable: false)[
-  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Lateral Position (Ages 1-8) -- Steps 4-6]
-  #v(4pt)
-
-  #diagram(
-    spacing: (12mm, 10mm),
-    node-stroke: 1pt,
-    edge-stroke: 1.5pt,
-
-    node((0, 0), align(center)[
-      *Step 4:* #action[KNEEL] beside child. \
-      Place near arm at right \
-      angle, elbow bent, \
-      palm facing up.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 0), (0, 1), "->"),
-
-    node((0, 1), align(center)[
-      *Step 5:* #action[BRING] far arm \
-      across chest. Hold back \
-      of hand against cheek. \
-      Bend far knee. #action[ROLL] \
-      child towards you gently.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 1), (0, 2), "->"),
-
-    node((0, 2), align(center)[
-      *Step 6:* #action[ADJUST] position. \
-      Upper leg: hip and knee \
-      at right angles. Tilt head \
-      back gently for open airway. \
-      Mouth angled downward \
-      for drainage.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    node((1, 2), align(center)[
-      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
-      #text(size: 8pt)[Children have larger \
-      heads proportionally. \
-      Ensure head position \
-      does not flex neck \
-      forward -- this can \
-      obstruct the airway.]
-    ],
-      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 6pt),
-  )
+#align(center)[
+  #text(size: 16pt, weight: "bold", fill: clr-condition)[Monitoring]
 ]
-
-#v(8pt)
+#v(6pt)
 
 #block(breakable: false)[
-  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Infant Position and Monitoring -- Steps 7-8]
-  #v(4pt)
-
   #diagram(
     spacing: (12mm, 10mm),
     node-stroke: 1pt,
     edge-stroke: 1.5pt,
 
+    // Monitor breathing
     node((0, 0), align(center)[
-      *Step 7 -- Infant (under 1):* \
-      #action[HOLD] infant face-down \
-      on your forearm. Head \
-      supported by your hand, \
-      lower than body. Support \
-      jaw with fingers.
+      #icon-monitor #action[MONITOR] breathing \
+      continuously (every minute). \
+      Cover with a blanket \
+      to prevent hypothermia.
     ],
       shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    node((1, 0), align(center)[
-      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
-      #text(size: 8pt)[Do NOT place infants \
-      in the standard lateral \
-      position. Use the \
-      forearm cradle only.]
-    ],
-      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
-      width: 48mm, inset: 6pt),
+      width: 60mm, inset: 8pt, corner-radius: 6pt),
 
     edge((0, 0), (0, 1), "->"),
 
+    // Decision: Stopped breathing?
     node((0, 1), align(center)[
-      *Step 8:* #action[MONITOR] breathing \
-      continuously (every minute). \
-      Cover with blanket. \
-      Be ready for CPR.
-    ],
-      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
-      width: 60mm, inset: 8pt),
-
-    edge((0, 1), (0, 2), "->"),
-
-    node((0, 2), align(center)[
-      *Has the child stopped* \
-      *breathing?*
+      Has the child \
+      stopped breathing?
     ],
       shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
-      width: 60mm, inset: 8pt),
+      width: 60mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 2), (1, 2), "->",
-      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+    edge((0, 1), (1, 1), "->",
+      label: yes-label,
       label-side: center),
 
-    node((1, 2), align(center)[
-      #action[ROLL] child onto back. \
-      #action[BEGIN] CPR immediately.
+    node((1, 1), align(center)[
+      #action[ROLL] onto back. \
+      #icon-heart #action[BEGIN] CPR \
+      immediately.
+      #v(2pt)
+      #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
-      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
-      width: 48mm, inset: 8pt),
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 8pt, corner-radius: 6pt),
 
-    edge((0, 2), (-1, 2), "->",
-      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+    edge((0, 1), (-1, 1), "->",
+      label: no-label,
       label-side: center),
 
-    node((-1, 2), align(center)[
-      Continue monitoring \
+    node((-1, 1), align(center)[
+      #icon-monitor Continue monitoring \
       in recovery position. \
       Maintain warmth and \
       airway patency.
+      #v(2pt)
+      #line(length: 100%, stroke: 1.5pt + clr-terminal)
     ],
-      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
-      width: 48mm, inset: 8pt),
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt, corner-radius: 6pt),
   )
 ]
 
-#v(10pt)
+// ============================================================
+// PAGE 3: Reference Notes
+// ============================================================
+#pagebreak()
+
+#align(center)[
+  #text(size: 16pt, weight: "bold", fill: clr-condition)[Reference Notes]
+]
+#v(8pt)
 
 #do-not-box((
-  "Do NOT use recovery position if child is not breathing -- begin CPR instead.",
-  "Do NOT use recovery position if spinal injury is suspected -- stabilise the spine.",
-  "Do NOT place infants under 1 year in standard lateral position -- use forearm cradle.",
-  "Do NOT leave child unattended in recovery position -- monitor breathing continuously.",
-  "Do NOT allow head to flex forward (especially in children with larger heads) -- obstructs airway.",
-  "Do NOT forget to cover the child to prevent hypothermia.",
+  [#underline(stroke: 1.5pt)[*Do NOT use the recovery position if the child is not breathing*] — begin CPR instead.],
+  [#underline(stroke: 1.5pt)[*Do NOT use the recovery position if spinal injury is suspected*] — stabilise the spine.],
+  [#underline(stroke: 1.5pt)[*Do NOT place infants under 1 year in the standard lateral recovery position*] — use the forearm cradle position.],
+  [#underline(stroke: 1.5pt)[*Do NOT leave the child unattended*] in the recovery position — monitor breathing continuously.],
+  [#underline(stroke: 1.5pt)[*Do NOT allow the child's head to flex forward*] (especially in children with larger heads) — this can obstruct the airway.],
+  [#underline(stroke: 1.5pt)[*Do NOT forget to cover the child*] to prevent hypothermia.],
 ))
 
-#v(10pt)
+#v(12pt)
 
 #equipment-box((
   "Blanket or coat (to prevent hypothermia)",
   "Phone (to call 101)",
 ))
 
-#v(10pt)
+#v(12pt)
+
+// === HEBREW TERMINOLOGY PHRASEBOOK ===
+#rect(fill: rgb("#f0f4ff"), stroke: 1pt + rgb("#6366f1"), radius: 6pt, width: 100%, inset: 10pt)[
+  #text(fill: rgb("#4338ca"), weight: "bold", size: 14pt)[Hebrew Terminology — מונחים בעברית]
+  #v(6pt)
+  #set text(size: 10pt)
+  #table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left, right, left),
+    stroke: 0.5pt + rgb("#c7d2fe"),
+    inset: 6pt,
+    fill: (x, y) => if y == 0 { rgb("#e0e7ff") } else { none },
+    [*English*], [*עברית*], [*Pronunciation*],
+    [Recovery position], [תנוחת החלמה], [tnu-KHAT ha-khla-MA],
+    [Unconscious], [מחוסר הכרה], [me-khu-SAR ha-ka-RA],
+    [Breathing], [נשימה], [nshi-MA],
+    [Airway], [דרכי אוויר], [dar-KHEY a-VIR],
+    [On their side], [על הצד], [al ha-TSAD],
+    [Infant], [תינוק], [ti-NOK],
+    [Spinal injury], [פגיעה בעמוד השדרה], [pgi-A be-a-MUD ha-shid-RA],
+    [Ambulance], [אמבולנס], [am-bu-LANS],
+    [Emergency], [חירום], [khe-RUM],
+    [Child], [ילד / ילדה], [YE-led / yal-DA],
+    [Is the child breathing?], [?הילד נושם], [ha-YE-led no-SHEM?],
+    [Roll them on their side], [תגלגל אותו על הצד], [te-gal-GEL o-TO al ha-TSAD],
+  )
+]
+
+#v(12pt)
 
 #rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
   #set text(size: 8pt, fill: rgb("#6b7280"))
-  #strong[Source:] Magen David Adom (MDA) -- BLS Guide (2016), supplemented by Ichud Hatzalah pediatric treatment approach guidelines \
+  #strong[Source:] Magen David Adom (MDA) — Recovery Position Guidelines \
   #strong[URL:] https://www.mdais.org/101/first-aid \
   #strong[Publication date:] 2016-01-01 \
-  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
-  #strong[Notes:] Children aged 1--8 use standard adult lateral recovery position with greater gentleness. Infants under 1 use cradle/arm position.
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16
 ]
