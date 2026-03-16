@@ -15,9 +15,20 @@ Personal collection of first aid protocols from Israel (Magen David Adom) and th
 - **This is a personal project** — always maintain the disclaimer that this is not medical advice.
 
 
-## PDF Format Organisation
+## Output Organisation
 
-- Top level subfolders for children and adult protocols 
+```
+output/
+  flowcharts/
+    adult/
+      typst/    ← Typst source files
+      pdf/      ← compiled individual PDFs
+    child/
+      typst/
+      pdf/
+    combined/   ← combined/book PDFs (all-adult, all-child, everything)
+  checklists/   ← shopping lists, stock-check checklists
+```
 
 ## Authorities
 
@@ -28,14 +39,14 @@ Personal collection of first aid protocols from Israel (Magen David Adom) and th
 
 1. Gather source material into `reference/`
 2. Structure protocols as JSON in `protocols/`
-3. Generate flowchart documents using Typst into `output/flowcharts/`
+3. Generate flowchart Typst sources into `output/flowcharts/{age_group}/typst/`, compile PDFs into `output/flowcharts/{age_group}/pdf/`
 
 
 ## Incrementing Releases
 
 ## Output Generation
 
-Use **Typst** to generate flowchart decision-making documents from the structured JSON protocols. Output goes in `output/flowcharts/`.
+Use **Typst** to generate flowchart decision-making documents from the structured JSON protocols. Typst sources go in `output/flowcharts/{age_group}/typst/`, compiled PDFs in `output/flowcharts/{age_group}/pdf/`, and combined books in `output/flowcharts/combined/`.
 
 ## Flowchart Design Directions
 
