@@ -1,265 +1,539 @@
-// First Aid Protocol Flowchart — Anaphylaxis / Allergic Reaction (Adult, Israel)
-// Generated from: IL-ADULT-ALLERGIC-REACTION-001
-// Source: Magen David Adom (MDA) — ALS Manual April 2024
-// Generated: 2026-03-15
+// Israel Adult Anaphylaxis Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-ADULT-ALLERGIC-REACTION-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: "Noto Sans", size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "ANAPHYLAXIS / ALLERGIC REACTION"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-ALLERGIC-REACTION-001"
+#let protocol-title = "Anaphylaxis / Allergic Reaction — Adult"
+#let protocol-subject = "ANAPHYLAXIS"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-document = "MDA First Aid Guidance on Allergies and ALS Protocol (April 2024); Israeli Ministry of Health Anaphylaxis Guidance"
+#let source-authority = "Magen David Adom"
 #let source-date = "2024-04-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
+    )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt, width: 100%)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
+    ]
   ]
 }
 
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let do-not-box(items) = {
+#let emergency-numbers-strip() = {
   rect(
     fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ v]
-  ]
-}
+// ============================================================
+// PAGE 1: Title, Assessment, Steps 1-4
+// ============================================================
 
-// === DOCUMENT ===
-
-// Header
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
 #v(6pt)
-
-// Emergency number
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// Equipment needed
 #rect(
-  fill: rgb("#fefce8"),
-  stroke: 1pt + rgb("#ca8a04"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
-  inset: 8pt,
+  inset: 10pt,
 )[
-  #text(weight: "bold", size: 10pt)[Equipment needed:] EpiPen (adult 0.3 mg) + Phone to call MDA at 101
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY IF IN DOUBT
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+// --- When to Apply ---
+#when-to-apply[
+  Severe allergic reaction with involvement of breathing, circulation, or consciousness. High probability when: acute onset with skin/mucosal involvement plus respiratory compromise or hypotension; or two or more of skin symptoms, respiratory compromise, hypotension, persistent GI symptoms after allergen exposure.
 ]
 
 #v(6pt)
 
-// === STEP 1 ===
-#step-box(1, "Ensure scene safety and recognise signs of severe allergic reaction.",
-  detail: "Look for: SKIN (rash, hives, swelling of face/lips/tongue/throat) -- RESPIRATORY (breathing difficulty, wheezing, stridor, throat tightness) -- CARDIOVASCULAR (weak/rapid pulse, low BP, pallor, confusion, loss of consciousness) -- GI (nausea, vomiting, abdominal pain). Involvement of breathing, circulation, or consciousness indicates anaphylaxis."
-)
-
-#v(4pt)
-
-#decision-box("Are signs of anaphylaxis present?\n(breathing difficulty, circulatory compromise, or altered consciousness)")
-#v(3pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 2 -- call 101 immediately and continue protocol.],
-  no-branch[Monitor for worsening. If only mild skin reaction without systemic involvement, observe closely. Call 101 if condition worsens.],
-)
-
-#v(6pt)
-
-// === STEP 2 ===
-#step-box(2, "Call MDA at 101 immediately.",
-  detail: "Keep the phone on speaker mode and follow the dispatcher's instructions. Call for help from bystanders. If possible, identify the allergen (food, medication, insect sting, latex)."
-)
-
-#v(4pt)
-#arrow-down()
-#v(2pt)
-
-// === STEP 3 ===
-#step-box(3, "Remove the offending agent if possible.",
-  detail: "Remove a bee stinger by scraping sideways, stop any infusion or medication, move patient away from the allergen source. Do not delay other treatment to do this."
-)
-
-#v(4pt)
-#arrow-down()
-#v(2pt)
-
-// === STEP 4 ===
-#step-box(4, "Manage the airway.",
-  detail: "If facial or tongue swelling is present, assume airway compromise. Ensure the tongue is not obstructing the airway. Remove any food debris from the mouth. Loosen tight clothing around the neck and chest.",
-  warning: "Airway swelling can progress rapidly. Continuous monitoring is essential."
-)
-
-#v(4pt)
-#arrow-down()
-#v(2pt)
-
-// === STEP 5 ===
-#step-box(5, "Position the patient appropriately.",
-  detail: "Positioning depends on the patient's condition and primary symptoms."
-)
-
-#v(4pt)
-
-#decision-box("Is the patient conscious?")
-#v(3pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[If breathing difficulty is primary: allow patient to sit upright. If hypotension/shock is primary: position supine (lying down) with legs elevated.],
-  no-branch[Proceed to Step 6 to assess breathing.],
-)
-
-#v(6pt)
-
-// === STEP 6 ===
-#step-box(6, "If the patient is unconscious, assess breathing.")
-
-#v(4pt)
-
-#decision-box("Is the unconscious patient breathing?")
-#v(3pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Place in the recovery position. Continue to monitor breathing and proceed to Step 7 (EpiPen).],
-  no-branch[Begin CPR immediately. Continue CPR until EMS arrives or the patient resumes breathing.],
-)
-
-#v(6pt)
-
-// === STEP 7 ===
-#step-box(7, "Administer epinephrine auto-injector (EpiPen) if available.",
-  detail: "Adult dose (over 50 kg): 0.3 mg auto-injector. Technique: (1) Remove from plastic case. (2) Remove blue safety cap. (3) Hold with orange tip pointing downward. (4) Position at 90 degrees to middle of outer thigh. (5) Press firmly (swing and jab) until click is heard. (6) Hold in place for 10 seconds. (7) Can be administered through clothing. (8) After removal, massage injection site for 10 seconds. (9) Hand used auto-injector to paramedics.",
-  warning: "Epinephrine is time-critical. Do not delay. Over 50% of anaphylaxis deaths occur within the first 60 minutes."
-)
-
-#v(4pt)
-
-#decision-box("Is an EpiPen available?")
-#v(3pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Administer immediately using the technique described. Proceed to Step 8.],
-  no-branch[Maintain airway, positioning, and monitoring. Inform the 101 dispatcher that no EpiPen is available. Wait for EMS.],
-)
-
-#v(6pt)
-
-// === STEP 8 ===
-#step-box(8, "Reassess the patient after 5 minutes.",
-  detail: "Check airway, breathing, circulation, and level of consciousness."
-)
-
-#v(4pt)
-
-#decision-box("Has the patient's condition improved after 5 minutes?")
-#v(3pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue monitoring. Epinephrine effects last approx. 20 minutes; symptoms may recur (biphasic reaction). Do not leave patient unattended.],
-  no-branch[Administer a second dose of epinephrine if a second auto-injector is available. Continue monitoring.],
-)
-
-#v(6pt)
-
-// === STEP 9 ===
-#step-box(9, "Monitor continuously until EMS arrives.",
-  detail: "Continuously monitor airway, breathing, and circulation. Be prepared to begin CPR if the patient loses consciousness and stops breathing. All patients with suspected anaphylaxis require hospital evaluation, even if symptoms fully resolve after epinephrine.",
-  warning: "Biphasic reactions can occur hours after the initial event. Hospital observation is mandatory."
-)
+// --- Summary ---
+#rect(
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Recognition and first aid treatment of anaphylaxis in adults, including EpiPen administration and monitoring until EMS arrival.
+]
 
 #v(8pt)
 
-// === DO NOT LIST ===
+// --- Recognition and Initial Steps ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Recognition and Initial Response]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Recognise
+    node((0, 0), align(center)[
+      *Step 1:* #action[CHECK] for signs \
+      of severe allergic reaction. \
+      Skin: rash, hives, swelling \
+      Breathing: wheeze, stridor \
+      Circulation: weak pulse, pallor \
+      GI: nausea, vomiting
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: anaphylaxis?
+    node((0, 1), align(center)[
+      *Signs of anaphylaxis?* \
+      (breathing difficulty, \
+      circulatory compromise, \
+      altered consciousness)
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> call 101
+    edge((0, 1), (0, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    // NO -> monitor
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      #action[MONITOR] for worsening. \
+      Mild skin reaction only: \
+      observe closely. \
+      #action[CALL] 101 if worsens.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    // Step 2: Call 101
+    node((0, 2), align(center)[
+      *Step 2:* #action[CALL] 101 (MDA) \
+      immediately. Speaker mode. \
+      #action[FOLLOW] dispatcher \
+      instructions.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 3: Remove allergen
+    node((0, 3), align(center)[
+      *Step 3:* #action[REMOVE] the \
+      offending agent if possible. \
+      Scrape bee stinger sideways. \
+      Stop infusion/medication.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 4: Manage airway
+    node((0, 4), align(center)[
+      *Step 4:* Manage the airway. \
+      #action[OPEN] airway, clear debris. \
+      #action[LOOSEN] tight clothing \
+      around neck and chest.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Airway swelling can \
+      progress rapidly. \
+      Continuous monitoring \
+      is essential.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Positioning, EpiPen, Reassessment (Steps 5-9)
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Positioning and Epinephrine]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 5: Position
+    node((0, 0), align(center)[
+      *Is the patient conscious?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> position based on symptoms
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      Breathing difficulty: \
+      sit upright. \
+      Hypotension/shock: \
+      #action[POSITION] supine, \
+      #action[ELEVATE] legs.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> assess breathing
+    edge((0, 0), (0, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 6: Unconscious
+    node((0, 1), align(center)[
+      *Is the unconscious* \
+      *patient breathing?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> recovery
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      #action[PLACE] in recovery \
+      position. Continue \
+      to #action[MONITOR] \
+      breathing.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> CPR
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      #action[BEGIN] CPR \
+      immediately. \
+      Continue until \
+      EMS arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 7: EpiPen
+    node((0, 2), align(center)[
+      *Is an EpiPen available?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> administer
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      *Step 7:* #action[ADMINISTER] EpiPen: \
+      Remove blue cap. \
+      Orange tip to outer thigh. \
+      Jab firmly (through clothing). \
+      Hold 10 seconds. \
+      Massage site 10 seconds.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> wait
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      Maintain airway \
+      and positioning. \
+      Inform 101 dispatcher: \
+      no EpiPen available. \
+      Wait for EMS.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    // Warning about epinephrine
+    node((0, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[CRITICAL] \
+      #text(size: 8pt)[Over 50% of anaphylaxis deaths \
+      occur within the first 60 minutes. \
+      Do NOT delay epinephrine.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 60mm, inset: 6pt),
+
+    edge((0, 2), (0, 4), "->"),
+
+    // Step 8: Reassess
+    node((0, 4), align(center)[
+      *Step 8:* Reassess after 5 minutes. \
+      #action[CHECK] airway, breathing, \
+      circulation, consciousness.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: improved?
+    node((0, 5), align(center)[
+      *Has the patient's condition* \
+      *improved after 5 minutes?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> monitor
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Continue monitoring. \
+      Effects last ~20 min. \
+      Symptoms may recur \
+      (biphasic reaction).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> second dose
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      #action[ADMINISTER] 2nd dose \
+      if available. \
+      Continue monitoring.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+#v(6pt)
+
+// Step 9: Continuous monitoring
+#keep-together[
+  #rect(
+    fill: clr-step,
+    stroke: 1pt + clr-step-stroke,
+    radius: 6pt,
+    width: 100%,
+    inset: 10pt,
+  )[
+    *Step 9:* #action[MONITOR] continuously until EMS arrives. Be prepared to #action[BEGIN] CPR if patient loses consciousness and stops breathing. All patients with suspected anaphylaxis require hospital evaluation, even if symptoms fully resolve.
+  ]
+]
+
+#v(4pt)
+
+#keep-together[
+  #rect(
+    fill: clr-warning-fill,
+    stroke: 2pt + clr-warning,
+    radius: 4pt,
+    width: 100%,
+    inset: 8pt,
+  )[
+    #text(fill: clr-warning, weight: "bold", size: 10pt)[WARNING:] Biphasic reactions can occur hours after the initial event. Hospital observation is mandatory.
+  ]
+]
+
+// ============================================================
+// PAGE 3: DO NOT, Equipment, Source
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
+#v(6pt)
+
+// --- DO NOT List ---
 #do-not-box((
   "Do not delay calling 101 -- anaphylaxis is a life-threatening emergency.",
   "Do not delay epinephrine administration if anaphylaxis is suspected. Epinephrine is the only effective first-line treatment.",
@@ -272,14 +546,28 @@
   "Do not give food or drink to a patient experiencing anaphylaxis.",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority — #source-document (#source-date) \
-  Last verified: #last-verified \
-  Protocol ID: IL-ADULT-ALLERGIC-REACTION-001 \
-  *Personal reference only — not medical advice.* Always call #emergency-number in an emergency.
+// --- Equipment ---
+#equipment-box((
+  "Epinephrine auto-injector (EpiPen) -- adult 0.3 mg",
+  "Phone to call MDA at 101",
+))
+
+#v(10pt)
+
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "MDA First Aid Guidance on Allergies and ALS Protocol (April 2024); Israeli Ministry of Health Anaphylaxis Guidance" \
+  #strong[URL:] https://www.mdais.org/101/allergy \
+  #strong[Publication date:] 2024-04-01 · #strong[Edition:] ALS Manual April 2024 \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Both protocols are substantially aligned on Sampson diagnostic criteria and EpiPen technique. MDA is used as the authoritative default per project rules.
 ]

@@ -1,55 +1,139 @@
-// First Aid Protocol Flowchart — CPR (Adult) — Israel
-// Generated from: protocols/adult/israel/cpr.json
-// Generated on: 2026-03-15
+// Israel Adult CPR Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA) — AHA 2025 Guidelines
+// Protocol ID: IL-ADULT-CPR-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: "Noto Sans", size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "CPR (Cardiopulmonary Resuscitation) -- Adult"
-#let protocol-category = "cpr"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-CPR-001"
+#let protocol-title = "CPR (Cardiopulmonary Resuscitation) — Adult"
+#let protocol-subject = "CPR"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult (age 12+)"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
+#let source-authority = "Magen David Adom"
 #let source-date = "2025-01-01"
 #let last-verified = "2026-03-15"
-#let edition = "AHA 2025 Guidelines"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) -- CALL IMMEDIATELY IF IN DOUBT
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
+    )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
+}
+
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let warning-box(content) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 4pt,
+      width: 100%,
+      inset: 8pt,
+    )[
+      #text(fill: clr-warning, weight: "bold", size: 10pt)[WARNING: #content]
     ]
   ]
 }
 
 #let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
-      #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+  keep-together[
+    #rect(
+      fill: clr-step,
+      stroke: 1pt + clr-step-stroke,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #strong[Step #number:] #instruction
+      #if detail != none [
+        #v(4pt)
+        #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
+      ]
+      #if warning != none [
+        #v(4pt)
+        #rect(fill: clr-warning-fill, stroke: 1pt + clr-warning, radius: 4pt, inset: 6pt)[
+          #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING: #warning]
+        ]
       ]
     ]
   ]
@@ -57,348 +141,707 @@
 
 #let decision-box(condition) = {
   rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
+    fill: clr-decision,
+    stroke: 2pt + clr-decision-stroke,
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
+    #set text(size: 11pt, weight: "bold", fill: rgb("#1e40af"))
     #align(center)[#condition]
   ]
 }
 
 #let yes-branch(content) = {
   rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
+    fill: clr-yes-fill,
+    stroke: 1pt + clr-yes,
     radius: 4pt,
     width: 100%,
     inset: 8pt,
   )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
+    #text(fill: clr-yes, weight: "bold")[YES ->] #content
   ]
 }
 
 #let no-branch(content) = {
   rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
+    fill: clr-no-fill,
+    stroke: 1pt + clr-no,
     radius: 4pt,
     width: 100%,
     inset: 8pt,
   )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ v]
+    #text(fill: clr-no, weight: "bold")[NO ->] #content
   ]
 }
 
 #let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"))[X] #item \
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
+      #v(4pt)
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
+      ]
     ]
   ]
 }
 
-// === DOCUMENT ===
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
+    ]
+  ]
+}
 
-// Header
+#let emergency-numbers-strip() = {
+  rect(
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
+    radius: 6pt,
+    width: 100%,
+    inset: 10pt,
+  )[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1: Title, Emergency Numbers, Assessment Phase (Steps 1-4)
+// ============================================================
+
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country -- #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
 #v(6pt)
-
-// Emergency number
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// When to apply
 #rect(
-  fill: rgb("#fefce8"),
-  stroke: 1pt + rgb("#ca8a04"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", size: 11pt)[WHEN TO APPLY:] An adult (age 12+) is found unresponsive and is not breathing normally (absent breathing or only gasping/agonal breathing).
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY IF IN DOUBT
+  ]
 ]
-
 #v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
 
-// Equipment
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 8pt,
-)[
-  #text(weight: "bold", size: 10pt)[Equipment needed:] AED (Automated External Defibrillator) | Barrier device or pocket mask (if available) | Phone (for 101 and speakerphone)
+// --- When to Apply ---
+#when-to-apply[
+  An adult (age 12+) is found unresponsive and is not breathing normally (absent breathing or only gasping/agonal breathing).
 ]
 
 #v(6pt)
 
-// ==========================================
-// STEP 1: Check responsiveness
-// ==========================================
-#step-box(1,
-  "Check responsiveness: call out to the person, shake their shoulders gently, and ask loudly 'Are you okay?'",
-  detail: "In Hebrew: 'Ha'im ata beseder?' Apply gentle stimulation such as a light pinch to determine if they respond.",
-)
-
-#v(4pt)
-#decision-box("Is the person responsive?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Do not perform CPR. Assess their condition and provide appropriate first aid. Call 101 if needed.],
-  no-branch[Proceed to Step 2 (check breathing).],
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 2: Check breathing
-// ==========================================
-#step-box(2,
-  "Check breathing for no more than 10 seconds: look for chest rise, listen for breath sounds, feel for air on your cheek.",
-  detail: "Gasping (agonal breathing) is NOT normal breathing -- treat it as cardiac arrest and proceed with CPR.",
-  warning: "Do not spend more than 10 seconds checking for breathing. Delays reduce survival.",
-)
-
-#v(4pt)
-#decision-box("Is the person breathing normally?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Place in recovery position (on their side, upper leg bent at 90 degrees). Call 101. Monitor breathing until EMS arrives.],
-  no-branch[Proceed to Step 3 (activate emergency response).],
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 3: Call 101
-// ==========================================
-#step-box(3,
-  "Call 101 (MDA emergency dispatch) immediately.",
-  detail: "MDA dispatchers provide real-time CPR coaching over the phone (telephone-assisted CPR). If choking is suspected, perform CPR first, then call.",
-)
-
-#v(4pt)
-#decision-box("Is another person available to help?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Direct them to call 101 and retrieve the nearest AED while you begin compressions immediately.],
-  no-branch[Call 101 yourself (use speakerphone), then retrieve an AED if within close reach, then begin compressions.],
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 4: Locate AED
-// ==========================================
-#step-box(4,
-  "Request or locate an AED.",
-  detail: "Israeli law requires AEDs in public spaces with 500+ capacity. MDA operates 1,000+ 'smart stands' unlockable by 101 dispatch. Use the Eifo-Defi app to find the nearest AED.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 5: Position the person
-// ==========================================
-#step-box(5,
-  "Position the person supine (face up) on a firm, flat surface.",
-  detail: "In extreme heat, move to shade if possible. Hot surfaces (asphalt, sand) can cause burns -- place a barrier under the person if feasible.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 6: Hand placement
-// ==========================================
-#step-box(6,
-  "Place the heel of one hand in the centre of the chest, on the breastbone, between the nipples. Place your other hand on top with fingers interlocked.",
-  detail: "Use upper body weight; press straight down; keep arms locked and straight.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 7: Begin compressions
-// ==========================================
-
-#pagebreak()
-
+// --- Summary ---
 #rect(
-  fill: rgb("#dbeafe"),
-  stroke: 2pt + rgb("#2563eb"),
-  radius: 8pt,
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
+  radius: 6pt,
   width: 100%,
-  inset: 12pt,
+  inset: 10pt,
 )[
-  #set text(size: 14pt, weight: "bold")
-  #align(center)[KEY PARAMETERS]
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Bystander and first-responder CPR protocol for unresponsive adults not breathing normally, following MDA/AHA guidelines with Israel-specific considerations.
+]
+
+#v(8pt)
+
+// --- Assessment Phase: Steps 1-4 as Fletcher Diagram ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Assessment Phase]
   #v(4pt)
-  #set text(size: 12pt, weight: "regular")
-  #grid(columns: (1fr, 1fr, 1fr), gutter: 12pt,
-    align(center)[
-      #text(weight: "bold", size: 16pt)[100--120]\
-      compressions/min
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Check responsiveness
+    node((0, 0), align(center)[
+      *Step 1:* #action[CHECK] responsiveness \
+      Call out, shake shoulders gently, \
+      ask loudly "Are you okay?"
     ],
-    align(center)[
-      #text(weight: "bold", size: 16pt)[5--6 cm]\
-      depth (2--2.4 in)
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: responsive?
+    node((0, 1), align(center)[
+      *Is the person responsive?*
     ],
-    align(center)[
-      #text(weight: "bold", size: 16pt)[30 : 2]\
-      compressions : breaths
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 65mm, inset: 8pt),
+
+    // YES -> do not perform CPR
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      Do not perform CPR. \
+      Assess condition. \
+      #action[CALL] 101 if needed.
     ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 55mm, inset: 8pt),
+
+    // NO -> Step 2
+    edge((0, 1), (0, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 2: Check breathing
+    node((0, 2), align(center)[
+      *Step 2:* #action[CHECK] breathing \
+      (max 10 seconds) \
+      Look, listen, feel
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    // Warning for step 2
+    node((1, 2), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do not spend >10s \
+      checking breathing. \
+      Gasping is NOT \
+      normal breathing.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: breathing normally?
+    node((0, 3), align(center)[
+      *Is the person breathing normally?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 70mm, inset: 8pt),
+
+    // YES -> recovery position
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      Recovery position. \
+      #action[CALL] 101. \
+      Monitor breathing.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 55mm, inset: 8pt),
+
+    // NO -> Step 3
+    edge((0, 3), (0, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 3: Call 101
+    node((0, 4), align(center)[
+      *Step 3:* #action[CALL] 101 (MDA) immediately \
+      Use speakerphone. \
+      MDA provides phone-guided CPR.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: helper available?
+    node((0, 5), align(center)[
+      *Is another person available?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 65mm, inset: 8pt),
+
+    // YES -> direct helper
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Direct them to call 101 \
+      and retrieve nearest AED. \
+      You: #action[BEGIN] compressions.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 55mm, inset: 8pt),
+
+    // NO -> call yourself
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      Call 101 yourself \
+      (speakerphone). \
+      Retrieve AED if close. \
+      #action[BEGIN] compressions.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 55mm, inset: 8pt),
+
+    // Step 4: AED
+    edge((0, 5), (0, 6), "->"),
+
+    node((0, 6), align(center)[
+      *Step 4:* Request / locate an AED \
+      #text(size: 8pt)[Israeli law: public spaces 500+ people must have AED. \
+      Use Eifo-Defi app. MDA smart stands: call 101 to unlock.]
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
   )
 ]
 
+// ============================================================
+// PAGE 2: CPR Technique — Steps 5-9
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[CPR Technique]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 5: Position
+    node((0, 0), align(center)[
+      *Step 5:* #action[POSITION] person supine \
+      (face up) on firm, flat surface
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    // Detail note
+    node((1, 0), align(center)[
+      #text(size: 8pt, fill: rgb("#6b7280"))[In extreme heat: move to shade. \
+      Hot surfaces: place barrier underneath.]
+    ],
+      shape: rect, fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"),
+      width: 50mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 6: Hand placement
+    node((0, 1), align(center)[
+      *Step 6:* #action[PLACE] hands on chest \
+      Heel of one hand centre of breastbone \
+      (between nipples). Other hand on top, \
+      fingers interlocked. Arms straight.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 7: Compressions
+    node((0, 2), align(center)[
+      *Step 7:* #action[BEGIN] chest compressions \
+      *Rate:* 100--120 per minute \
+      *Depth:* 5--6 cm (2--2.4 in) \
+      Allow full chest recoil. \
+      Minimise interruptions (under 10s pauses).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    // Warning
+    node((1, 2), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Inadequate depth/rate, \
+      incomplete recoil, and \
+      excessive interruptions \
+      reduce effectiveness.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: trained in rescue breaths?
+    node((0, 3), align(center)[
+      *Trained in CPR and willing* \
+      *to give rescue breaths?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 70mm, inset: 8pt),
+
+    // YES -> 30:2
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      30 compressions \
+      then 2 rescue breaths \
+      Go to Step 8
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 50mm, inset: 8pt),
+
+    // NO -> hands-only
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      Hands-only CPR: \
+      continuous compressions \
+      100--120/min. No breaths. \
+      Skip to Step 11.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 50mm, inset: 8pt),
+  )
+]
+
+#v(10pt)
+
+// Steps 8-9: Airway and Breaths
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Rescue Breaths (if trained)]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 8: Open airway
+    node((0, 0), align(center)[
+      *Step 8:* After 30 compressions, \
+      #action[OPEN] airway: head-tilt / chin-lift \
+      Tilt head back, lift chin.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 9: Rescue breaths
+    node((0, 1), align(center)[
+      *Step 9:* #action[DELIVER] 2 rescue breaths \
+      Pinch nose, seal mouth, \
+      1 second per breath, \
+      watch for chest rise.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    // Warning
+    node((1, 1), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do not over-ventilate. \
+      Excessive ventilation \
+      increases gastric inflation.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Decision: chest rise?
+    node((0, 2), align(center)[
+      *Does the chest rise* \
+      *visibly with each breath?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 70mm, inset: 8pt),
+
+    // YES -> resume compressions
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      #action[RESUME] compressions \
+      immediately. \
+      Go to Step 10.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 50mm, inset: 8pt),
+
+    // NO -> reposition
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      Reposition head (re-tilt). \
+      Reattempt. If still no rise: \
+      #action[RESUME] compressions. \
+      Do not delay.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 50mm, inset: 8pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 3: AED, Reassessment, Continuation — Steps 10-15
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[CPR Cycles and AED]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 10: Resume compressions
+    node((0, 0), align(center)[
+      *Step 10:* #action[RESUME] compressions \
+      immediately after 2 breaths. \
+      Continue 30:2 cycles. \
+      #text(size: 8pt)[(~2 min for 5 cycles)]
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 11: AED arrives
+    node((0, 1), align(center)[
+      *Step 11:* When AED arrives, \
+      #action[TURN ON] and apply pads immediately. \
+      Right pad: under right collarbone. \
+      Left pad: under/left of left breast.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 12: Follow AED
+    node((0, 2), align(center)[
+      *Step 12:* #action[FOLLOW] AED voice prompts. \
+      Device analyses heart rhythm.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    // Warning
+    node((1, 2), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Ensure NO ONE is \
+      touching the person \
+      during analysis/shock. \
+      Announce "Stand clear!"]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: shock advised?
+    node((0, 3), align(center)[
+      *Does the AED advise a shock?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 70mm, inset: 8pt),
+
+    // YES -> deliver shock
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      Ensure all clear. \
+      #action[PRESS] shock button. \
+      #action[RESUME] CPR \
+      immediately after shock.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 55mm, inset: 8pt),
+
+    // NO -> resume CPR
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      #action[RESUME] CPR \
+      immediately. \
+      AED re-analyses \
+      after 2 minutes.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 55mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 13
+    node((0, 4), align(center)[
+      *Step 13:* #action[RESUME] CPR immediately \
+      after shock (or no-shock). \
+      Do not wait for AED to re-analyse.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 14: Reassess
+    node((0, 5), align(center)[
+      *Step 14:* #action[REASSESS] every 2 minutes \
+      (~5 cycles of 30:2). \
+      Rotate compressors if 2+ rescuers \
+      (switch in under 10 seconds).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 5), (0, 6), "->"),
+
+    // Step 15: Continue
+    node((0, 6), align(center)[
+      *Step 15:* #action[CONTINUE] CPR until: \
+      EMS arrives and takes over, \
+      person shows signs of life, \
+      AED prompts to stop, or \
+      you are physically unable.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 85mm, inset: 8pt),
+
+    edge((0, 6), (0, 7), "->"),
+
+    // Decision: breathing on own?
+    node((0, 7), align(center)[
+      *Has the person begun* \
+      *breathing normally?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 70mm, inset: 8pt),
+
+    // YES -> recovery
+    edge((0, 7), (1, 7), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 7), align(center)[
+      #action[STOP] CPR. \
+      Recovery position \
+      (on side, leg bent 90deg). \
+      Monitor until EMS arrives.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 55mm, inset: 8pt),
+
+    // NO -> continue
+    edge((0, 7), (-1, 7), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 7), align(center)[
+      #action[CONTINUE] CPR cycles \
+      and AED use. \
+      Do not stop until EMS \
+      takes over or unable.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 55mm, inset: 8pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 4: DO NOT List, Equipment, Key Parameters
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
 #v(6pt)
 
-#step-box(7,
-  "Begin chest compressions: push hard and fast at 100--120 per minute, to a depth of 5--6 cm (2--2.4 inches).",
-  detail: "Allow full chest recoil between compressions. Do not lean on the chest. Minimise interruptions -- keep pauses under 10 seconds.",
-  warning: "Inadequate depth or rate, incomplete recoil, and excessive interruptions all reduce CPR effectiveness.",
-)
+// --- Key Parameters Box ---
+#block(breakable: false)[
+  #rect(
+    fill: rgb("#eff6ff"),
+    stroke: 2pt + rgb("#2563eb"),
+    radius: 6pt,
+    width: 100%,
+    inset: 12pt,
+  )[
+    #text(fill: rgb("#1e40af"), weight: "bold", size: 13pt)[Key CPR Parameters]
+    #v(6pt)
+    #grid(
+      columns: (1fr, 1fr),
+      gutter: 8pt,
+      [#strong[Compression rate:] 100--120 / min],
+      [#strong[Compression depth:] 5--6 cm (2--2.4 in)],
+      [#strong[Compression:breath ratio:] 30 : 2],
+      [#strong[Reassess interval:] Every 2 min (~5 cycles)],
+      [#strong[Max pause:] < 10 seconds],
+      [#strong[Breath duration:] 1 second each],
+      [#strong[Emergency number:] 101 (MDA)],
+      [#strong[AED re-analysis:] Every 2 minutes],
+    )
+  ]
+]
 
-#v(4pt)
-#decision-box("Are you trained in CPR and willing to give rescue breaths?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Perform 30 compressions then 2 rescue breaths (proceed to Step 8).],
-  no-branch[Perform continuous chest compressions at 100--120/min without stopping (hands-only CPR). Skip to Step 11.],
-)
+#v(10pt)
 
-#arrow-down()
-
-// ==========================================
-// STEP 8: Open airway
-// ==========================================
-#step-box(8,
-  "After 30 compressions, open the airway: head-tilt / chin-lift manoeuvre -- tilt the head back gently and lift the chin.",
-  detail: "This lifts the tongue away from the back of the throat to open the airway.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 9: Rescue breaths
-// ==========================================
-#step-box(9,
-  "Deliver 2 rescue breaths: pinch nose closed, seal your mouth over theirs, deliver each breath over 1 second with enough volume for visible chest rise.",
-  warning: "Do not over-ventilate. Excessive ventilation increases gastric inflation and reduces venous return.",
-)
-
-#v(4pt)
-#decision-box("Does the chest rise visibly with each breath?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Resume compressions immediately after the 2 breaths (proceed to Step 10).],
-  no-branch[Reposition the head (re-tilt) and reattempt. If chest still does not rise, resume compressions -- do not delay for repeated attempts.],
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 10: Continue cycles
-// ==========================================
-#step-box(10,
-  "Resume compressions immediately after the 2 breaths. Continue cycles of 30 compressions and 2 breaths.",
-  detail: "Each cycle of 30:2 takes approximately 2 minutes for 5 cycles.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 11: AED arrives
-// ==========================================
-#step-box(11,
-  "When the AED arrives, turn it on and apply the electrode pads immediately without delay.",
-  detail: "One pad under the right collarbone. The other pad under and to the left of the left breast. Alternative: one pad on the front, one on the back. Follow the diagram on the pads.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 12: Follow AED prompts
-// ==========================================
-#step-box(12,
-  "Follow the AED's voice prompts. The device will analyse the heart rhythm and advise whether a shock is indicated.",
-  warning: "Ensure no one is touching the person during AED analysis and shock delivery. Announce 'Stand clear!' before analysis and before any shock.",
-)
-
-#v(4pt)
-#decision-box("Does the AED advise a shock?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Ensure everyone is clear, then press the shock button. Resume CPR immediately after shock.],
-  no-branch[Resume CPR immediately. The AED will re-analyse after 2 minutes.],
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 13: Resume CPR after shock
-// ==========================================
-#step-box(13,
-  "Resume CPR immediately after shock delivery (or if no shock advised). Do not wait for the AED to re-analyse.",
-  detail: "The AED will prompt for another rhythm check after approximately 2 minutes (5 cycles of 30:2).",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 14: Reassess
-// ==========================================
-#step-box(14,
-  "Reassess every 2 minutes (approximately 5 cycles of 30:2).",
-  detail: "If two or more trained rescuers are present, rotate compressors every 2 minutes to maintain quality. Complete the switch in under 10 seconds.",
-)
-
-#arrow-down()
-
-// ==========================================
-// STEP 15: Continue until...
-// ==========================================
-#step-box(15,
-  "Continue CPR until: EMS (MDA) arrives and takes over; the person shows signs of life (breathing, movement, coughing); an AED prompts you to stop; or you are physically unable to continue.",
-)
-
-#v(4pt)
-#decision-box("Has the person begun breathing normally on their own?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Stop CPR. Place in recovery position (on their side, upper leg bent at 90 degrees). Monitor until EMS arrives.],
-  no-branch[Continue CPR cycles and AED use. Do not stop until EMS takes over or you are physically unable to continue.],
-)
-
-#v(12pt)
-
-// ==========================================
-// DO NOT list
-// ==========================================
+// --- DO NOT List ---
 #do-not-box((
   "Do not delay calling 101 -- early activation of EMS is critical for survival.",
   "Do not spend more than 10 seconds checking for breathing.",
@@ -413,13 +856,29 @@
   "Do not assume gasping (agonal breathing) is normal breathing -- it is a sign of cardiac arrest.",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority | Edition: #edition | Published: #source-date | Last verified: #last-verified \
-  Protocol ID: IL-ADULT-CPR-001 \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+// --- Equipment ---
+#equipment-box((
+  "AED (Automated External Defibrillator)",
+  "Barrier device or pocket mask (for rescue breaths, if available)",
+  "Phone (to call 101 and use speakerphone for dispatcher-guided CPR)",
+))
+
+#v(10pt)
+
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "MDA CPR Protocol -- synthesised from MDA public CPR page, Maccabi Health adult resuscitation guide, and AHA 2025 Guidelines for CPR and ECC (adopted by MDA)" \
+  #strong[URL:] https://www.mdais.org/101/cpr-hands-only \
+  #strong[Publication date:] 2025-01-01 · #strong[Edition:] AHA 2025 Guidelines \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah reference material. No protocol-level differences were identified between the two organisations; both follow AHA guidelines. MDA is used as the authoritative default per project rules.
 ]

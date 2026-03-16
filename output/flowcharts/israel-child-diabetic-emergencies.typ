@@ -1,226 +1,205 @@
-// First Aid Protocol Flowchart — Diabetic Emergencies in Children
-// Source: Magen David Adom (MDA) — Israel
-// Generated from: protocols/child/israel/diabetic-emergencies.json
+// Israel Child Diabetic Emergencies Flowchart -- V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
 // Protocol ID: IL-CHILD-DIABETIC-EMERGENCIES-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "DIABETIC EMERGENCIES IN CHILDREN"
-#let protocol-category = "diabetic_emergencies"
+// === METADATA ===
+#let protocol-id = "IL-CHILD-DIABETIC-EMERGENCIES-001"
+#let protocol-title = "Diabetic Emergency First Aid -- Child"
+#let protocol-subject = "DIABETIC EMERGENCY"
+#let age-group = "CHILD"
 #let country = "Israel"
-#let age-group = "Child"
 #let emergency-number = "101"
-#let emergency-service = "MDA (מד״א)"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-url = "https://www.mdais.org/101/diabetes"
-#let source-edition = "MDA 101 Public First Aid Guidance Series"
-#let imported-date = "2026-03-15"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
-
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES -> ] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO -> ] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let equipment-box(items) = {
+#let emergency-numbers-strip() = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
-}
-
-// === ARROW CONNECTOR ===
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ #sym.arrow.b]
-  ]
-}
-
-#let section-divider(title) = {
-  v(6pt)
-  rect(
-    fill: rgb("#1e3a5f"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 12pt)
-    #align(center)[#title]
-  ]
-  v(4pt)
 }
 
 // ============================================================
-// DOCUMENT START
+// PAGE 1: Title, Mild/Moderate Hypoglycemia (Steps 1-5)
 // ============================================================
 
-// Header
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
 #v(6pt)
-
-// Emergency number (primary)
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// When to call 101
 #rect(
-  fill: rgb("#fef2f2"),
-  stroke: 1.5pt + rgb("#dc2626"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(fill: rgb("#dc2626"), weight: "bold", size: 11pt)[Call 101 immediately if:]
-  #v(3pt)
-  #set text(size: 9.5pt)
-  #grid(columns: (1fr, 1fr), gutter: 6pt,
-    [- Loss of consciousness / decreased responsiveness],
-    [- Seizures],
-    [- Cannot swallow safely],
-    [- Glucose below 54 mg/dL after 30 min of treatment],
-    [- Two+ mild hypos in one week],
-    [- Signs of DKA (vomiting, rapid breathing, fruity breath)],
-    [- Any uncertainty about child's condition],
-    [- Glucagon has been administered],
-  )
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — WHEN IN DOUBT, GIVE SUGAR
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  Child with known or suspected diabetes showing signs of hypoglycemia (paleness, sweating, trembling, rapid heartbeat, irritability, confusion, seizures) or hyperglycemia/DKA (excessive thirst, vomiting, rapid deep breathing, fruity breath, lethargy).
 ]
 
-#v(4pt)
+#v(6pt)
 
-// Summary
 #rect(
   fill: rgb("#f0fdf4"),
   stroke: 1pt + rgb("#16a34a"),
@@ -228,216 +207,386 @@
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", size: 11pt)[Summary:] Assess consciousness and ability to swallow, administer fast-acting sugar using the Rule of 15 (10g for children under 6), and call 101 for severe hypoglycemia, seizures, loss of consciousness, or signs of DKA. *When in doubt, give sugar.*
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Key Principle:]
+  When in doubt whether hypoglycemia or hyperglycemia: *give sugar*. Sugar saves a hypoglycemic child's life. Sugar will not cause immediate harm to a hyperglycemic child.
 ]
 
-#v(6pt)
+#v(8pt)
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Assessment and Mild Hypoglycemia]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Assess
+    node((0, 0), align(center)[
+      *Step 1:* #action[ASSESS] consciousness \
+      and ability to swallow safely. \
+      Check for medical alert bracelet.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: conscious and can swallow?
+    node((0, 1), align(center)[
+      *Is the child conscious* \
+      *and able to swallow safely?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      Proceed to Step 2 \
+      (mild/moderate hypo \
+      treatment).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      Skip to Step 7 \
+      (severe hypo -- \
+      unconscious child). \
+      See page 2.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 2: Age-based sugar dose
+    node((0, 2), align(center)[
+      *Is the child under 6?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      *Step 2:* #action[GIVE] 10g of \
+      fast-acting sugar.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      *Step 2:* #action[GIVE] 15g of \
+      fast-acting sugar. \
+      #text(size: 8pt)[(juice, glucose tablets, \
+      sugar in water, honey)]
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 3: Wait and reassess
+    node((0, 3), align(center)[
+      *Step 3:* #action[WAIT] 15 minutes. \
+      Recheck blood glucose. \
+      Target: 70 mg/dL (6+) \
+      or 80 mg/dL (under 6).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Decision: improved?
+    node((0, 4), align(center)[
+      *Has blood glucose risen* \
+      *above target and symptoms* \
+      *improving?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      *Step 4:* #action[GIVE] complex \
+      carbs (bread, crackers, \
+      fruit) to sustain glucose.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Repeat sugar dose. \
+      If still below 54 mg/dL \
+      after 30 min, \
+      #action[CALL] 101.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
 // ============================================================
-// STEP 1: INITIAL ASSESSMENT
+// PAGE 2: Severe Hypo (Steps 7-13), Insulin Pump, DKA
 // ============================================================
-
-#step-box(1, "Assess the child's level of consciousness and ability to swallow safely.",
-  detail: "Look for signs of hypoglycemia: paleness, sweating, trembling, rapid heartbeat, irritability, behavioural changes, confusion, decreased consciousness. In young children (especially in gan or school), sudden irritability, mood swings, or behavioural changes in a child known to have diabetes should prompt immediate assessment. Check for a medical alert bracelet or necklace.")
-
-#arrow-down()
-
-#decision-box("Is the child conscious and able to swallow safely?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 2 (mild/moderate hypoglycemia treatment).],
-  no-branch[Skip to Step 7 (severe hypoglycemia -- unconscious child).],
-)
-
-// ============================================================
-// CONSCIOUS PATHWAY (Steps 2-6)
-// ============================================================
-
-#section-divider("CONSCIOUS CHILD -- MILD/MODERATE HYPOGLYCEMIA")
-
-#step-box(2, "Determine the child's age and administer the appropriate dose of fast-acting sugar (Rule of 15).",
-  detail: "Suitable sources: glucose gel syringe (preferred), 125 mL (half a cup) of sweetened juice (not diet), glucose tablets (4 tablets = approx. 15g), 2-3 teaspoons of sugar dissolved in water, a sugar cube, a teaspoon of honey, or 250 mL (one cup) of milk.",
-  warning: "Avoid chocolate as the initial sugar source -- fat and protein content slows sugar absorption, making it less effective for rapid correction.")
-
-#arrow-down()
-
-#decision-box("Is the child under 6 years old?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Give *10 grams* of fast-acting sugar.],
-  no-branch[Give *15 grams* of fast-acting sugar.],
-)
-
-#arrow-down()
-
-#step-box(3, "Wait 15 minutes, then reassess the child.",
-  detail: "Monitor the child during this period. If the child has a glucometer available, recheck blood glucose after 15 minutes.")
-
-#arrow-down()
-
-#decision-box("Has blood glucose risen above target (70 mg/dL for 6+, 80 mg/dL for under 6) and are symptoms improving?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 4 (provide complex carbohydrates to sustain glucose).],
-  no-branch[Repeat sugar dose (Step 2). If glucose remains below 54 mg/dL after 30 minutes, call 101 immediately.],
-)
-
-#arrow-down()
-
-#step-box(4, "Once blood glucose is above target, provide complex carbohydrates to prevent recurrence.",
-  detail: "Give the child a carbohydrate-rich snack: a slice of bread with cheese, a pastry or cracker, fruit, or any carbohydrate-containing food. This sustains glucose levels and prevents a repeat drop.")
-
-#arrow-down()
-
-#step-box(5, "Check whether the child has an insulin pump connected.",
-  detail: "If the child wears an insulin pump (usually attached to the abdomen or thigh) and is experiencing hypoglycemia, gently disconnect it to prevent further insulin delivery from worsening the low blood sugar.")
-
-#arrow-down()
-
-#decision-box("Does the child have an insulin pump connected?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Gently disconnect the insulin pump without damaging the device or tubing.],
-  no-branch[No action needed regarding insulin delivery. Continue monitoring.],
-)
-
-#arrow-down()
-
-#step-box(6, "For moderate hypoglycemia where the child needs assistance but can still swallow: administer 20-30 grams of simple sugar and verify glucose rises above 80 mg/dL within 10 minutes.",
-  detail: "If the child is too impaired to self-treat but can still swallow, another person must assist. If swallowing is becoming difficult, apply honey or glucose gel to the inside of the cheek or under the tongue (oral mucosa). Follow with complex carbohydrates once glucose stabilises.",
-  warning: "If swallowing becomes unsafe at any point, stop oral administration immediately and proceed to Step 7 (severe hypoglycemia protocol).")
-
-// ============================================================
-// SEVERE HYPOGLYCEMIA PATHWAY (Steps 7-13)
-// ============================================================
-
 #pagebreak()
 
-// Repeat header on page 2
-#align(center)[
-  #text(size: 18pt, weight: "bold")[#protocol-title]
-  #v(2pt)
-  #text(size: 11pt, fill: rgb("#6b7280"))[#country — #age-group — Page 2]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Severe Hypoglycemia -- Unconscious Child]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 7: Do NOT give food/drink
+    node((0, 0), align(center)[
+      *Step 7:* Do #text(fill: clr-warning, weight: "bold")[NOT] give \
+      food or drink by mouth. \
+      Life-threatening emergency.
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 8: Disconnect pump
+    node((0, 1), align(center)[
+      *Step 8:* #action[DISCONNECT] insulin \
+      pump if child has one \
+      (usually on abdomen/thigh).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 9: Glucagon?
+    node((0, 2), align(center)[
+      *Is a glucagon kit available* \
+      *AND a trained person present?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      *Step 10:* #action[ADMINISTER] \
+      glucagon IM/SC. \
+      Under 6 or under 25 kg: \
+      0.5 mL (half vial). \
+      Over 6 or over 25 kg: \
+      1.0 mL (full vial).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      #action[CALL] 101 immediately. \
+      #action[PLACE] child in \
+      recovery position. \
+      Monitor breathing.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Steps 11-12
+    node((0, 3), align(center)[
+      *Step 11:* #action[PLACE] child in \
+      recovery position (on side). \
+      *Step 12:* #action[CALL] 101 always \
+      after glucagon.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 13: Regained consciousness?
+    node((0, 4), align(center)[
+      *Has the child regained* \
+      *consciousness and can* \
+      *swallow safely?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      *Step 13:* #action[GIVE] complex \
+      carbs. Continue \
+      monitoring until \
+      MDA arrives.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Maintain recovery \
+      position. Monitor \
+      breathing. Wait \
+      for MDA.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
 ]
 
-#v(4pt)
-#all-emergency-numbers()
+#v(8pt)
+
+// DKA Assessment
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[DKA Assessment (Step 14)]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Signs of DKA present?* \
+      #text(size: 8pt)[(vomiting, abdominal pain, rapid \
+      deep breathing, fruity breath, \
+      decreased consciousness)]
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      #action[CALL] 101 immediately. \
+      Medical emergency. \
+      Do NOT administer \
+      insulin.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 0), (-1, 0), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 0), align(center)[
+      Arrange transport \
+      to hospital for \
+      evaluation.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 3: Reference
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
 #v(6pt)
 
-#section-divider("SEVERE HYPOGLYCEMIA -- UNCONSCIOUS OR SEIZING CHILD")
+// Key parameters
+#block(breakable: false)[
+  #rect(
+    fill: rgb("#eff6ff"),
+    stroke: 2pt + rgb("#2563eb"),
+    radius: 6pt,
+    width: 100%,
+    inset: 12pt,
+  )[
+    #text(fill: rgb("#1e40af"), weight: "bold", size: 13pt)[Key Parameters -- Rule of 15]
+    #v(6pt)
+    #grid(
+      columns: (1fr, 1fr),
+      gutter: 8pt,
+      [#strong[Under 6:] 10g sugar, target 80 mg/dL],
+      [#strong[6 and over:] 15g sugar, target 70 mg/dL],
+      [#strong[Reassess interval:] 15 minutes],
+      [#strong[Call 101 if:] below 54 mg/dL after 30 min],
+      [#strong[Glucagon (under 6 / under 25 kg):] 0.5 mL],
+      [#strong[Glucagon (6+ / over 25 kg):] 1.0 mL],
+      [#strong[Glucagon onset:] 10--15 minutes],
+      [#strong[Glucagon duration:] ~30 minutes],
+    )
+  ]
+]
 
-#step-box(7, "Severe hypoglycemia: the child is unconscious or having seizures. Do NOT give any food or drink by mouth.",
-  detail: "This is a life-threatening emergency. Oral administration poses a choking risk when the child cannot protect their airway.",
-  warning: "Never attempt to give food, drink, or oral medication to an unconscious or seizing child. This is a choking hazard.")
+#v(10pt)
 
-#arrow-down()
+#keep-together[
+  #rect(
+    fill: rgb("#f0fdf4"),
+    stroke: 2pt + rgb("#16a34a"),
+    radius: 6pt,
+    width: 100%,
+    inset: 12pt,
+  )[
+    #text(fill: rgb("#166534"), weight: "bold", size: 13pt)[Step 15: When in Doubt -- GIVE SUGAR]
+    #v(6pt)
+    Giving sugar to a hypoglycemic child is *life-saving*. \
+    Giving sugar to a hyperglycemic child will *not cause immediate harm*. \
+    Withholding sugar from a hypoglycemic child *can be fatal*. \
+    #v(4pt)
+    #text(fill: clr-warning, weight: "bold")[Only if conscious and can swallow safely. Never give anything by mouth to an unconscious child.]
+  ]
+]
 
-#step-box(8, "Disconnect the insulin pump if the child has one.",
-  detail: "Gently disconnect the pump without damaging the device. It is usually attached to the abdomen or thigh.")
-
-#arrow-down()
-
-#step-box(9, "Assess whether a glucagon emergency kit is available and whether a trained person is present.",
-  detail: "Glucagon kits (Hypo-Kit) may be stored at the child's school or gan. Only trained and authorised caregivers (parents, school nurses, designated staff trained by the child's medical team) may administer glucagon.")
-
-#arrow-down()
-
-#decision-box("Is a glucagon kit available AND is there a trained/authorised person to administer it?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 10 (glucagon administration).],
-  no-branch[Call 101 (MDA) immediately. Place the child in the recovery position (on their side) and monitor breathing until help arrives.],
-)
-
-#arrow-down()
-
-#step-box(10, "Administer glucagon by intramuscular or subcutaneous injection using the correct child dose.",
-  detail: "To prepare: draw the liquid from the syringe into the powder vial, shake until clear, draw the mixed solution back into the syringe, and inject into a large muscle or under the skin (buttock, abdomen, upper arm, or thigh).")
-
-#arrow-down()
-
-#decision-box("Is the child under 6 years old or under 25 kg?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Administer *0.5 mL* (half the vial).],
-  no-branch[Administer *1.0 mL* (full vial).],
-)
-
-#arrow-down()
-
-#step-box(11, "Place the child in the recovery position (on their side) to protect the airway.",
-  detail: "This prevents choking if the child vomits. Monitor breathing continuously.")
-
-#arrow-down()
-
-#step-box(12, "Call MDA at 101 immediately.",
-  detail: "Always call 101 after administering glucagon -- the child requires follow-up medical care. Glucagon effect begins approximately 10-15 minutes after injection and lasts approximately 30 minutes.")
-
-#arrow-down()
-
-#step-box(13, "Once the child regains consciousness and can swallow safely, provide complex carbohydrates.",
-  detail: "Use the 10-15 minute window after glucagon takes effect to give the child carbohydrate-rich food (bread with cheese, crackers, fruit). This replenishes liver glycogen stores depleted by the glucagon.")
-
-#arrow-down()
-
-#decision-box("Has the child regained consciousness and can swallow safely?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Provide complex carbohydrates and continue monitoring until MDA arrives.],
-  no-branch[Maintain recovery position, monitor breathing, and wait for MDA.],
-)
-
-// ============================================================
-// HYPERGLYCEMIA / DKA (Step 14)
-// ============================================================
-
-#v(8pt)
-#section-divider("HYPERGLYCEMIA / DIABETIC KETOACIDOSIS (DKA)")
-
-#step-box(14, "Assess for signs of hyperglycemia or diabetic ketoacidosis (DKA).",
-  detail: "If the emergency is suspected hyperglycemia rather than hypoglycemia, look for: excessive thirst, frequent urination, nausea/vomiting, abdominal pain, deep rapid breathing (Kussmaul breathing), fruity/acetone-smelling breath, weakness, and lethargy progressing to decreased consciousness. Hyperglycemia is not managed by first aiders.")
-
-#arrow-down()
-
-#decision-box("Are signs of DKA present (vomiting, abdominal pain, rapid deep breathing, fruity breath, decreased consciousness)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Call 101 (MDA) immediately. This is a medical emergency requiring hospital treatment. Do NOT administer insulin.],
-  no-branch[The child should still be evaluated at a medical facility. Arrange transport to hospital.],
-)
-
-// ============================================================
-// UNCERTAINTY RULE (Step 15)
-// ============================================================
-
-#v(8pt)
-#section-divider("WHEN IN DOUBT")
-
-#step-box(15, "If uncertain whether the child has hypoglycemia or hyperglycemia: treat for hypoglycemia by giving sugar.",
-  detail: "Giving sugar to a hypoglycemic child is life-saving. Giving sugar to a hyperglycemic child will not cause immediate harm. The reverse is not true -- withholding sugar from a hypoglycemic child can be fatal. This is the 'when in doubt, give sugar' principle.",
-  warning: "This rule applies only when the child is conscious and can swallow safely. Never give anything by mouth to an unconscious child.")
-
-// ============================================================
-// DO NOT LIST
-// ============================================================
-
-#v(8pt)
+#v(10pt)
 
 #do-not-box((
-  "DO NOT administer insulin -- this is strictly a medical intervention and can be fatal if given inappropriately. First aiders should never give insulin.",
-  "DO NOT give food, drink, or oral medication to an unconscious or seizing child -- this is a choking hazard.",
-  "DO NOT use chocolate as the initial sugar source -- fat and protein slow absorption and delay correction.",
-  "DO NOT administer glucagon unless you are trained and authorised to do so.",
-  "DO NOT delay calling 101 (MDA) for severe hypoglycemia, seizures, or loss of consciousness.",
-  "DO NOT attempt to manage hyperglycemia or DKA with first aid measures -- this requires medical intervention.",
-  "DO NOT use diet drinks or sugar-free products as a sugar source for hypoglycemia treatment.",
+  "DO NOT administer insulin -- strictly a medical intervention, can be fatal if given inappropriately.",
+  "DO NOT give food, drink, or oral medication to an unconscious or seizing child -- choking hazard.",
+  "DO NOT use chocolate as initial sugar source -- fat/protein slows absorption.",
+  "DO NOT administer glucagon unless trained and authorised.",
+  "DO NOT delay calling 101 for severe hypoglycemia, seizures, or loss of consciousness.",
+  "DO NOT attempt to manage hyperglycemia/DKA with first aid -- requires medical intervention.",
+  "DO NOT use diet drinks or sugar-free products as a sugar source.",
 ))
 
-#v(8pt)
-
-// ============================================================
-// EQUIPMENT
-// ============================================================
+#v(10pt)
 
 #equipment-box((
   "Glucose gel syringe (15g glucose)",
@@ -447,16 +596,18 @@
   "Blood glucose meter (glucometer) if available",
 ))
 
-// ============================================================
-// FOOTER
-// ============================================================
+#v(10pt)
 
-#v(1fr)
-
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority · #source-edition · #source-url \
-  Imported: #imported-date · Last verified: #last-verified \
-  *Personal reference only — not medical advice.* Always call #emergency-number in an emergency.
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) -- How to Treat a Diabetes Patient, corroborated by Shamir Medical Center paediatric endocrinology guidance \
+  #strong[URL:] https://www.mdais.org/101/diabetes \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Child-specific dosing (Rule of 15 with 10g modification for under-6) sourced from MDA-aligned Israeli hospital guidance.
 ]

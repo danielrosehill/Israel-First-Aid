@@ -1,315 +1,428 @@
-// First Aid Protocol Flowchart — Asthma Attack — Adult — Israel
-// Generated from: IL-ADULT-ASTHMA-001
-// Source: Magen David Adom (MDA)
+// Israel Adult Asthma Flowchart — V2
 // Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-ADULT-ASTHMA-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-ASTHMA-001"
+#let protocol-title = "Asthma Attack — Adult"
+#let protocol-subject = "ASTHMA"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2022-01-01"
+#let last-verified = "2026-03-16"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES → ] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO → ] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ #sym.arrow.b]
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
   ]
 }
 
-// === DOCUMENT ===
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
 
-// Header
+// ============================================================
+// PAGE 1: Title, Steps 1-6
+// ============================================================
+
 #align(center)[
-  #text(size: 22pt, weight: "bold")[ASTHMA ATTACK]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 14pt, weight: "bold")[Adult Protocol]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) — IF INHALER FAILS OR NO INHALER AVAILABLE]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  Person is experiencing an asthma attack: shortness of breath, wheezing, persistent coughing, chest tightness, difficulty speaking, or visible breathing effort. Severe signs: inability to complete a sentence, cyanosis (blue lips/fingertips), silent chest, or no response to inhaler.
 ]
 
 #v(6pt)
 
-// Emergency number (primary)
-#emergency-box("101", [MDA (#heb[מד״א])])
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// When to call 101
-#rect(
-  fill: rgb("#fef2f2"),
-  stroke: 1pt + rgb("#dc2626"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(size: 10pt, weight: "bold", fill: rgb("#dc2626"))[CALL 101 IF: ]
-  #text(size: 10pt)[Symptoms do not improve within minutes of inhaler use -- person cannot speak in full sentences -- lips or fingertips turn blue -- person loses consciousness -- no inhaler is available.]
+#rect(fill: rgb("#f0fdf4"), stroke: 1pt + rgb("#16a34a"), radius: 6pt, width: 100%, inset: 10pt)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Position upright, administer rescue inhaler, and call 101 if symptoms do not improve.
 ]
-
-#v(4pt)
-
-// Summary
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(size: 10pt, weight: "bold", fill: rgb("#5b21b6"))[SUMMARY: ]
-  #text(size: 10pt)[First aid for an asthma attack: position upright, administer rescue inhaler, and call 101 if symptoms do not improve. Signs: shortness of breath, wheezing, persistent coughing, chest tightness, difficulty speaking, or visible breathing effort.]
-]
-
-#v(4pt)
-
-// === PROTOCOL STEPS ===
-
-// Step 1
-#step-box(1, "Help the person sit upright or lean slightly forward.",
-  detail: "This position makes breathing easier by reducing pressure on the airways. Do NOT lay them down.",
-  warning: "Do not lay the person down -- this worsens breathing difficulty during an asthma attack.",
-)
-
-#arrow-down()
-
-// Step 2
-#step-box(2, "Reassure and calm the person. Stay with them -- do not leave them alone.",
-  detail: "Speak calmly. Anxiety worsens bronchospasm and can escalate the attack.",
-)
-
-#arrow-down()
-
-// Step 3
-#step-box(3, "Check if the person has a rescue inhaler (Ventolin / mashaf).",
-)
-
-#v(2pt)
-
-#decision-box("Does the person have their own rescue inhaler available?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Provide the inhaler immediately. Go to Step 4.],
-  no-branch[Call MDA at 101 immediately. Continue to monitor and reassure while waiting for help.],
-)
-
-#arrow-down()
-
-// Step 4
-#step-box(4, "Administer the rescue inhaler: 2--4 puffs initially.",
-  detail: "If the person cannot operate the inhaler themselves, operate it for them. Use a spacer device (merkhav) if available -- it significantly improves drug delivery.",
-)
-
-#arrow-down()
-
-// Step 5
-#step-box(5, "Wait several minutes and assess the effect of the inhaler.",
-)
-
-#v(2pt)
-
-#decision-box("Has breathing improved after the initial dose?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue to monitor the person. Allow time to recover. If symptoms return, repeat 2--4 puffs.],
-  no-branch[Repeat 2--4 puffs. If still no improvement, go to Step 6.],
-)
-
-#arrow-down()
-
-// Step 6
-#step-box(6, "Call MDA at 101 if symptoms do not improve after repeated inhaler use.",
-)
-
-#v(2pt)
-
-#decision-box("Are any of the following present: cannot speak in full sentences, blue lips or fingertips, loss of consciousness, silent chest?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[This is a life-threatening emergency. Call 101 immediately if not already done. Stay with the person and keep them upright.],
-  no-branch[Continue monitoring. Seek medical evaluation even if symptoms partially improve.],
-)
-
-#arrow-down()
-
-// Step 7
-#step-box(7, "Monitor continuously until emergency services arrive.",
-  detail: "Watch for worsening signs: skin colour changes (cyanosis), increased breathing effort, decreased responsiveness, silent chest (no wheezing despite obvious distress -- indicates minimal air movement).",
-)
-
-#arrow-down()
-
-// Step 8
-#step-box(8, "If the person loses consciousness and stops breathing, begin CPR.",
-)
-
-#v(2pt)
-
-#decision-box("Has the person lost consciousness and stopped breathing?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Begin CPR immediately. Ensure 101 has been called.],
-  no-branch[Continue to keep them upright and monitor until help arrives.],
-)
 
 #v(8pt)
 
-// DO NOT list
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Asthma Response Protocol]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Position upright
+    node((0, 0), align(center)[
+      *Step 1:* #action[HELP] the person \
+      sit upright or lean slightly \
+      forward. Do NOT lay them down.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT lay the person \
+      down -- this worsens \
+      breathing difficulty.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 2: Reassure
+    node((0, 1), align(center)[
+      *Step 2:* #action[REASSURE] and calm. \
+      Stay with them. Anxiety \
+      worsens bronchospasm.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 3: Check for inhaler
+    node((0, 2), align(center)[
+      *Step 3:* Does the person have \
+      a rescue inhaler (Ventolin)?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      #action[PROVIDE] the inhaler \
+      immediately. Go to \
+      *Step 4.*
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      #action[CALL] 101 immediately. \
+      Monitor and reassure \
+      while waiting.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 4: Administer inhaler
+    node((0, 3), align(center)[
+      *Step 4:* #action[ADMINISTER] rescue \
+      inhaler: 2--4 puffs initially. \
+      Use spacer if available.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 5: Assess effect
+    node((0, 4), align(center)[
+      *Step 5:* Has breathing \
+      improved after initial dose?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      Continue monitoring. \
+      If symptoms return, \
+      repeat 2--4 puffs.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Repeat 2--4 puffs. \
+      If still no improvement, \
+      go to *Step 6.*
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 6: Call 101
+    node((0, 5), align(center)[
+      *Step 6:* #action[CALL] 101 if no \
+      improvement after repeated use.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 5), (0, 6), "->"),
+
+    // Decision: life-threatening signs?
+    node((0, 6), align(center)[
+      *Cannot speak in sentences?* \
+      *Blue lips? Silent chest?* \
+      *Loss of consciousness?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 6), (1, 6), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 6), align(center)[
+      Life-threatening \
+      emergency. #action[CALL] 101 \
+      immediately. Keep \
+      person upright.
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 6), (-1, 6), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 6), align(center)[
+      Continue monitoring. \
+      Seek medical evaluation \
+      even if partially improved.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Steps 7-8, DO NOT, Equipment, Reference
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Continued Monitoring]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 7: Monitor
+    node((0, 0), align(center)[
+      *Step 7:* #action[MONITOR] continuously \
+      until emergency services arrive. \
+      Watch for: skin colour changes, \
+      increased effort, silent chest.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[KEY SIGN] \
+      #text(size: 8pt)[Silent chest = no wheezing \
+      despite obvious distress = \
+      minimal air movement = \
+      life-threatening emergency.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 8: CPR if needed
+    node((0, 1), align(center)[
+      *Step 8:* Has the person lost \
+      consciousness and stopped breathing?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      #action[BEGIN] CPR immediately. \
+      Ensure 101 has been called.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      Keep them upright. \
+      Continue monitoring \
+      until help arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+#v(10pt)
+
 #do-not-box((
   "Do NOT lay the person down -- the upright position is essential for breathing.",
   "Do NOT leave the person alone during an attack.",
   "Do NOT administer controller medications (inhaled corticosteroids) for acute relief -- these do not provide immediate effect.",
   "Do NOT delay calling 101 if no inhaler is available.",
-  "Do NOT ignore a 'silent chest' -- absence of wheezing during obvious distress indicates a life-threatening emergency with minimal air movement.",
+  "Do NOT ignore a 'silent chest' -- absence of wheezing during obvious distress indicates a life-threatening emergency.",
 ))
 
-#v(6pt)
+#v(10pt)
 
-// Equipment
 #equipment-box((
   "Rescue inhaler (Ventolin / Salbutamol)",
   "Spacer device (merkhav) if available",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) -- MDA ALS Protocol Manual 2022; Israeli Asthma Association \
-  Protocol ID: IL-ADULT-ASTHMA-001 · Imported: 2026-03-16 · Last verified: 2026-03-16 \
-  *Personal reference only -- not medical advice.* Always call 101 in an emergency.
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — MDA ALS Protocol Manual 2022 \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Publication date:] 2022-01-01 \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16
 ]

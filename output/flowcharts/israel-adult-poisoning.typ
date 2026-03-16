@@ -1,378 +1,706 @@
-// First Aid Protocol Flowchart — Poisoning (Adult, Israel)
-// Generated from protocol IL-ADULT-POISONING-001
+// Israel Adult Poisoning Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Font: IBM Plex Sans with IBM Plex Sans Hebrew fallback
+// Protocol ID: IL-ADULT-POISONING-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-POISONING-001"
+#let protocol-title = "Poisoning — Adult"
+#let protocol-subject = "POISONING"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
+#let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES →] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO →] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let equipment-box(items) = {
+#let emergency-numbers-strip() = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-// === DOCUMENT HEADER ===
+// ============================================================
+// PAGE 1: Title, Scene Safety, Initial Steps 1-5
+// ============================================================
 
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[Poisoning — Adult Protocol]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
-  #v(2pt)
-  #text(size: 9pt, fill: rgb("#9ca3af"))[ID: IL-ADULT-POISONING-001]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
-#v(8pt)
-
-// Primary emergency number
-#emergency-box("101", [MDA (#heb[מד״א])])
-
-#v(4pt)
-
-// All emergency numbers strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// Poison Information Center
+#v(6pt)
 #rect(
-  fill: rgb("#fef9c3"),
-  stroke: 1pt + rgb("#ca8a04"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
-  inset: 8pt,
+  inset: 10pt,
 )[
-  #set text(size: 10pt)
+  #set text(fill: white, weight: "bold", size: 14pt)
   #align(center)[
-    #strong[Israel Poison Information Center (24/7):] 04-7771900 — Rambam Health Care Campus, Haifa
+    CALL #emergency-number (#emergency-service) + Poison Center 04-7771900
   ]
 ]
-
+#v(4pt)
+#emergency-numbers-strip()
 #v(6pt)
 
-// When to apply
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#5b21b6"))[When to apply:]
-  #v(4pt)
-  #text(size: 10pt)[Suspected poisoning through any route: ingestion of toxic substances (medications, cleaning products, chemicals, plants), inhalation of toxic fumes or gases (carbon monoxide, chlorine gas, chemical fumes), skin or eye contact with hazardous chemicals, or injection of toxins (venomous bites/stings, IV drug use). Signs include: nausea, vomiting, abdominal pain, confusion, drowsiness, breathing difficulty, seizures, chemical burns around mouth or skin, unusual smell on breath, or loss of consciousness.]
+// --- When to Apply ---
+#when-to-apply[
+  Suspected poisoning through any route: ingestion (medications, cleaning products, chemicals, plants), inhalation (carbon monoxide, chlorine gas, chemical fumes), skin or eye contact with hazardous chemicals, or injection (venomous bites/stings, IV drug use). Signs include nausea, vomiting, confusion, drowsiness, breathing difficulty, seizures, chemical burns, or loss of consciousness.
 ]
 
 #v(6pt)
 
-// Summary
+// --- Summary ---
 #rect(
-  fill: rgb("#ecfdf5"),
-  stroke: 1pt + rgb("#059669"),
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
   radius: 6pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", size: 11pt, fill: rgb("#065f46"))[Summary:]
-  #v(4pt)
-  #text(size: 10pt)[Scene safety assessment, call for help, identify route of exposure, provide route-specific first aid, preserve the substance, and monitor the patient until emergency services arrive.]
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Scene safety, call for help, identify route of exposure, provide route-specific first aid, preserve the substance, and monitor until emergency services arrive.
 ]
 
 #v(8pt)
 
-// === PROTOCOL STEPS ===
+// --- Initial Response: Steps 1-5 ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Scene Safety and Ingestion Path]
+  #v(4pt)
 
-// Step 1
-#step-box(1, "Ensure scene safety before approaching the patient.",
-  detail: "Assess the environment for hazards. Protect yourself from contamination. For suspected inhalation poisoning, do not enter a confined space with potential toxic fumes without proper protection -- wait for trained responders with protective equipment.",
-  warning: "Do NOT enter areas with potential toxic gas exposure. You cannot help the patient if you become a casualty.")
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 1: Scene safety
+    node((0, 0), align(center)[
+      *Step 1:* #action[ENSURE] scene safety. \
+      Protect yourself from \
+      contamination. Do NOT enter \
+      areas with toxic fumes.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 2
-#step-box(2, "Call 101 (MDA) immediately. Call the Israel Poison Information Center at 04-7771900 for substance-specific guidance.",
-  detail: "Be prepared to provide: the substance involved, estimated amount, time of exposure, patient's age and weight, current symptoms, and the route of exposure (ingestion, inhalation, skin contact, or injection).")
+    // Warning
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT enter areas \
+      with potential toxic \
+      gas exposure. You \
+      cannot help if you \
+      become a casualty.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 0), (0, 1), "->"),
 
-// Step 3
-#step-box(3, "Preserve the substance container, packaging, or remaining material.",
-  detail: "Collect and keep all containers, packaging, pills, or remaining substance. Bring them to the hospital or have them available for emergency responders. This is critical for identification and appropriate treatment. If the patient has vomited, preserve a sample for analysis if possible.")
+    // Step 2: Call
+    node((0, 1), align(center)[
+      *Step 2:* #action[CALL] 101 (MDA) and \
+      Poison Center 04-7771900. \
+      Provide: substance, amount, \
+      time, age, symptoms, route.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 1), (0, 2), "->"),
 
-// Step 4 — Decision: Route of exposure
-#step-box(4, "Determine the route of exposure.")
+    // Step 3: Preserve substance
+    node((0, 2), align(center)[
+      *Step 3:* #action[PRESERVE] the substance \
+      container, packaging, or \
+      remaining material. \
+      Bring to hospital.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 2), (0, 3), "->"),
 
-#decision-box("Was the poison ingested (swallowed)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 5 for ingestion-specific treatment.],
-  no-branch[Proceed to Step 7 to check for inhalation exposure.],
-)
+    // Step 4: Route determination
+    node((0, 3), align(center)[
+      *Step 4:* #action[DETERMINE] route \
+      of exposure.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 3), (0, 4), "->"),
 
-// Step 5 — Decision: Caustic substance?
-#step-box(5, "For ingestion poisoning: determine if a caustic or corrosive substance was swallowed.",
-  warning: "Do NOT induce vomiting. Vomiting is often ineffective, caustic substances cause additional burns on the way back up, and there is a risk of aspiration.")
+    // Decision: ingested?
+    node((0, 4), align(center)[
+      *Was the poison ingested* \
+      *(swallowed)?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    // YES -> ingestion path
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#decision-box("Was a caustic or corrosive substance ingested (acids, bases, strong detergents)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[NEVER induce vomiting. If the patient is conscious and breathing normally, give approximately 1 cup (250 ml) of water or milk to dilute the substance. Seek immediate medical care. Proceed to Step 10.],
-  no-branch[Do NOT induce vomiting unless specifically directed by the Poison Information Center or a physician. If poison remains in the mouth, attempt careful removal. Do not give food or drink unless directed by the Poison Information Center. Proceed to Step 10.],
-)
+    node((1, 4), align(center)[
+      Go to Step 5: \
+      ingestion treatment.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // NO -> check inhalation
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-// Step 6
-#step-box(6, "For ingestion: do NOT give activated charcoal unless directed by medical professionals.",
-  detail: "Activated charcoal is effective only within 1-2 hours of exposure and only for certain substances. This is a medical-level intervention, not a first aid action.")
+    node((-1, 4), align(center)[
+      Go to Step 7: \
+      check inhalation.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 4), (0, 5), "->"),
 
-// Step 7 — Decision: Inhalation?
-#step-box(7, "Check for inhalation exposure.",
-  warning: "Never mix bleach (Economica) with other cleaning products, especially acidic substances -- this releases toxic chlorine gas.")
+    // Step 5: Ingestion - caustic check
+    node((0, 5), align(center)[
+      *Step 5:* For ingestion: \
+      determine if caustic/corrosive.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 5), (0, 6), "->"),
 
-#decision-box("Was the poison inhaled (toxic fumes, gases, carbon monoxide)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Move the patient to fresh air immediately -- remove from the contaminated area. Do NOT enter the area yourself if there is a risk of toxic gas exposure. Call 101. Proceed to Step 9.],
-  no-branch[Proceed to Step 8 to check for skin or eye contact.],
-)
+    // Decision: caustic?
+    node((0, 6), align(center)[
+      *Was a caustic/corrosive* \
+      *substance ingested?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // YES -> dilute
+    edge((0, 6), (1, 6), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-// Step 8 — Decision: Skin/eye contact?
-#step-box(8, "Check for skin or eye contact exposure.")
+    node((1, 6), align(center)[
+      NEVER induce vomiting. \
+      If conscious: give ~250ml \
+      water or milk to dilute. \
+      Go to Step 10.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
+    // NO -> do not induce vomiting
+    edge((0, 6), (-1, 6), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#decision-box("Did the poison contact the skin or eyes?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Remove contaminated clothing immediately (protect yourself while doing so). For skin contact: flush the affected area with large amounts of cool running water for at least 15-20 minutes. For eye contact: rinse and flush eyes thoroughly with running water for at least 15 minutes, holding eyelids open. Do NOT attempt to chemically neutralise the substance. Proceed to Step 10.],
-  no-branch[The exposure may be through injection (bites, stings, IV drug use). Proceed to Step 10 for general monitoring.],
-)
+    node((-1, 6), align(center)[
+      Do NOT induce vomiting \
+      unless directed by \
+      Poison Center. \
+      No food or drink \
+      unless directed. \
+      Go to Step 10.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
 
-// Step 9 — Decision: Breathing after inhalation?
-#step-box(9, "For inhalation exposure: assess the patient's breathing after moving to fresh air.")
+// ============================================================
+// PAGE 2: Inhalation, Skin/Eye, Breathing — Steps 7-9
+// ============================================================
+#pagebreak()
 
-#v(4pt)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Inhalation and Contact Exposure]
+  #v(4pt)
 
-#decision-box("Is the patient breathing?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Monitor breathing and vital signs continuously. Keep the patient calm and warm. Proceed to Step 10.],
-  no-branch[Begin CPR immediately. Continue until emergency services arrive.],
-)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 7: Inhalation check
+    node((0, 0), align(center)[
+      *Step 7:* #action[CHECK] for \
+      inhalation exposure.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 10 — Decision: Conscious?
-#step-box(10, "Assess the patient's level of consciousness.")
+    edge((0, 0), (0, 1), "->"),
 
-#v(4pt)
+    // Decision: inhaled?
+    node((0, 1), align(center)[
+      *Was the poison inhaled* \
+      *(toxic fumes, gases, CO)?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#decision-box("Is the patient conscious?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Keep the patient calm and warm. Monitor breathing, pulse, and level of consciousness continuously. Do not leave the patient alone. Wait for emergency services.],
-  no-branch[Proceed to Step 11.],
-)
+    // YES -> fresh air
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    node((1, 1), align(center)[
+      #action[MOVE] patient to \
+      fresh air immediately. \
+      Do NOT enter area \
+      yourself if toxic gas \
+      risk. Go to Step 9.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// Step 11 — Decision: Unconscious and breathing?
-#step-box(11, "For an unconscious patient: check for breathing.")
+    // NO -> check skin/eye
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
+    node((-1, 1), align(center)[
+      Go to Step 8: \
+      check skin/eye contact.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-#decision-box("Is the unconscious patient breathing?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Place in the recovery position (lateral/side-lying position) to prevent aspiration. Monitor breathing continuously. Do not leave the patient alone.],
-  no-branch[Begin CPR immediately. Continue until emergency services arrive.],
-)
+    // Warning
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Never mix bleach \
+      (Economica) with other \
+      cleaning products, \
+      especially acids -- \
+      releases toxic \
+      chlorine gas.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 1), (0, 2), "->"),
 
-// Step 12
-#step-box(12, "Recovery position for unconscious but breathing patients.",
-  detail: "Kneel beside the patient. Place the arm nearest to you at a right angle to the body. Bring the far arm across the chest and hold the back of the hand against the near cheek. Pull the far knee up and roll the patient towards you onto their side. Adjust the top leg so the knee is at a right angle. Tilt the head back slightly to keep the airway open. Monitor breathing continuously.")
+    // Step 8: Skin/eye contact
+    node((0, 2), align(center)[
+      *Step 8:* #action[CHECK] for skin \
+      or eye contact exposure.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 2), (0, 3), "->"),
 
-// Step 13
-#step-box(13, "Continue monitoring until emergency services arrive.",
-  detail: "Monitor breathing and pulse continuously. Be prepared to perform CPR if breathing or heartbeat stops. Keep the patient warm and calm. Do not leave the patient alone. Provide all collected substance information to arriving medical team.")
+    // Decision: skin/eye?
+    node((0, 3), align(center)[
+      *Did the poison contact* \
+      *the skin or eyes?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> flush
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      #action[REMOVE] contaminated \
+      clothing. Skin: flush \
+      with cool water 15--20 min. \
+      Eyes: rinse 15+ min, \
+      hold eyelids open. \
+      Do NOT neutralise. \
+      Go to Step 10.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> other route
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      Exposure may be \
+      through injection \
+      (bites, stings, IV). \
+      Go to Step 10.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 9: Inhalation breathing check
+    node((0, 4), align(center)[
+      *Step 9:* For inhalation: \
+      #action[ASSESS] breathing \
+      after moving to fresh air.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: breathing?
+    node((0, 5), align(center)[
+      *Is the patient breathing?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Monitor breathing and \
+      vital signs. Keep calm \
+      and warm. Go to Step 10.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> CPR
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      #action[BEGIN] CPR \
+      immediately. Continue \
+      until EMS arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 3: Consciousness Assessment, Recovery — Steps 10-13
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Consciousness Assessment and Monitoring]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 10: Consciousness
+    node((0, 0), align(center)[
+      *Step 10:* #action[ASSESS] patient's \
+      level of consciousness.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: conscious?
+    node((0, 1), align(center)[
+      *Is the patient conscious?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> monitor
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      Keep calm and warm. \
+      #action[MONITOR] breathing, \
+      pulse, consciousness. \
+      Do not leave alone. \
+      Wait for EMS.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> step 11
+    edge((0, 1), (0, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 11: Unconscious breathing check
+    node((0, 2), align(center)[
+      *Step 11:* Unconscious patient: \
+      #action[CHECK] breathing.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: breathing?
+    node((0, 3), align(center)[
+      *Is the unconscious* \
+      *patient breathing?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> recovery
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      #action[PLACE] in recovery \
+      position (on side) to \
+      prevent aspiration. \
+      Monitor breathing. \
+      Go to Step 12.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> CPR
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      #action[BEGIN] CPR \
+      immediately. Continue \
+      until EMS arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 12: Recovery position detail
+    node((0, 4), align(center)[
+      *Step 12:* Recovery position: \
+      kneel beside patient, place \
+      near arm at right angle, \
+      bring far arm across chest, \
+      pull far knee up, roll \
+      towards you onto side. \
+      Tilt head back for airway.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 13: Continue monitoring
+    node((0, 5), align(center)[
+      *Step 13:* #action[CONTINUE] monitoring \
+      until EMS arrives. Watch \
+      breathing and pulse. Be ready \
+      for CPR. Keep warm and calm. \
+      Provide substance info to \
+      arriving medical team.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
+]
 
 #v(10pt)
 
-// === DO NOT LIST ===
+// --- Step 6 note ---
+#keep-together[
+  #rect(
+    fill: rgb("#eff6ff"),
+    stroke: 1pt + rgb("#2563eb"),
+    radius: 6pt,
+    width: 100%,
+    inset: 10pt,
+  )[
+    #text(fill: rgb("#1e40af"), weight: "bold", size: 10pt)[Step 6 Note — Activated Charcoal:]
+    Do NOT give activated charcoal unless directed by medical professionals. It is effective only within 1--2 hours and only for certain substances. This is a medical-level intervention, not a first aid action.
+  ]
+]
+
+
+// ============================================================
+// PAGE 4: DO NOT List, Equipment, Source
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
+#v(6pt)
+
+// --- DO NOT List ---
 #do-not-box((
   "Do NOT induce vomiting unless specifically directed by the Poison Information Center (04-7771900) or a physician.",
-  "Do NOT give food or drink unless directed by medical professionals (exception: water or milk for conscious patients who ingested caustic substances, as directed).",
+  "Do NOT give food or drink unless directed by medical professionals (exception: water or milk for conscious patients who ingested caustic substances).",
   "Do NOT attempt to neutralise the poison (e.g., giving acid for base ingestion or vice versa).",
   "Do NOT use home remedies (salt water, mustard, raw eggs, etc.).",
   "Do NOT give activated charcoal without medical direction.",
@@ -382,21 +710,27 @@
   "Do NOT leave the patient alone.",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// === EQUIPMENT ===
+// --- Equipment ---
 #equipment-box((
   "Gloves (to protect against contamination)",
   "Running water source (for skin or eye decontamination)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// === FOOTER ===
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) — "Poisoning First Aid Guidance (#heb[הרעלות])" · MDA 101 Public First Aid Guidance Series; corroborated by Rambam National Poison Information Center guidance \
-  Imported: 2026-03-15 · Last verified: 2026-03-15 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "Poisoning First Aid Guidance -- MDA 101 Public First Aid Guidance Series; corroborated by Rambam National Poison Information Center guidance" \
+  #strong[URL:] https://www.mdais.org/101/poisoningn \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Israel Poison Information Center: 04-7771900 (Rambam Health Care Campus, Haifa).
 ]

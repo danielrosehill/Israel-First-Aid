@@ -1,393 +1,547 @@
-// First Aid Protocol Flowchart -- AED Operation (Adult) -- Israel
-// Generated from: protocols/adult/israel/aed-operation.json
-// Generated on: 2026-03-16
+// Israel Adult AED Operation Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA) — AHA 2025 Guidelines
+// Protocol ID: IL-ADULT-AED-OPERATION-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "AED Operation (Automated External Defibrillator) -- Adult"
-#let protocol-category = "aed_operation"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-AED-OPERATION-001"
+#let protocol-title = "AED Operation (Automated External Defibrillator) — Adult"
+#let protocol-subject = "AED OPERATION"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult (age 8+)"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
+#let source-authority = "Magen David Adom"
 #let source-date = "2025-01-01"
 #let last-verified = "2026-03-16"
-#let edition = "AHA 2025 Guidelines"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
-
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) -- CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ v]
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"))[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      -- #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === DOCUMENT ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
 
-// Header
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1: Title, Confirm Arrest, CPR, Locate AED (Steps 1-5)
+// ============================================================
+
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country -- #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) — EVERY MINUTE OF DELAY REDUCES SURVIVAL BY 7--10%]
+]
+#v(4pt)
+#emergency-numbers-strip()
 #v(6pt)
 
-// Emergency number (primary)
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// When to apply
-#rect(
-  fill: rgb("#fefce8"),
-  stroke: 1pt + rgb("#ca8a04"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt)[WHEN TO APPLY:] An adult (age 8 and above, or showing signs of puberty) is found unresponsive, not breathing normally (absent breathing or only gasping/agonal breathing), and suspected to be in cardiac arrest.
+#when-to-apply[
+  An adult (age 8+) is found unresponsive, not breathing normally (absent breathing or only gasping/agonal breathing), and suspected to be in cardiac arrest.
 ]
 
-#v(4pt)
+#v(8pt)
 
-// Equipment
-#equipment-box((
-  "AED (Automated External Defibrillator) -- available from MDA smart stands, public locations, or via Eifo-Defi app locator",
-  "Razor (for shaving excessive chest hair -- often included in AED kits)",
-  "Towel or cloth (for drying the chest)",
-  "Scissors (for cutting away clothing -- often included in AED kits)",
-  "Phone (to call 101 and use speakerphone for dispatcher-guided CPR and AED use)",
-))
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Confirm Cardiac Arrest and Begin CPR]
+  #v(4pt)
 
-#v(6pt)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-// ==========================================
-// STEP 1: Confirm cardiac arrest
-// ==========================================
-#step-box(1,
-  "Confirm cardiac arrest: check responsiveness by calling out and shaking the person's shoulders. Check breathing for no more than 10 seconds by looking for chest rise, listening for breath sounds, and feeling for air on your cheek.",
-  detail: "Gasping (agonal breathing) is NOT normal breathing -- treat it as cardiac arrest. If trained to check a pulse, do so simultaneously with the breathing check, but do not spend more than 10 seconds total.",
-)
+    // Step 1: Confirm arrest
+    node((0, 0), align(center)[
+      *Step 1:* #action[CONFIRM] cardiac arrest. \
+      Check responsiveness (call out, \
+      shake shoulders). Check breathing \
+      (max 10 seconds). Gasping is \
+      NOT normal breathing.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#decision-box("Is the person unresponsive and not breathing normally?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 2 (call 101 and begin emergency response).],
-  no-branch[Do not apply AED. If the person is unconscious but breathing normally, place in the recovery position and call 101. If conscious and breathing, provide appropriate first aid.],
-)
+    edge((0, 0), (0, 1), "->"),
 
-#arrow-down()
+    // Decision: unresponsive and not breathing?
+    node((0, 1), align(center)[
+      *Unresponsive and not* \
+      *breathing normally?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-// ==========================================
-// STEP 2: Call 101
-// ==========================================
-#step-box(2,
-  "Call 101 (MDA emergency dispatch) immediately and put the phone on speakerphone.",
-  detail: "MDA dispatchers provide real-time CPR and AED coaching over the phone. They can also identify the nearest smart stand AED and remotely unlock it. If another person is present, send them to fetch the nearest AED while you begin CPR.",
-)
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#arrow-down()
+    node((1, 1), align(center)[
+      Proceed to *Step 2:* \
+      Call 101 and begin \
+      emergency response.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// ==========================================
-// STEP 3: Begin CPR
-// ==========================================
-#step-box(3,
-  "Begin CPR immediately while waiting for the AED: place the person on a firm, flat surface. Deliver chest compressions at the centre of the chest (lower half of the sternum), at a rate of 100--120 per minute, to a depth of 5--6 cm (2--2.4 inches). Allow full chest recoil between compressions.",
-  detail: "If trained and willing: deliver 2 rescue breaths after every 30 compressions (30:2 ratio). If untrained or unwilling: perform compression-only CPR. Do not delay compressions to wait for the AED.",
-)
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
-#decision-box("Is another person available to retrieve the AED?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Send them to retrieve the nearest AED while you continue CPR without interruption.],
-  no-branch[If the AED is immediately nearby (within a few seconds' reach), retrieve it quickly and return. Otherwise, continue CPR until help arrives with an AED.],
-)
+    node((-1, 1), align(center)[
+      Do NOT apply AED. \
+      If unconscious but \
+      breathing: recovery \
+      position. Call 101.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-#arrow-down()
+    edge((0, 1), (0, 2), "->"),
 
-// ==========================================
-// STEP 4: Locate and retrieve AED
-// ==========================================
-#step-box(4,
-  "Locate and retrieve the nearest AED.",
-  detail: "Use the Eifo-Defi app to find the closest device. Call 101 -- MDA dispatch can locate the nearest smart stand and remotely unlock it (the case opens and a siren and flashing lights activate). Check nearby buildings, shopping centres, train stations, sports facilities, and public phone booth AED stations (bright yellow boxes). By Israeli law, any public space with 500+ daily visitors must have an AED.",
-)
+    // Step 2: Call 101
+    node((0, 2), align(center)[
+      *Step 2:* #action[CALL] 101 immediately. \
+      Speakerphone. MDA provides \
+      real-time CPR/AED coaching \
+      and can unlock smart stands.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    edge((0, 2), (0, 3), "->"),
 
-// ==========================================
-// STEP 5: Power on AED
-// ==========================================
-#step-box(5,
-  "Open the AED cover. The device will power on automatically (some models require pressing a power button). The AED will begin providing voice instructions in Hebrew (and possibly other languages: English, Arabic, Russian, Amharic depending on the model).",
-  detail: "Follow the AED's voice and visual prompts throughout the process. The device will guide you step by step.",
-)
+    // Step 3: Begin CPR
+    node((0, 3), align(center)[
+      *Step 3:* #action[BEGIN] CPR immediately. \
+      100--120 compressions/min, \
+      5--6 cm depth, full recoil. \
+      30:2 ratio if trained.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    edge((0, 3), (0, 4), "->"),
 
-// ==========================================
-// STEP 6: Prepare chest
-// ==========================================
+    // Decision: helper available?
+    node((0, 4), align(center)[
+      *Is another person available* \
+      *to retrieve the AED?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      #action[SEND] them to retrieve \
+      nearest AED. You continue \
+      CPR without interruption.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      If AED is seconds away, \
+      retrieve quickly. Otherwise \
+      continue CPR until \
+      help arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 4-5: Locate and open AED
+    node((0, 5), align(center)[
+      *Step 4-5:* #action[LOCATE] AED \
+      (Eifo-Defi app, call 101 to \
+      unlock smart stands). \
+      #action[OPEN] cover -- device \
+      provides voice instructions.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Prepare Chest, Apply Pads, Analyse, Shock (Steps 6-9)
+// ============================================================
 #pagebreak()
 
-#step-box(6,
-  "Prepare the patient's chest: expose the bare chest by removing or cutting away clothing, including bra. Ensure the chest is dry -- wipe off sweat, water, or other moisture.",
-  detail: "Address special situations before applying pads.",
-)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[AED Application and Shock Delivery]
+  #v(4pt)
 
-#v(4pt)
-#decision-box("Are there special chest conditions (excessive hair, medication patches, implanted pacemaker/defibrillator, or metal surface)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Excessive chest hair: shave the pad areas using the razor often included in AED kits. Medication patches: remove any transdermal patches from the chest area and wipe the skin. Implanted pacemaker/defibrillator (visible lump under the skin): place pads at least 2.5 cm (1 inch) away from the device. Metal surface: move the person off the metal surface if possible; otherwise ensure nobody is in contact with the metal during shock delivery.],
-  no-branch[Proceed directly to applying the electrode pads.],
-)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#arrow-down()
+    // Step 6: Prepare chest
+    node((0, 0), align(center)[
+      *Step 6:* #action[PREPARE] chest: \
+      expose bare chest, ensure dry. \
+      Remove medication patches. \
+      Shave excessive hair.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// ==========================================
-// STEP 7: Apply electrode pads
-// ==========================================
-#step-box(7,
-  "Apply the electrode pads to the bare, dry chest following the diagram printed on each pad. Use anterolateral placement for adults: Pad 1 (upper right) below the right collarbone to the right of the sternum; Pad 2 (lower left) on the left side of the chest below the armpit, in line with the nipple.",
-  detail: "Connect the pads to the AED if they are not pre-connected (plug the cable into the AED unit). Some AEDs have pre-connected pads.",
-)
+    edge((0, 0), (0, 1), "->"),
 
-#arrow-down()
+    // Step 7: Apply pads
+    node((0, 1), align(center)[
+      *Step 7:* #action[APPLY] electrode pads: \
+      Pad 1: below right collarbone. \
+      Pad 2: left side below armpit. \
+      Follow diagrams on pads.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// ==========================================
-// STEP 8: AED analysis
-// ==========================================
-#step-box(8,
-  "Allow the AED to analyse the heart rhythm. Stop CPR and ensure nobody is touching the patient during analysis.",
-  warning: "Do not touch the patient during rhythm analysis. Any contact may interfere with the analysis and produce inaccurate results.",
-)
+    edge((0, 1), (0, 2), "->"),
 
-#v(4pt)
-#decision-box("Does the AED advise a shock (shockable rhythm detected)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 9 (deliver shock).],
-  no-branch[The rhythm is not shockable. Resume CPR immediately (proceed to Step 10). The AED will not deliver a shock and cannot harm a person who does not need one.],
-)
+    // Step 8: Analyse
+    node((0, 2), align(center)[
+      *Step 8:* AED analyses rhythm. \
+      #action[STOP] CPR. Ensure nobody \
+      is touching the patient.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    node((1, 2), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT touch patient \
+      during analysis. Any \
+      contact may produce \
+      inaccurate results.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-// ==========================================
-// STEP 9: Deliver shock
-// ==========================================
-#step-box(9,
-  [Deliver the shock: ensure nobody is touching the patient. Call out clearly "Stand clear!" (Hebrew: #heb[!התרחקו]). Press the shock button when instructed by the AED.],
-  detail: "Some fully automatic AEDs deliver the shock automatically without requiring a button press. The AED will announce before delivering the shock.",
-  warning: "Visually confirm that nobody is in contact with the patient before pressing the shock button. Electrocution risk to bystanders.",
-)
+    edge((0, 2), (0, 3), "->"),
 
-#arrow-down()
+    // Decision: shock advised?
+    node((0, 3), align(center)[
+      *Does the AED advise a shock?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-// ==========================================
-// STEP 10: Resume CPR
-// ==========================================
-#step-box(10,
-  "Resume CPR immediately after the shock is delivered (or after a 'no shock advised' result). Continue CPR for 2 minutes (approximately 5 cycles of 30:2).",
-  detail: "Do not wait for the AED to re-analyse before resuming compressions. The AED will automatically prompt for another rhythm analysis after approximately 2 minutes.",
-)
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#arrow-down()
+    node((1, 3), align(center)[
+      Proceed to *Step 9:* \
+      deliver shock.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// ==========================================
-// STEP 11: Re-analyse
-// ==========================================
-#step-box(11,
-  "After 2 minutes of CPR, the AED will automatically re-analyse the heart rhythm. Stop CPR and ensure nobody is touching the patient during analysis. Follow the AED prompts (shock if advised, then resume CPR).",
-  detail: "Continue the cycle of: CPR for 2 minutes -> AED analysis -> shock if advised -> CPR. Each cycle repeats until EMS arrives or the person shows signs of life.",
-)
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#arrow-down()
+    node((-1, 3), align(center)[
+      Rhythm not shockable. \
+      #action[RESUME] CPR immediately. \
+      AED re-analyses after \
+      2 minutes.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-// ==========================================
-// STEP 12: Continue until...
-// ==========================================
-#step-box(12,
-  "Continue CPR and AED cycles until one of the following occurs: MDA paramedics arrive and take over; the person shows obvious signs of life (moves, breathes normally, opens eyes); or you are physically unable to continue.",
-  warning: "Do not disconnect the AED pads even if the person regains consciousness. Do not turn off the AED. Leave the pads attached at all times.",
-)
+    edge((0, 3), (0, 4), "->"),
 
-#v(4pt)
-#decision-box("Does the person show signs of life (breathing, movement, coughing)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Stop CPR. Place the person in the recovery position. Keep AED pads attached and the device on. Monitor continuously until MDA arrives.],
-  no-branch[Continue CPR and AED cycles without stopping.],
-)
+    // Step 9: Deliver shock
+    node((0, 4), align(center)[
+      *Step 9:* Ensure all clear. \
+      Call out "Hitrachku!" \
+      (Stand clear!) \
+      #action[PRESS] shock button.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(12pt)
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Visually confirm nobody \
+      is in contact with \
+      the patient before \
+      pressing shock button.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-// ==========================================
-// DO NOT list
-// ==========================================
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 10: Resume CPR
+    node((0, 5), align(center)[
+      *Step 10:* #action[RESUME] CPR \
+      immediately after shock. \
+      Continue for 2 minutes \
+      (~5 cycles of 30:2).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 3: Cycles, Continuation (Steps 11-12), DO NOT, Equipment
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[CPR/AED Cycles and Continuation]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 11: Re-analyse
+    node((0, 0), align(center)[
+      *Step 11:* After 2 min of CPR, \
+      AED re-analyses. #action[STOP] CPR. \
+      Ensure nobody touches patient. \
+      Follow prompts (shock if advised, \
+      then resume CPR).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 12: Continue
+    node((0, 1), align(center)[
+      *Step 12:* #action[CONTINUE] CPR and \
+      AED cycles until: MDA arrives, \
+      person shows signs of life, \
+      or you are unable to continue.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Decision: signs of life?
+    node((0, 2), align(center)[
+      *Does the person show signs* \
+      *of life (breathing, movement)?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      #action[STOP] CPR. Recovery \
+      position. Keep AED pads \
+      attached and device on. \
+      Monitor until MDA arrives.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      #action[CONTINUE] CPR and \
+      AED cycles without \
+      stopping.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+#v(6pt)
+
+// Key parameters
+#keep-together[
+  #rect(fill: rgb("#eff6ff"), stroke: 2pt + rgb("#2563eb"), radius: 6pt, width: 100%, inset: 12pt)[
+    #text(fill: rgb("#1e40af"), weight: "bold", size: 13pt)[Key AED Parameters]
+    #v(6pt)
+    #grid(
+      columns: (1fr, 1fr),
+      gutter: 8pt,
+      [#strong[Compression rate:] 100--120 / min],
+      [#strong[Compression depth:] 5--6 cm],
+      [#strong[CPR cycle:] 2 min (~5 cycles of 30:2)],
+      [#strong[AED re-analysis:] Every 2 minutes],
+      [#strong[Pad 1:] Below right collarbone],
+      [#strong[Pad 2:] Left side below armpit],
+      [#strong[Emergency number:] 101 (MDA)],
+      [#strong[AED locator:] Eifo-Defi app],
+    )
+  ]
+]
+
+#v(10pt)
+
 #do-not-box((
-  "Do not use the AED on a person who is conscious and breathing normally -- AEDs are only for cardiac arrest.",
-  "Do not apply AED pads while the person is submerged in water or lying in a puddle -- move them to dry ground first and dry the chest before applying pads.",
-  "Do not use an AED near flammable gases, fumes, or oxygen-enriched atmospheres -- risk of fire or explosion.",
-  "Do not place AED pads directly over an implanted pacemaker or defibrillator -- place pads at least 2.5 cm (1 inch) away from the device.",
-  "Do not place AED pads over transdermal medication patches -- remove patches and wipe the skin before placing pads.",
-  "Do not touch the patient during AED rhythm analysis or shock delivery.",
-  "Do not turn off the AED or disconnect the pads at any point, even if the person regains consciousness.",
-  "Do not delay defibrillation to wait for EMS -- early defibrillation is critical. For every minute defibrillation is delayed, survival decreases by approximately 7--10%.",
-  "Do not interrupt chest compressions for more than 10 seconds for any reason, including AED pad placement.",
-  "Do not use the AED on a person who is breathing and has a pulse, even if unconscious -- place them in the recovery position and monitor.",
-  "Do not allow AED pads to touch or overlap each other on the chest.",
+  "Do NOT use the AED on a person who is conscious and breathing normally.",
+  "Do NOT apply pads while the person is in water -- move to dry ground first.",
+  "Do NOT use near flammable gases or oxygen-enriched atmospheres.",
+  "Do NOT place pads directly over a pacemaker -- place at least 2.5 cm away.",
+  "Do NOT place pads over medication patches -- remove and wipe skin first.",
+  "Do NOT touch the patient during rhythm analysis or shock delivery.",
+  "Do NOT turn off the AED or disconnect pads, even if the person regains consciousness.",
+  "Do NOT delay defibrillation -- survival decreases by 7--10% per minute of delay.",
+  "Do NOT interrupt compressions for more than 10 seconds for any reason.",
+  "Do NOT allow pads to touch or overlap each other.",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority | Edition: #edition | Published: #source-date | Last verified: #last-verified \
-  Protocol ID: IL-ADULT-AED-OPERATION-001 \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+#equipment-box((
+  "AED (from MDA smart stands, public locations, or Eifo-Defi app locator)",
+  "Razor (for shaving chest hair -- often included in AED kits)",
+  "Towel or cloth (for drying the chest)",
+  "Scissors (for cutting away clothing -- often included in AED kits)",
+  "Phone (to call 101 and use speakerphone for dispatcher-guided CPR/AED use)",
+))
+
+#v(10pt)
+
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — MDA AED Operation Protocol, AHA 2025 Guidelines \
+  #strong[URL:] https://www.mdais.org/kursim/defibrillator \
+  #strong[Publication date:] 2025-01-01 · #strong[Edition:] AHA 2025 Guidelines \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
+  #strong[Notes:] Israeli AED law (2008): public spaces with 500+ daily visitors must have an AED. Eifo-Defi app locates nearest AED. MDA smart stands: call 101 to remotely unlock.
 ]

@@ -1,398 +1,457 @@
-// First Aid Protocol Flowchart — Smoke / Tear Gas Inhalation (Adult, Israel)
-// Generated from protocol IL-ADULT-SMOKE-INHALATION-001
+// Israel Adult Smoke Inhalation Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Font: IBM Plex Sans with IBM Plex Sans Hebrew fallback
+// Protocol ID: IL-ADULT-SMOKE-INHALATION-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-SMOKE-INHALATION-001"
+#let protocol-title = "Smoke / Tear Gas Inhalation — Adult"
+#let protocol-subject = "SMOKE INHALATION"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-03-16"
+#let last-verified = "2026-03-16"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES →] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO →] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === DOCUMENT HEADER ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1: Title, Smoke Inhalation (Steps 1-8)
+// ============================================================
 
 #align(center)[
-  #text(size: 22pt, weight: "bold")[Smoke / Tear Gas Inhalation — Adult Protocol]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
-  #v(2pt)
-  #text(size: 9pt, fill: rgb("#9ca3af"))[ID: IL-ADULT-SMOKE-INHALATION-001]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
-#v(8pt)
-
-// Primary emergency number
-#emergency-box("101", [MDA (#heb[מד״א])])
-
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) + 102 (FIRE) — SCENE SAFETY FIRST]
+]
 #v(4pt)
-
-// All emergency numbers strip
-#all-emergency-numbers()
-
+#emergency-numbers-strip()
 #v(6pt)
 
-// When to apply
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#5b21b6"))[When to apply:]
-  #v(4pt)
-  #text(size: 10pt)[Person has inhaled smoke, fumes, or tear gas. Signs include: coughing, wheezing, difficulty breathing, hoarse voice, soot around mouth or nose, singed facial hair, burns to face or mouth, confusion or altered consciousness, eye irritation and tearing (tear gas).]
-]
-
-#v(4pt)
-
-// Summary
-#rect(
-  fill: rgb("#ecfdf5"),
-  stroke: 1pt + rgb("#059669"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#065f46"))[Summary:]
-  #v(4pt)
-  #text(size: 10pt)[Ensure scene safety, remove the person to fresh air, call 101, position upright for easier breathing, monitor for respiratory distress, perform CPR if needed, assess for burns, and keep warm. For tear gas: remove from exposure, flush eyes with water for 15 minutes, decontaminate skin and clothing.]
-]
-
-#v(4pt)
-
-// Additional emergency note
-#rect(
-  fill: rgb("#fef9c3"),
-  stroke: 1pt + rgb("#ca8a04"),
-  radius: 6pt,
-  width: 100%,
-  inset: 8pt,
-)[
-  #set text(size: 10pt)
-  #align(center)[
-    #strong[Also call Fire and Rescue (#heb[כיבוי אש]):] 102 — if fire is ongoing
-  ]
+#when-to-apply[
+  Person has inhaled smoke, fumes, or tear gas. Signs: coughing, wheezing, difficulty breathing, hoarse voice, soot around mouth/nose, singed facial hair, burns to face/mouth, confusion, eye irritation and tearing (tear gas).
 ]
 
 #v(8pt)
 
-// === PROTOCOL STEPS ===
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Smoke Inhalation Protocol]
+  #v(4pt)
 
-// Step 1
-#step-box(1, "Ensure scene safety.",
-  detail: "Do NOT re-enter a smoke-filled area to rescue someone unless you are trained and equipped (firefighter with breathing apparatus). If indoors, stay low where air is cleaner (smoke rises). Ensure the area is safe before approaching.",
-  warning: "Never re-enter a burning or smoke-filled structure without proper protective equipment. Wait for Fire and Rescue (102).")
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 1: Scene safety
+    node((0, 0), align(center)[
+      *Step 1:* #action[ENSURE] scene safety. \
+      Do NOT re-enter a smoke-filled \
+      area. Stay low where air \
+      is cleaner.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 2
-#step-box(2, "Determine the type of exposure.")
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Never re-enter a burning \
+      or smoke-filled structure \
+      without proper equipment. \
+      Wait for Fire and Rescue.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#v(4pt)
+    edge((0, 0), (0, 1), "->"),
 
-// Decision point for Step 2
-#decision-box("Is this smoke inhalation (fire, wildfire, fumes) or tear gas exposure?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[For smoke inhalation: proceed to Step 3 (move to fresh air and call 101 immediately).],
-  no-branch[For tear gas exposure: proceed to Step 9 (tear gas protocol).],
-)
+    // Step 2: Determine type
+    node((0, 1), align(center)[
+      *Step 2:* Smoke inhalation \
+      or tear gas exposure?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 10pt)[SMOKE],
+      label-side: center),
 
-// === SMOKE INHALATION BRANCH ===
+    node((1, 1), align(center)[
+      Continue below: \
+      Steps 3--8.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#rect(
-  fill: rgb("#fef2f2"),
-  stroke: 1pt + rgb("#dc2626"),
-  radius: 6pt,
-  width: 100%,
-  inset: 6pt,
-)[
-  #align(center)[#text(weight: "bold", size: 12pt, fill: rgb("#dc2626"))[SMOKE INHALATION BRANCH (Steps 3--8)]]
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 10pt)[TEAR GAS],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      Go to tear gas \
+      protocol (next page, \
+      Steps 9--12).
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 3: Move to fresh air
+    node((0, 2), align(center)[
+      *Step 3:* #action[MOVE] person \
+      to fresh air immediately.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 4: Call 101
+    node((0, 3), align(center)[
+      *Step 4:* #action[CALL] 101 (MDA) \
+      and 102 (Fire) if fire \
+      is still active.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 5: Position
+    node((0, 4), align(center)[
+      *Step 5:* Is person conscious?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      #action[SIT] upright for \
+      easier breathing.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Breathing: recovery position. \
+      Not breathing: lay flat \
+      for CPR (*Step 7*).
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 6: Monitor
+    node((0, 5), align(center)[
+      *Step 6:* #action[MONITOR] breathing. \
+      Look for soot around mouth, \
+      singed facial hair, burns.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 5), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Symptoms may worsen \
+      over hours as airway \
+      swelling develops. A \
+      stable person may \
+      deteriorate.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 5), (0, 6), "->"),
+
+    // Step 7: CPR if needed
+    node((0, 6), align(center)[
+      *Step 7:* Is person breathing?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 6), (1, 6), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 6), align(center)[
+      Continue monitoring. \
+      Maintain position.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 6), (-1, 6), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 6), align(center)[
+      #action[BEGIN] CPR (30:2). \
+      Continue until breathing \
+      resumes or MDA arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 6), (0, 7), "->"),
+
+    // Step 8: Burns and warmth
+    node((0, 7), align(center)[
+      *Step 8:* #action[CHECK] for burns \
+      (face, neck, hands). Cool with \
+      water. Cover with blanket \
+      to prevent hypothermia.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
 ]
 
-#v(4pt)
+// ============================================================
+// PAGE 2: Tear Gas Protocol (Steps 9-12), DO NOT, Equipment
+// ============================================================
+#pagebreak()
 
-// Step 3
-#step-box(3, "Move the person to fresh air immediately.",
-  detail: "Remove the person from the smoke-filled environment. Move them to an area with clean, fresh air.")
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Tear Gas Exposure Protocol]
+  #v(4pt)
 
-#v(4pt)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-// Decision point for Step 3
-#decision-box("Can you safely move the person out of the smoke-filled area?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Remove them immediately to fresh air. Proceed to Step 4.],
-  no-branch[Wait for Fire and Rescue (102) or MDA (101). Do not risk your own safety.],
-)
+    // Step 9: Remove from exposure
+    node((0, 0), align(center)[
+      *Step 9:* #action[REMOVE] from \
+      exposure area. Move to \
+      fresh air, upwind if possible.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 0), (0, 1), "->"),
 
-// Step 4
-#step-box(4, "Call MDA at 101.",
-  detail: "Report the location, number of casualties, and whether the fire is still active. Also call Fire and Rescue at 102 if fire is ongoing. Every second counts in smoke inhalation.")
+    // Step 10: Flush eyes
+    node((0, 1), align(center)[
+      *Step 10:* #action[FLUSH] eyes with \
+      clean water for at least \
+      15 minutes. Do NOT rub eyes.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    node((1, 1), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT use milk or \
+      other substances -- \
+      only clean water or \
+      saline (infection risk).]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-// Step 5
-#step-box(5, "Position the patient for easier breathing.")
+    edge((0, 1), (0, 2), "->"),
 
-#v(4pt)
+    // Step 11: Decontaminate
+    node((0, 2), align(center)[
+      *Step 11:* #action[DECONTAMINATE] skin \
+      and clothing. Remove \
+      contaminated clothing. Wash \
+      with soap and water.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Decision point for Step 5
-#decision-box("Is the person conscious?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Sit them in an upright position -- this helps with easier breathing.],
-  no-branch[If unconscious but breathing, place in the recovery position (on their side). If unconscious and not breathing, lay flat for CPR (proceed to Step 7).],
-)
+    edge((0, 2), (0, 3), "->"),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 12: Monitor
+    node((0, 3), align(center)[
+      *Step 12:* Are symptoms \
+      improving after removal \
+      from exposure?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 6
-#step-box(6, "Monitor breathing and look for warning signs.",
-  detail: "Watch for signs of respiratory distress: coughing, wheezing, difficulty breathing, hoarse voice. Look for soot around mouth/nose, singed facial hair, or burns to the face/mouth.",
-  warning: "Symptoms may worsen over hours as airway swelling develops. A person who appears stable may deteriorate.")
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    node((1, 3), align(center)[
+      Continue monitoring. \
+      Seek medical attention \
+      if pre-existing respiratory \
+      conditions (asthma, COPD).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// Step 7
-#step-box(7, "Begin CPR if the person stops breathing.",
-  detail: "If the person stops breathing, begin CPR immediately (if trained). Use standard 30:2 compression-to-ventilation ratio. Continue until the person starts breathing or MDA arrives.")
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
-
-// Decision point for Step 7
-#decision-box("Is the person breathing?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue monitoring. Maintain upright position (if conscious) or recovery position (if unconscious).],
-  no-branch[Begin CPR immediately with 30:2 compression-to-ventilation ratio. Continue until breathing resumes or MDA arrives.],
-)
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 8
-#step-box(8, "Check for burns and keep the person warm.",
-  detail: "Check for burns, especially to the face, neck, and hands. Cool burns with clean water. Do not remove clothing stuck to burns. Cover with clean, non-adherent dressing. Cover the person with a blanket -- smoke inhalation patients may become hypothermic.")
-
-#v(8pt)
-
-// === TEAR GAS BRANCH ===
-
-#rect(
-  fill: rgb("#fef9c3"),
-  stroke: 1pt + rgb("#ca8a04"),
-  radius: 6pt,
-  width: 100%,
-  inset: 6pt,
-)[
-  #align(center)[#text(weight: "bold", size: 12pt, fill: rgb("#92400e"))[TEAR GAS BRANCH (Steps 9--12)]]
+    node((-1, 3), align(center)[
+      #action[CALL] 101 immediately. \
+      Seek medical attention \
+      for: persistent breathing \
+      difficulty, chest pain, \
+      severe eye pain.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
 ]
-
-#v(4pt)
-
-// Step 9
-#step-box(9, "Tear gas exposure: Remove from exposure area.",
-  detail: "Move the person away from the tear gas source to fresh air. Move upwind if possible. Effects are normally self-limiting once exposure ends.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 10
-#step-box(10, "Tear gas exposure: Flush eyes with water.",
-  detail: "Flush eyes with large amounts of clean, tepid water for at least 15 minutes. Water or saline are the safest options. Do NOT rub the eyes -- this worsens the irritation.",
-  warning: "Do NOT use milk or other substances to flush eyes due to infection risk. Use only clean water or saline.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 11
-#step-box(11, "Tear gas exposure: Decontaminate skin and clothing.",
-  detail: "Remove contaminated clothing. Wash affected skin with soap and water. Blow the nose to clear chemical residue from nasal passages.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 12
-#step-box(12, "Tear gas exposure: Monitor for deterioration.",
-  detail: "Symptoms should begin to subside once exposure is eliminated. If symptoms do not improve or continue to worsen after 30 minutes in fresh air, call MDA at 101.")
-
-#v(4pt)
-
-// Decision point for Step 12
-#decision-box("Are symptoms improving after removal from tear gas exposure?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue monitoring. Seek medical attention if the person has pre-existing respiratory conditions (asthma, COPD), is a child, elderly, or pregnant.],
-  no-branch[Call MDA at 101 immediately. Seek medical attention for: persistent breathing difficulty, chest pain, severe eye pain, or vomiting.],
-)
 
 #v(10pt)
 
-// === DO NOT LIST ===
 #do-not-box((
-  "DO NOT re-enter a smoke-filled or burning structure without proper firefighting equipment and training.",
-  "DO NOT rub eyes after tear gas exposure -- this worsens irritation and spreads the chemical.",
-  "DO NOT use milk or other substances to flush eyes -- use only clean water or saline due to infection risk.",
-  "DO NOT remove clothing stuck to burns.",
-  "DO NOT assume a smoke inhalation patient is stable -- symptoms may worsen over hours as airway swelling develops.",
-  "DO NOT leave a smoke inhalation patient alone -- continuous monitoring is required.",
-  "DO NOT ignore soot around the mouth/nose or singed facial hair -- these are indicators of potentially serious airway injury requiring hospital evaluation.",
+  "Do NOT re-enter a smoke-filled or burning structure without proper firefighting equipment and training.",
+  "Do NOT rub eyes after tear gas exposure -- this worsens irritation and spreads the chemical.",
+  "Do NOT use milk or other substances to flush eyes -- use only clean water or saline due to infection risk.",
+  "Do NOT remove clothing stuck to burns.",
+  "Do NOT assume a smoke inhalation patient is stable -- symptoms may worsen over hours.",
+  "Do NOT leave a smoke inhalation patient alone -- continuous monitoring is required.",
+  "Do NOT ignore soot around the mouth/nose or singed facial hair -- indicators of potentially serious airway injury.",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// === EQUIPMENT ===
 #equipment-box((
   "Phone to call 101 (MDA) and 102 (Fire and Rescue)",
   "Clean water for eye flushing (tear gas) and burn cooling",
@@ -401,13 +460,12 @@
   "Soap for skin decontamination (tear gas)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// === FOOTER ===
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) — MDA First Aid Guidelines - Smoke and Tear Gas Inhalation \
-  Imported: 2026-03-16 · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — Smoke and Tear Gas Inhalation Guidelines \
+  #strong[URL:] https://www.mdais.org/media/4954/mda-first-aid-guidelines-en.pdf \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
+  #strong[Notes:] Covers smoke from fires/wildfires and tear gas exposure in protest/border situations.
 ]

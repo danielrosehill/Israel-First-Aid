@@ -1,281 +1,548 @@
-// First Aid Protocol Flowchart — Severe Bleeding (Hemorrhage Control) — Adult — Israel
-// Generated from: IL-ADULT-SEVERE-BLEEDING-001
-// Generated on: 2026-03-15
+// Israel Adult Severe Bleeding Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-ADULT-SEVERE-BLEEDING-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: "Noto Sans", size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "SEVERE BLEEDING (HEMORRHAGE CONTROL)"
-#let protocol-category = "severe_bleeding"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-SEVERE-BLEEDING-001"
+#let protocol-title = "Severe Bleeding (Hemorrhage Control) — Adult"
+#let protocol-subject = "SEVERE BLEEDING"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-date = "2026-03-15"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) -- CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
+    )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt, width: 100%)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"))[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ v]
+#let emergency-numbers-strip() = {
+  rect(
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
   ]
 }
 
-#let equipment-box(items) = {
+#let when-to-apply(content) = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#ca8a04"), weight: "bold", size: 12pt)[EQUIPMENT NEEDED:]
-    #v(4pt)
-    #for item in items [
-      - #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-// === DOCUMENT ===
+// ============================================================
+// PAGE 1: Title, Assessment, Steps 1-5
+// ============================================================
 
-// Header
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country -- #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
-#v(8pt)
-
-// Emergency number
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// When to apply
+#v(6pt)
 #rect(
-  fill: rgb("#faf5ff"),
-  stroke: 1pt + rgb("#7c3aed"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", fill: rgb("#7c3aed"), size: 11pt)[WHEN TO APPLY:] Severe or uncontrolled external bleeding from any cause including trauma, amputation, crush injury, or penetrating injury. Signs include rapid spurting or steady flow of blood, pooling blood, blood-soaked clothing, or a severed or partially severed limb.
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY IF IN DOUBT
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+// --- When to Apply ---
+#when-to-apply[
+  Severe or uncontrolled external bleeding from any cause including trauma, amputation, crush injury, or penetrating injury. Signs: rapid spurting or steady flow of blood, pooling blood, blood-soaked clothing, or a severed/partially severed limb.
 ]
 
 #v(6pt)
 
-// --- FLOWCHART STEPS ---
+// --- Summary ---
+#rect(
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Control severe external bleeding through escalating interventions: direct pressure, Israeli bandage, wound packing, and tourniquet.
+]
 
-#step-box(1, "Ensure scene safety and wear disposable gloves if available.",
-  detail: "Do not approach the casualty until the scene is safe. Gloves are standard in Israeli first aid kits.")
+#v(8pt)
 
-#arrow-down()
+// --- Initial Steps: 1-3 ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Assessment]
+  #v(4pt)
 
-#step-box(2, "Call 101 (Magen David Adom) immediately.",
-  detail: "Provide location, number of casualties, and nature of injuries. If alone and bleeding is immediately life-threatening, begin hemorrhage control first and call as soon as possible.")
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#arrow-down()
+    // Step 1: Scene safety
+    node((0, 0), align(center)[
+      *Step 1:* #action[CHECK] scene safety. \
+      Wear disposable gloves \
+      if available.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#step-box(3, "Check for embedded or impaled objects in the wound.")
+    edge((0, 0), (0, 1), "->"),
 
-#v(4pt)
+    // Step 2: Call 101
+    node((0, 1), align(center)[
+      *Step 2:* #action[CALL] 101 (MDA) \
+      immediately. Provide location, \
+      number of casualties, \
+      nature of injuries.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#decision-box("Is there an embedded or impaled object (knife, shrapnel, glass, etc.) in the wound?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Do NOT remove the object. Stabilise it in place with padding and bandages around it. Apply pressure around the object, not on it. Skip to Step 11 (monitor for shock).],
-  no-branch[Proceed to Step 4 (direct pressure).],
-)
+    edge((0, 1), (0, 2), "->"),
 
-#arrow-down()
+    // Step 3: Check for embedded objects
+    node((0, 2), align(center)[
+      *Is there an embedded or* \
+      *impaled object in the wound?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#step-box(4, "Apply strong, direct pressure to the source of bleeding with your gloved hand or sterile gauze.",
-  detail: "Press firmly directly on the wound. Use your bare or gloved hand initially, then replace with a sterile bandage, towel, or clean cloth as soon as available. Maintain continuous, firm pressure without lifting to check -- this allows clot formation.")
+    // YES -> stabilise
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#arrow-down()
+    node((1, 2), align(center)[
+      Do NOT remove it. \
+      #action[IMMOBILISE] with \
+      padding around it. \
+      #action[APPLY] pressure \
+      around, not on it. \
+      Go to Step 11.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#step-box(5, "If the first dressing soaks through, add additional layers on top without removing the original dressing.",
-  detail: "Use a triangular bandage, sheet, or clean towel if additional material is needed. Never remove a blood-soaked dressing -- only add on top.")
+    // NO -> Step 4
+    edge((0, 2), (0, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
+    // Step 4: Direct pressure
+    node((0, 3), align(center)[
+      *Step 4:* #action[APPLY] strong, \
+      direct pressure to the wound \
+      with gloved hand or gauze. \
+      Maintain continuous pressure.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#decision-box("Has direct pressure controlled the bleeding?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Maintain pressure. Elevate the limb above heart level if possible (Step 6). Continue to Step 11 (monitor for shock).],
-  no-branch[Proceed to Step 7 (apply Israeli bandage / pressure dressing).],
-)
+    edge((0, 3), (0, 4), "->"),
 
-#arrow-down()
+    // Step 5: Dressing soaks through
+    node((0, 4), align(center)[
+      *Step 5:* If dressing soaks through, \
+      add layers on top. \
+      Never remove blood-soaked \
+      dressing.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#step-box(6, "If possible, elevate the injured limb above heart level.",
-  detail: "Elevation is an adjunct to direct pressure, not a replacement. It reduces blood flow to the injured area.")
+    // Warning
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Never lift or remove \
+      a blood-soaked dressing \
+      to check the wound.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
+]
 
-#arrow-down()
-
-#step-box(7, "Apply an Israeli Emergency Bandage (pressure dressing).",
-  detail: "1) Apply the white sterile pad directly over the wound. 2) Wrap the elastic bandage around the injured area, passing through the pressure bar. 3) Reverse direction and continue wrapping to apply circumferential pressure. 4) Secure using the built-in closure bar.",
-  warning: "The elastic component can occlude arteries. Verify distal pulse after application. The bandage should be tight enough to control bleeding but not so tight as to act as a tourniquet (unless that is the intent).")
-
-#v(4pt)
-
-#decision-box("Has the Israeli bandage controlled the bleeding?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Maintain the dressing in place. Continue to Step 11 (monitor for shock).],
-  no-branch[Assess wound location. If limb, go to Step 8b (tourniquet). If junctional area (groin, neck, axilla, shoulder), go to Step 8a (wound packing).],
-)
-
+// ============================================================
+// PAGE 2: Escalation — Steps 5-10
+// ============================================================
 #pagebreak()
 
-// Page 2 header
-#align(center)[
-  #text(size: 18pt, weight: "bold")[#protocol-title (continued)]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country -- #age-group]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Hemorrhage Control Escalation]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Decision: bleeding controlled?
+    node((0, 0), align(center)[
+      *Has direct pressure* \
+      *controlled the bleeding?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> elevate
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      Maintain pressure. \
+      #action[ELEVATE] limb \
+      above heart level. \
+      Go to Step 11.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> Israeli bandage
+    edge((0, 0), (0, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 6: Elevate (always do if possible)
+    node((0, 1), align(center)[
+      *Step 6:* #action[ELEVATE] injured \
+      limb above heart level \
+      (adjunct to pressure).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 7: Israeli bandage
+    node((0, 2), align(center)[
+      *Step 7:* #action[APPLY] Israeli \
+      Emergency Bandage. \
+      Pad on wound, wrap elastic, \
+      pass through pressure bar, \
+      reverse and secure.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 2), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Verify distal pulse \
+      after application. \
+      Too tight may act \
+      as tourniquet.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: bandage controlled?
+    node((0, 3), align(center)[
+      *Has the Israeli bandage* \
+      *controlled the bleeding?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> monitor
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      Maintain dressing. \
+      Go to Step 11 \
+      (monitor for shock).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> escalate
+    edge((0, 3), (0, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 8: Limb or junctional?
+    node((0, 4), align(center)[
+      *Is the wound on a limb* \
+      *(arm or leg)?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> tourniquet
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      #action[APPLY] tourniquet \
+      5--10 cm above wound. \
+      Tighten until bleeding \
+      stops. Record time \
+      (e.g. "TQ 1430").
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> wound packing
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Junctional wound \
+      (groin, neck, axilla). \
+      #action[APPLY] wound packing: \
+      gauze finger-by-finger \
+      in sunburst pattern. \
+      #action[PRESS] for 1--2 min.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
 ]
 
-#v(4pt)
-#emergency-box(emergency-number, emergency-service)
 #v(6pt)
 
-#step-box(8, "Escalate hemorrhage control: wound packing (junctional areas) or tourniquet (limbs).",
-  detail: "Choose the appropriate method based on wound location.")
+// Warning about tourniquet
+#keep-together[
+  #rect(
+    fill: clr-warning-fill,
+    stroke: 2pt + clr-warning,
+    radius: 4pt,
+    width: 100%,
+    inset: 8pt,
+  )[
+    #text(fill: clr-warning, weight: "bold", size: 10pt)[TOURNIQUET WARNING:] A properly applied tourniquet completely blocks blood flow and will cause significant pain -- this is expected. Do NOT remove or loosen once applied unless instructed by a paramedic or physician.
+  ]
+]
 
-#v(4pt)
+// ============================================================
+// PAGE 3: Shock Monitoring, DO NOT, Equipment
+// ============================================================
+#pagebreak()
 
-#decision-box("Is the wound on a limb (arm or leg)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Apply a tourniquet (Step 10).],
-  no-branch[Apply wound packing for junctional wounds -- groin, neck, axilla, shoulder (Step 9).],
-)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Shock Monitoring]
+  #v(4pt)
 
-#arrow-down()
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#step-box("9 (Wound Packing)", "Wound packing for junctional areas (groin, neck, axilla, shoulder).",
-  detail: "1) Insert specialised hemostatic or plain gauze finger-by-finger into the wound. 2) Fill internally in a sunburst pattern to create internal pressure against the bleeding vessel. 3) Apply the attached dressing with direct pressure for 1-2 minutes. 4) Tighten bandage straps to maintain pressure.",
-  warning: "Do NOT use wound packing for penetrating stab wounds. Do NOT enlarge wound openings to facilitate packing.")
+    // Step 11: Monitor for shock
+    node((0, 0), align(center)[
+      *Step 11:* #action[MONITOR] for \
+      hypovolemic shock. \
+      Watch for: rapid pulse, \
+      pale/cool/clammy skin, \
+      confusion, rapid breathing.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    edge((0, 0), (0, 1), "->"),
 
-#step-box("10 (Tourniquet)", "Apply a tourniquet for uncontrolled limb bleeding.",
-  detail: "1) Place the tourniquet 5-10 cm above the source of bleeding (proximal, toward the heart). 2) Tighten the windlass/mechanism until bleeding completely stops. 3) Secure the windlass in place. 4) Record the time of application -- write on the casualty's forehead or another visible location: 'TQ' followed by the time in 4-digit format (e.g., 'TQ 1430'). 5) Leave approximately 15 cm of strap, which can be folded in an R-shape for visibility.",
-  warning: "A tourniquet completely blocks blood flow distal to the application point, risking tissue death if left too long. A properly applied tourniquet will cause significant pain -- this is expected. Do NOT remove or loosen a tourniquet once applied unless instructed by a paramedic or physician.")
+    // Decision: signs of shock?
+    node((0, 1), align(center)[
+      *Signs of shock present?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    // YES -> shock treatment
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#step-box(11, "Monitor the casualty for signs of hypovolemic shock.",
-  detail: "Watch for: rapid pulse, pale/cool/clammy skin, confusion, rapid breathing. Keep the casualty warm and lying down. Reassure the casualty and wait for MDA responders.")
+    node((1, 1), align(center)[
+      Keep lying down. \
+      #action[ELEVATE] legs \
+      (no spinal injury). \
+      Keep warm with blanket. \
+      No food or drink. \
+      Update 101 dispatcher.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
+    // NO -> continue monitoring
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#decision-box("Is the casualty showing signs of shock (rapid pulse, pale/cool/clammy skin, confusion, rapid breathing)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Keep the casualty lying down with legs elevated if no spinal injury is suspected. Keep them warm with a blanket or coat. Do not give food or drink. Urgently update the 101 dispatcher on the casualty's deterioration.],
-  no-branch[Continue monitoring. Maintain hemorrhage control measures. Keep the casualty warm and reassured until MDA arrives.],
-)
+    node((-1, 1), align(center)[
+      Continue monitoring. \
+      Maintain hemorrhage \
+      control. Keep warm \
+      and reassured until \
+      MDA arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
 #v(10pt)
 
-// Do Not list
+// --- DO NOT List ---
 #do-not-box((
   "Do not remove an embedded or impaled object from the wound.",
   "Do not lift or remove a blood-soaked dressing to check the wound -- add layers on top.",
@@ -285,12 +552,12 @@
   "Do not enlarge wound openings to facilitate wound packing.",
   "Do not assume a rapid pulse is caused only by anxiety or pain -- suspect significant blood loss.",
   "Do not delay calling 101 for severe or uncontrolled bleeding.",
-  "Do not apply a tourniquet directly over a joint -- place it 5-10 cm above the wound on the limb.",
+  "Do not apply a tourniquet directly over a joint -- place it 5--10 cm above the wound on the limb.",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// Equipment
+// --- Equipment ---
 #equipment-box((
   "Disposable gloves",
   "Sterile gauze or clean cloth",
@@ -301,12 +568,19 @@
   "Blanket or coat (for shock management)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority (#source-date) · Last verified: #last-verified · ID: IL-ADULT-SEVERE-BLEEDING-001 \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "How to Stop Bleeding (MDA 101 Public Guidance)" \
+  #strong[URL:] https://www.mdais.org/101/bleeding \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Escalation order includes wound packing (sunburst technique) from Hatzalah supplementary material.
 ]

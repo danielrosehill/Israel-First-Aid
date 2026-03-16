@@ -1,313 +1,341 @@
-// First Aid Protocol Flowchart — Heart Attack / Chest Pain (Child, Israel)
-// Generated from: protocols/child/israel/heart-attack.json
-// Generated on: 2026-03-15
+// Israel Child Heart Attack Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-CHILD-HEART-ATTACK-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "HEART ATTACK / CHEST PAIN"
-#let protocol-category = "heart_attack"
+#let protocol-id = "IL-CHILD-HEART-ATTACK-001"
+#let protocol-title = "Heart Attack / Cardiac Emergency — Child"
+#let protocol-subject = "HEART ATTACK"
+#let age-group = "CHILD"
 #let country = "Israel"
-#let age-group = "Child"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-date = "MDA BLS Guide 2016; MDA ALS Guide 2022; MDA Training Syllabus 2026"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
-
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(columns: (1fr, auto, 1fr), gutter: 0pt,
+      align(left)[#text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[#upper(age-group) — #upper(protocol-subject)]],
+      align(center)[#rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[#text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]]],
+      align(right)[#rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[#text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]]],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(columns: (1fr, auto, 1fr), gutter: 0pt,
+      align(left)[#text(size: 7pt, fill: rgb("#9ca3af"))[#protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)]],
+      align(center)[#text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[Personal reference only — not medical advice]],
+      align(right)[#rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[#text(weight: "bold", size: 8pt)[#page-num / #page-total]]],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
+}
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
-
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES → ] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO → ] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
-
-#let equipment-box(items) = {
+#let emergency-numbers-strip() = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-// === DOCUMENT ===
+// ============================================================
+// PAGE 1
+// ============================================================
 
-// Header
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number — DO NOT GIVE ASPIRIN TO CHILDREN]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  Child with persistent/severe chest pain (especially during exertion), syncope during activity, palpitations, unexplained breathlessness, sudden collapse during sports, cyanosis, chest pain with fever (possible myocarditis), or any cardiac symptoms in a child with known heart condition. True MI is exceedingly rare in children -- cardiac causes include myocarditis, congenital defects, hypertrophic cardiomyopathy, commotio cordis.
 ]
 
 #v(8pt)
 
-// Emergency number (primary)
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(6pt)
-
-// --- WHEN TO APPLY ---
-#rect(
-  fill: rgb("#fef9c3"),
-  stroke: 1pt + rgb("#ca8a04"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt)[When to apply this protocol:]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Assessment and Response (Steps 1--6)]
   #v(4pt)
-  #text(size: 9pt)[
-    Persistent, severe, or worsening chest pain (especially during/after activity) -- syncope or near-fainting during activity -- palpitations -- unexplained shortness of breath -- sudden collapse during sports -- cyanosis (bluish lips/fingertips) -- chest pain with fever (possible myocarditis/pericarditis) -- any new cardiac symptoms in a child with a known heart condition.
-  ]
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 1:* #action[ASSESS] for cardiac \
+      warning signs. Stay calm, \
+      reassure the child.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Step 2:* #action[CALL] 101 immediately. \
+      Describe symptoms, age, \
+      known conditions.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Step 3:* Is the child \
+      conscious and breathing?
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 2), align(center)[
+      *Step 4:* #action[POSITION] \
+      comfortably -- sitting \
+      up or semi-reclined.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 2), align(center)[
+      Unconscious + breathing: \
+      recovery position. \
+      Not breathing: CPR (Step 7).
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 5:* #action[MONITOR] continuously. \
+      Loosen clothing. Keep warm. \
+      No food or drink. Note \
+      time symptoms began.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT give aspirin to \
+      a child. Risk of Reye's \
+      syndrome. Do NOT give \
+      any medications unless \
+      instructed by dispatcher.]
+    ], shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning, width: 48mm, inset: 6pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 6:* Did the child collapse \
+      after a direct blow to \
+      the chest during sports?
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 4), align(center)[
+      Likely *commotio cordis*. \
+      If unresponsive/not breathing: \
+      #action[BEGIN] CPR + AED \
+      within 3 minutes.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 4), align(center)[
+      Continue monitoring. \
+      Keep calm. Wait for EMS.
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+  )
 ]
 
-#v(6pt)
+// ============================================================
+// PAGE 2: CPR and AED
+// ============================================================
+#pagebreak()
 
-// --- PROTOCOL STEPS ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[CPR and AED (Steps 7--9)]
+  #v(4pt)
 
-// Step 1
-#step-box(1, "Stay calm and reassure the child. Assess for cardiac warning signs.",
-  detail: "Look for: persistent or severe chest pain, pain during exertion, syncope or near-syncope, palpitations, unexplained breathlessness, cyanosis, sudden collapse. Red flags: pain during exertion (not at rest), associated syncope/dizziness, known congenital heart condition, family history of sudden cardiac death at a young age, recent viral illness followed by new chest pain/fatigue/breathlessness (possible myocarditis), or direct blow to the chest immediately before collapse (commotio cordis).",
-)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#v(4pt)
+    node((0, 0), align(center)[
+      *Step 7:* If unresponsive and not \
+      breathing, #action[BEGIN] paediatric CPR. \
+      Solo: 30:2. Two rescuers: 15:2. \
+      Rate: 100--120/min. \
+      Depth: ~5 cm (1/3 chest).
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
 
-// Step 2
-#step-box(2, "Call 101 (MDA) immediately.",
-  detail: "Describe the child's symptoms, age, and any known medical conditions to the dispatcher. Follow all instructions from the MDA dispatcher. If a bystander is present, have them make the call while you stay with the child.",
-)
+    edge((0, 0), (0, 1), "->"),
 
-#v(4pt)
+    node((0, 1), align(center)[
+      *Step 8:* #action[APPLY] AED as \
+      soon as available.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
 
-// Step 3
-#step-box(3, "Assess the child's level of consciousness and breathing.")
+    edge((0, 1), (0, 2), "->"),
 
-#v(4pt)
+    node((0, 2), align(center)[
+      *Paediatric AED pads available?*
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
 
-#decision-box("Is the child conscious and breathing?")
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 2), align(center)[
+      Use paediatric pads. \
+      Follow AED prompts.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 2), align(center)[
+      Use adult pads. If pads \
+      overlap on small child: \
+      one front, one back. \
+      Do not delay.
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
 
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Position the child comfortably. Proceed to Step 4.],
-  no-branch[If unconscious but breathing: recovery position (on their side). If not breathing or no pulse: proceed immediately to Step 7 (CPR).],
-)
+    edge((0, 2), (0, 3), "->"),
 
-#v(4pt)
+    node((0, 3), align(center)[
+      *Step 9:* #action[CONTINUE] CPR and AED \
+      until EMS arrives, child recovers, \
+      or too exhausted. Rotate \
+      compressor every 2 min.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+  )
+]
 
-// Step 4
-#step-box(4, "Position the conscious child in a comfortable position -- typically sitting up or semi-reclined.",
-  detail: "A sitting or semi-reclined position eases breathing. Allow the child to adopt whatever position feels most comfortable.",
-)
+#v(10pt)
 
-#v(4pt)
-
-// Step 5
-#step-box(5, "Keep the child calm and monitor continuously.",
-  detail: "Loosen tight clothing around the chest and neck. Keep the child warm but not overheated. Do NOT allow the child to eat or drink (in case hospital procedures are needed). Continuously monitor breathing and level of consciousness. Note the time symptoms began and relay this to the ambulance crew.",
-  warning: "Do NOT give aspirin to the child. Unlike the adult heart attack protocol, aspirin is not indicated for pediatric chest pain and carries a risk of Reye's syndrome. Do NOT give any medications unless specifically instructed by the 101 dispatcher or a physician.",
-)
-
-#v(4pt)
-
-// Step 6
-#step-box(6, "Assess whether the situation involves commotio cordis.")
-
-#v(4pt)
-
-#decision-box("Did the child collapse immediately after a direct blow to the chest during sports or physical activity?")
-
-#v(4pt)
-
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Likely commotio cordis -- a time-critical emergency. Check responsiveness immediately. If unresponsive and not breathing, begin CPR (Step 7) and use an AED as fast as possible. Defibrillation within 3 minutes gives the best chance of survival.],
-  no-branch[Continue monitoring the child and wait for emergency services. Keep the child calm and in a comfortable position.],
-)
-
-#v(4pt)
-
-// Step 7
-#step-box(7, "If the child becomes unresponsive and is not breathing normally, begin pediatric CPR immediately.",
-  detail: "Single rescuer: 30:2 compression-to-ventilation ratio. Two rescuers: 15:2. Compression rate: 100-120 per minute. Compression depth: approximately 5 cm (one-third of chest depth) for children aged 1 year to puberty. After 5 cycles (approximately 2 minutes), call 101 if not already done.",
-  warning: "Do NOT delay CPR while waiting for an AED. Begin compressions immediately.",
-)
-
-#v(4pt)
-
-// Step 8
-#step-box(8, "Use an AED as soon as one is available.",
-  detail: "Use pediatric pads or a dose attenuator if available for children under 8 years or under 25 kg. If only adult pads are available, use them -- do not delay defibrillation. MDA has deployed over 4,000 public-access defibrillators across Israel; their locations are available via the MDA app and website.",
-)
-
-#v(4pt)
-
-#decision-box("Are pediatric AED pads available?")
-
-#v(4pt)
-
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Use pediatric pads or dose attenuator. Follow AED voice prompts.],
-  no-branch[Use adult pads. If pads overlap on a small child, place one on front of chest and one between shoulder blades. Follow AED voice prompts.],
-)
-
-#v(4pt)
-
-// Step 9
-#step-box(9, "Continue CPR and AED use until emergency services arrive, the child recovers, or you are too exhausted to continue.",
-  detail: "Continue CPR cycles between AED analysis and shocks. If multiple rescuers are present, rotate the compressor role every 2 minutes to maintain quality compressions.",
-)
-
-#v(8pt)
-
-// --- DO NOT LIST ---
 #do-not-box((
-  "Do NOT give aspirin to a child -- carries a risk of Reye's syndrome.",
+  "Do NOT give aspirin to a child -- risk of Reye's syndrome (unlike adult protocol).",
   "Do NOT give nitroglycerin or any cardiac medication unless prescribed and directed by a physician.",
-  "Do NOT dismiss chest pain in a child who has recently been ill, has a known heart condition, collapsed during activity, or has a family history of sudden cardiac death.",
-  "Do NOT attempt to drive the child to hospital yourself if cardiac arrest is suspected -- call 101 for an ambulance.",
-  "Do NOT leave the child unattended while waiting for the ambulance.",
-  "Do NOT give the child food or drink (in case hospital procedures are needed).",
-  "Do NOT give any medications unless specifically instructed by the 101 dispatcher or a physician.",
+  "Do NOT dismiss chest pain in a child with recent illness, known heart condition, or collapse during activity.",
+  "Do NOT attempt to drive the child to hospital -- call 101 for ambulance with monitoring equipment.",
+  "Do NOT leave the child unattended while waiting.",
+  "Do NOT give food or drink (hospital procedures may be needed).",
+  "Do NOT give any medications unless instructed by the 101 dispatcher or a physician.",
 ))
 
-#v(6pt)
+#v(10pt)
 
-// --- EQUIPMENT ---
 #equipment-box((
-  "AED with pediatric pads or dose attenuator (if available)",
+  "AED with paediatric pads or dose attenuator (if available)",
   "Phone to call 101 (MDA) or 1221 (United Hatzalah)",
   "MDA app (for AED locator and emergency calling)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority (#source-date) · Last verified: #last-verified \
-  *Personal reference only — not medical advice.* Always call #emergency-number in an emergency.
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — MDA BLS Guide 2016; ALS Guide 2022; Training Syllabus 2026 \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] True MI is exceedingly rare in children. Rare cardiac causes include myocarditis, congenital defects, hypertrophic cardiomyopathy, commotio cordis, Kawasaki disease, Long QT syndrome.
 ]

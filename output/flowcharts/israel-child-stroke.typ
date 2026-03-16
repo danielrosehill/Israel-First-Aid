@@ -1,280 +1,280 @@
-// First Aid Protocol Flowchart — Stroke (Cerebrovascular Event) in Children
-// Protocol ID: IL-CHILD-STROKE-001
+// Israel Child Stroke Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Generated: 2026-03-15
+// Protocol ID: IL-CHILD-STROKE-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "STROKE IN CHILDREN"
-#let protocol-subtitle = "Cerebrovascular Event — Pediatric"
+#let protocol-id = "IL-CHILD-STROKE-001"
+#let protocol-title = "Stroke (Cerebrovascular Event) — Child"
+#let protocol-subject = "STROKE"
+#let age-group = "CHILD"
 #let country = "Israel"
-#let age-group = "Child"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
+#let source-authority = "Magen David Adom"
 #let source-date = "2024-11-18"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
-
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(columns: (1fr, auto, 1fr), gutter: 0pt,
+      align(left)[#text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[#upper(age-group) — #upper(protocol-subject)]],
+      align(center)[#rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[#text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]]],
+      align(right)[#rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[#text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]]],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(columns: (1fr, auto, 1fr), gutter: 0pt,
+      align(left)[#text(size: 7pt, fill: rgb("#9ca3af"))[#protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)]],
+      align(center)[#text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[Personal reference only — not medical advice]],
+      align(right)[#rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[#text(weight: "bold", size: 8pt)[#page-num / #page-total]]],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
+}
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
-
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let do-not-box(items) = {
+#let emergency-numbers-strip() = {
   rect(
     fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-// === DOCUMENT ===
+// ============================================================
+// PAGE 1
+// ============================================================
 
-// Header
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 14pt, fill: rgb("#4b5563"))[#protocol-subtitle]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number — TIME IS BRAIN]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  Child showing: facial drooping, arm weakness/drift, slurred speech, sudden severe headache with vomiting, new-onset seizure (especially one-sided), sudden altered mental status, sudden loss of balance, sudden vision loss. Children may present atypically: seizures at onset, gradual symptoms, irritability, feeding difficulty, lethargy in young children.
+]
+
+#v(4pt)
+
+#keep-together[
+  #rect(fill: rgb("#eff6ff"), stroke: 2pt + rgb("#2563eb"), radius: 6pt, width: 100%, inset: 12pt)[
+    #text(fill: rgb("#1e40af"), weight: "bold", size: 13pt)[FAST Assessment]
+    #v(4pt)
+    #set text(size: 11pt)
+    #strong[F]ace: Ask child to smile -- check for drooping/asymmetry \
+    #strong[A]rms: Ask child to raise both arms -- check if one drifts down \
+    #strong[S]peech: Ask child to repeat a phrase -- check for slurring \
+    #strong[T]ime: Note exact time symptoms began \
+    #v(4pt)
+    #text(size: 9pt, fill: rgb("#6b7280"))[Note: FAST is not validated for the paediatric population and may miss atypical presentations.]
+  ]
 ]
 
 #v(8pt)
 
-// Emergency number (primary)
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// When to suspect stroke
-#rect(
-  fill: rgb("#fef2f2"),
-  stroke: 1.5pt + rgb("#dc2626"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(fill: rgb("#dc2626"), weight: "bold", size: 11pt)[SUSPECT STROKE IF THE CHILD SHOWS ANY OF:]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Response Steps (1--7)]
   #v(4pt)
-  #set text(size: 10pt)
-  - Facial drooping or asymmetry
-  - Arm weakness or drift
-  - Slurred or incomprehensible speech
-  - Sudden severe headache with vomiting
-  - New-onset seizure (especially one-sided)
-  - Sudden altered mental status or confusion
-  - Sudden loss of balance or coordination
-  - Sudden vision loss or sudden behavioural changes
-  - In very young children: irritability, feeding difficulty, or lethargy
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 1:* #action[APPLY] FAST assessment. \
+      Also check for atypical signs: \
+      seizures, headache with vomiting, \
+      sudden behavioural changes.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[In children, stroke may \
+      present differently. \
+      Seizures at onset, \
+      gradual symptoms, \
+      irritability in young \
+      children.]
+    ], shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning, width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Step 2:* #action[CALL] 101 immediately. \
+      State: suspect child stroke.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Step 3:* #action[NOTE] exact time \
+      symptoms began. Critical for \
+      treatment decisions. \
+      Alteplase: within 4.5 hrs. \
+      Clot removal: within 6--24 hrs.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 4:* Is the child conscious?
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 3), align(center)[
+      Lay down with head \
+      and shoulders slightly \
+      elevated. Keep calm/still.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 3), align(center)[
+      *Step 5:* Breathing? \
+      Yes: recovery position. \
+      No: #action[BEGIN] CPR.
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 6:* Is the child \
+      having a seizure?
+    ], shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke, width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES], label-side: center),
+    node((1, 4), align(center)[
+      Clear area. Do NOT \
+      restrain. Do NOT insert \
+      anything in mouth. \
+      After: recovery position. \
+      Note duration/type.
+    ], shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes, width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO], label-side: center),
+    node((-1, 4), align(center)[
+      Continue monitoring.
+    ], shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no, width: 48mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    node((0, 5), align(center)[
+      *Step 7:* #action[MONITOR] continuously \
+      until EMS arrives. Watch for \
+      changes in consciousness, \
+      breathing, symptoms. Be ready \
+      for CPR.
+    ], shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke, width: 60mm, inset: 8pt),
+  )
 ]
 
-#v(6pt)
+#v(10pt)
 
-// === PROTOCOL STEPS ===
-
-#step-box(1, "Apply the FAST assessment to check for stroke signs.",
-  detail: "F (Face): Ask the child to smile — check for facial drooping or asymmetry. A (Arms): Ask the child to raise both arms — check if one drifts downward or cannot be raised. S (Speech): Ask the child to repeat a simple phrase — check for slurred, confused, or incomprehensible speech. T (Time): Note the exact time symptoms began.",
-  warning: "In children, stroke may present differently from adults. Be alert for seizures at onset, sudden severe headache with vomiting, gradual onset of symptoms, altered mental status, ataxia, or subtle signs in very young children (irritability, feeding difficulty, lethargy). FAST is not validated for the pediatric population and may miss atypical presentations.")
-
-#v(6pt)
-
-// Decision Point: FAST signs present?
-#decision-box("Is any FAST sign present, or are there other neurological signs suggestive of stroke?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Call 101 immediately and continue with the remaining steps.],
-  no-branch[Continue to monitor the child. If symptoms develop or you remain concerned, call 101.],
-)
-
-#v(6pt)
-
-#step-box(2, "Call 101 (MDA) immediately if any stroke signs are present.",
-  detail: "State clearly that you suspect a child is having a stroke. Describe the symptoms observed. MDA dispatchers will guide you while sending an ambulance to the appropriate stroke centre.")
-
-#v(6pt)
-
-#step-box(3, "Note the exact time symptoms began.",
-  detail: "This is critical for the medical team. Clot-dissolving medication (alteplase) is only effective within approximately 4.5 hours for children aged 28 days to 18 years. Mechanical clot removal may be effective for children aged 6 and older within 6--24 hours in certain cases. If you did not witness onset, note the last time the child was seen acting normally.")
-
-#v(6pt)
-
-// Decision Point: Is the child conscious?
-#step-box(4, "Keep the child calm and still. Position the child appropriately.",
-  detail: "Lay the child down in a comfortable position. Loosen any tight clothing around the neck and chest.")
-
-#v(4pt)
-
-#decision-box("Is the child conscious?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Lay the child down with head and shoulders slightly elevated. Keep them calm and still.],
-  no-branch[Proceed to Step 5 to assess breathing and position accordingly.],
-)
-
-#v(6pt)
-
-// Decision Point: Unconscious — breathing?
-#step-box(5, "If the child is unconscious, assess breathing and act accordingly.")
-
-#v(4pt)
-
-#decision-box("Is the unconscious child breathing?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Place the child in the recovery position (on their side) and monitor continuously.],
-  no-branch[Begin CPR immediately and follow MDA dispatcher instructions.],
-)
-
-#v(6pt)
-
-// Decision Point: Seizure?
-#step-box(6, "If the child has a seizure, manage it safely.",
-  detail: "Do not restrain the child. Do not put anything in the child's mouth. Protect the child from injury by clearing the surrounding area. After the seizure stops, place the child on their side. Note the duration and type of seizure for medical personnel.")
-
-#v(4pt)
-
-#decision-box("Is the child having a seizure?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Clear the area around the child to prevent injury. Do not restrain or insert anything into the mouth. After the seizure stops, place on their side. Note duration and type.],
-  no-branch[Continue monitoring the child for changes in consciousness, breathing, and symptoms.],
-)
-
-#v(6pt)
-
-#step-box(7, "Monitor the child continuously until emergency services arrive.",
-  detail: "Watch for changes in consciousness, breathing, and symptoms. Be prepared to report any progression to MDA paramedics on arrival. Be ready to begin CPR if the child becomes unresponsive and stops breathing.")
-
-#v(8pt)
-
-// === DO NOT LIST ===
 #do-not-box((
-  "Delay calling 101 to wait and see if symptoms resolve.",
-  "Give the child any food or drink -- stroke may impair the swallowing reflex, creating a risk of aspiration and choking.",
-  "Give any medications, especially not aspirin -- if the stroke is haemorrhagic (bleeding), aspirin will worsen it.",
-  "Attempt to drive the child to hospital yourself unless MDA explicitly advises it. MDA ambulances can begin treatment en route and will transport to the appropriate stroke centre.",
-  "Assume a child cannot have a stroke -- children can have strokes at any age.",
-  "Restrain the child during a seizure.",
-  "Put anything in the child's mouth during a seizure.",
-  "Rely solely on FAST to rule out stroke in children -- adult stroke screening tools are not validated for the pediatric population and may miss atypical presentations.",
+  "Do NOT delay calling 101 to wait and see if symptoms resolve.",
+  "Do NOT give any food or drink -- stroke impairs swallowing, risk of aspiration.",
+  "Do NOT give any medications, especially not aspirin -- if haemorrhagic, aspirin will worsen it.",
+  "Do NOT attempt to drive to hospital -- MDA ambulances begin treatment en route.",
+  "Do NOT assume a child cannot have a stroke -- children can have strokes at any age.",
+  "Do NOT restrain the child during a seizure.",
+  "Do NOT put anything in the child's mouth during a seizure.",
+  "Do NOT rely solely on FAST -- adult screening tools are not validated for children.",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority (#source-date) · Last verified: #last-verified \
-  Protocol ID: IL-CHILD-STROKE-001 \
-  *Personal reference only — not medical advice.* Always call #emergency-number in an emergency.
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — MDA Stroke Recognition Protocol (FAST); AHA 2024/2026 \
+  #strong[URL:] https://www.mdais.org/101/stroke \
+  #strong[Publication date:] 2024-11-18 · #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Treatment windows: alteplase ~4.5 hrs (ages 28 days--18 yrs), mechanical clot removal 6--24 hrs (age 6+).
 ]

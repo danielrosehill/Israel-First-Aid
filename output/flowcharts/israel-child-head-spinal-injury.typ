@@ -1,445 +1,522 @@
-// First Aid Protocol Flowchart — Head and Spinal Injury (Child) — Israel
-// Generated from: IL-CHILD-HEAD-SPINAL-INJURY-001
+// Israel Child Head/Spinal Injury Flowchart -- V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Designed for A4 printing, readable under stress
+// Protocol ID: IL-CHILD-HEAD-SPINAL-INJURY-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "HEAD & SPINAL INJURY — CHILD"
+// === METADATA ===
+#let protocol-id = "IL-CHILD-HEAD-SPINAL-INJURY-001"
+#let protocol-title = "Head / Spinal Injury First Aid -- Child"
+#let protocol-subject = "HEAD/SPINAL INJURY"
+#let age-group = "CHILD"
 #let country = "Israel"
-#let age-group = "Child"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-document = "MDA BLS Guide (2016), MDA ALS Professional Manual (2024), and Israeli Standard-of-Care Paediatric Head Injury Guidance"
-#let source-url = "https://www.mdais.org/101/first-aid"
-#let imported-date = "2026-03-15"
+#let source-authority = "Magen David Adom"
+#let source-date = "2024-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
-
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt, width: 100%)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold", size: 11pt)[YES:] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold", size: 11pt)[NO:] #content
-  ]
-}
-
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[#sym.arrow.b]
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === PAGE 1: INITIAL ASSESSMENT (Steps 1-4) ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
 
-// Header
-#align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
-  #v(2pt)
-  #text(size: 10pt, fill: rgb("#6b7280"))[Suspected Head or Spinal Cord Injury in a Child]
-]
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
 
-#v(6pt)
-
-// Emergency number (primary)
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-#text(size: 9pt, fill: rgb("#6b7280"))[
-  *When to apply:* Falls from height exceeding 1 m (or more than twice the child's height), vehicle/bicycle/scooter accidents, falls from playground equipment, struck by heavy object, blast/shrapnel exposure, any fall onto hard surface with direct head impact in infant under 1 year, penetrating head wound. Also when the child shows: loss of consciousness, seizures, repeated vomiting, unequal pupils, confusion/irritability/excessive drowsiness, clear fluid or blood from nose/ears, limb weakness/numbness, or bulging fontanelle in infants.
-]
-
-#v(6pt)
-
-// --- STEP 1 ---
-#step-box(1, "Ensure scene safety.",
-  detail: "Check that the area is safe for you and the child before approaching. Wear gloves if available. In blast or security events, confirm the scene is clear before entering."
-)
-
-#arrow-down()
-
-// --- STEP 2 ---
-#step-box(2, "Assess the child's responsiveness without moving them.",
-  detail: "Gently tap the child and call their name. For infants, tap the sole of the foot. Use the AVPU scale: A (Alert), V (responds to Voice), P (responds to Pain), U (Unresponsive).",
-  warning: "Do NOT shake the child. Do NOT move the child unless they are in immediate danger (fire, traffic, structural collapse)."
-)
-
-#arrow-down()
-
-#decision-box("Is the child responsive?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Calmly instruct the child to stay completely still. Reassure them with eye contact and a calm voice. Proceed to Step 3.],
-  no-branch[Check for breathing using the jaw thrust technique to open the airway (do NOT use head-tilt chin-lift). Proceed to Step 3 and call 101 immediately.],
-)
-
-#arrow-down()
-
-// --- STEP 3 ---
-#step-box(3, "Call 101 (Magen David Adom) immediately.",
-  detail: "Always call 101 for any suspected head or spinal injury in a child. Provide your location, the child's approximate age, the mechanism of injury, current symptoms, and level of consciousness (AVPU). Even if the child appears alert and well, call 101 for any high-risk mechanism.",
-  warning: "Do not delay calling 101. Children can deteriorate rapidly after head injury. A child who appears fine initially may have a developing intracranial bleed."
-)
-
-#arrow-down()
-
-// --- STEP 4 ---
-#step-box(4, "Keep the child completely still -- do NOT move them.",
-  detail: "This is the single most important instruction. If the child is lying down, do not sit them up. If the child is sitting, do not lay them down unless they become unconscious and need airway management. Maintain the child in the position found.",
-  warning: "Moving a child with a spinal injury can cause permanent neurological damage or paralysis. Standing or walking ability does NOT exclude spinal cord injury."
-)
-
-#arrow-down()
-
-#decision-box("Is the child in immediate danger (fire, traffic, structural collapse)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Move the child only the minimum distance necessary to reach safety, keeping the head, neck, and spine aligned as much as possible.],
-  no-branch[Do not move the child at all. Keep them in the position found and proceed to Step 5.],
-)
-
-#v(1fr)
-
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority | #source-document \
-  Imported: #imported-date · Last verified: #last-verified \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
-]
-
-// === PAGE 2: STABILISATION & AIRWAY (Steps 5-7) ===
-#pagebreak()
+// ============================================================
+// PAGE 1
+// ============================================================
 
 #align(center)[
-  #text(size: 20pt, weight: "bold")[HEAD & SPINAL INJURY — STABILISATION & AIRWAY]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) — DO NOT MOVE THE CHILD]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  A child who has sustained or may have sustained a head or spinal injury from: falls from height (over 1 m or 2x child's height), vehicle accidents, bicycle/scooter crashes, playground falls, being struck by heavy objects, blast/shrapnel, any head impact in infants under 1 year.
 ]
 
 #v(6pt)
 
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-#all-emergency-numbers()
+#rect(fill: rgb("#f0fdf4"), stroke: 1pt + rgb("#16a34a"), radius: 6pt, width: 100%, inset: 10pt)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Keep the child completely still. Call 101 immediately. Stabilise head and neck manually. Control scalp bleeding (avoid pressure on suspected fractures). Use jaw thrust only for airway. Monitor continuously until MDA arrives.
+]
 
 #v(8pt)
 
-// --- STEP 5 ---
-#step-box(5, "Stabilise the head and neck manually (manual in-line stabilisation).",
-  detail: "Place your hands on either side of the child's head and hold it steady, aligned with the spine. Do not twist, bend, or rotate the head or neck. Maintain this position continuously until MDA paramedics arrive and take over. Two providers are ideal if available.",
-  warning: "Do NOT attempt to straighten the neck if it is in an abnormal position. Hold it in the position found."
-)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Assessment -- Steps 1-4]
+  #v(4pt)
 
-#arrow-down()
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-// --- STEP 6 ---
-#step-box(6, "Manage the airway if the child is unconscious, using the jaw thrust manoeuvre.",
-  detail: "If the child is unresponsive, open the airway using jaw thrust only -- place your fingers behind the angles of the lower jaw and lift the jaw forward. Do NOT use head-tilt chin-lift, as this can worsen a cervical spine injury. Position yourself near the child's face.",
-  warning: "Never use head-tilt chin-lift on a child with suspected spinal injury. Jaw thrust is the only safe airway manoeuvre."
-)
+    node((0, 0), align(center)[
+      *Step 1:* #action[ENSURE] scene safety. \
+      Wear gloves if available.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    edge((0, 0), (0, 1), "->"),
 
-#decision-box("Is the child breathing after jaw thrust?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Maintain the jaw thrust and manual cervical stabilisation. Monitor breathing continuously. Proceed to Step 7.],
-  no-branch[Begin CPR per MDA protocol (see IL-CHILD-CPR-001), maintaining spinal alignment as much as possible. Continue until MDA arrives or the child resumes breathing.],
-)
+    node((0, 1), align(center)[
+      *Step 2:* #action[ASSESS] responsiveness \
+      without moving the child. \
+      Use AVPU scale.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    node((1, 1), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT shake the child. \
+      Do NOT move them unless \
+      in immediate danger.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-// --- STEP 7 ---
-#step-box(7, "Control any visible scalp bleeding.",
-  detail: "If the scalp is bleeding, apply gentle pressure with a clean cloth or sterile bandage. Scalp wounds can bleed heavily. In children, even moderate scalp bleeding can cause shock due to their smaller blood volume (an infant has only approx. 240 mL total, a one-year-old approx. 800 mL).",
-  warning: "Do NOT apply direct pressure if you suspect a skull fracture (a depressed or unusually soft area of the skull). Do NOT push back any protruding matter or insert anything into a wound."
-)
+    edge((0, 1), (0, 2), "->"),
 
-#arrow-down()
+    node((0, 2), align(center)[
+      *Is the child responsive?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#decision-box("Do you suspect a skull fracture (depressed area, visible bone, clear fluid from ears or nose)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Do not apply pressure to the wound. Loosely cover the wound with a sterile, non-adherent dressing. Do not attempt to stop the flow of clear fluid from ears or nose -- this may be cerebrospinal fluid.],
-  no-branch[Apply gentle, direct pressure with a clean cloth or sterile bandage to control bleeding.],
-)
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#v(1fr)
+    node((1, 2), align(center)[
+      Instruct child to stay \
+      completely still. \
+      Reassure calmly.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority | #source-document \
-  Imported: #imported-date · Last verified: #last-verified \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      Check breathing using \
+      #action[JAW THRUST] only. \
+      Do NOT use head-tilt \
+      chin-lift.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 3:* #action[CALL] 101 (MDA) \
+      immediately. Report \
+      mechanism, age, AVPU.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 4:* #action[KEEP] child \
+      completely still. Do NOT \
+      move them from position found.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Moving a child with \
+      spinal injury can cause \
+      permanent paralysis. \
+      Standing/walking does NOT \
+      exclude spinal injury.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
 ]
 
-// === PAGE 3: MONITORING & RED FLAGS (Steps 8-11) ===
+// ============================================================
+// PAGE 2: Steps 5-8
+// ============================================================
 #pagebreak()
 
-#align(center)[
-  #text(size: 20pt, weight: "bold")[HEAD & SPINAL INJURY — MONITORING & RED FLAGS]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Stabilisation and Airway -- Steps 5-7]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 5:* #action[STABILISE] head/neck \
+      manually. Hands on both \
+      sides of head, aligned \
+      with spine. Hold continuously.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT straighten the \
+      neck if in abnormal \
+      position. Hold in \
+      position found.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Step 6:* If unconscious, \
+      #action[OPEN] airway using \
+      jaw thrust only.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Is the child breathing* \
+      *after jaw thrust?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      Maintain jaw thrust \
+      and cervical stabilisation. \
+      Monitor continuously.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      #action[BEGIN] CPR maintaining \
+      spinal alignment. \
+      Continue until MDA \
+      arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 7:* #action[CONTROL] scalp \
+      bleeding with gentle pressure.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Suspect skull fracture?* \
+      #text(size: 8pt)[(depressed area, visible bone, \
+      clear fluid from ears/nose)]
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      Do NOT apply pressure. \
+      Loosely cover wound. \
+      Do not stop clear \
+      fluid flow from \
+      ears/nose.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Apply gentle direct \
+      pressure with clean \
+      cloth or sterile \
+      bandage.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
 ]
 
-#v(6pt)
-
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-#all-emergency-numbers()
-
-#v(8pt)
-
-// --- STEP 8 ---
-#step-box(8, "Assess for red flag warning signs and report to 101 dispatcher or arriving MDA crew.",
-  detail: "Check for and note: loss of consciousness (even briefly), seizures or convulsions, repeated vomiting (more than once), unequal pupils (one larger than the other), clear fluid or blood draining from nose or ears, weakness or inability to move any limb, altered behaviour (unusual aggression, lethargy, confusion), bulging fontanelle in infants, and large or rapidly expanding scalp swelling."
-)
-
-#arrow-down()
-
-#decision-box("Are any red flag signs present (loss of consciousness, seizures, repeated vomiting, unequal pupils, fluid from ears/nose, limb weakness)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Communicate these findings urgently to the 101 dispatcher or arriving MDA crew. These signs suggest serious intracranial or spinal cord injury requiring immediate hospital treatment.],
-  no-branch[Continue monitoring. Even without red flags, maintain immobilisation and await MDA assessment. Children can deteriorate after a delay.],
-)
-
-#arrow-down()
-
-// --- STEP 9 ---
-#step-box(9, "Prevent hypothermia -- cover the child to maintain warmth.",
-  detail: "Cover the child with a blanket, coat, or any available covering. Children lose body heat faster than adults due to their higher surface-area-to-body-mass ratio. Hypothermia worsens outcomes in trauma patients. In hot weather, provide shade instead.",
-  warning: "Do not move the child to cover them. Place the covering over them in their current position."
-)
-
-#arrow-down()
-
-// --- STEP 10 ---
-#step-box(10, "Monitor continuously until MDA arrives.",
-  detail: "Monitor breathing, level of consciousness (AVPU), and any changes in symptoms continuously. Note the time of injury and record any changes. Do not leave the child alone at any point. Keep the child calm and reassured."
-)
-
-#arrow-down()
-
-#decision-box("Does the child vomit?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Carefully log-roll the child onto their side while a second person supports head and neck alignment (keeping head, neck, and body moving as one unit). This prevents aspiration. Do the best you can to maintain spinal alignment.],
-  no-branch[Maintain the child in their current position. Continue monitoring.],
-)
-
-#arrow-down()
-
-// --- STEP 11 ---
-#step-box(11, "Do NOT remove a helmet if the child is wearing one.",
-  detail: "If the child was wearing a bicycle, scooter, or other helmet at the time of injury, leave the helmet in place. Helmet removal requires two trained rescuers using a specific technique to avoid worsening a cervical spine injury. Leave this for MDA paramedics.",
-  warning: "Improper helmet removal can cause catastrophic cervical spine injury. Never attempt to remove a helmet alone."
-)
-
-#v(1fr)
-
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority | #source-document \
-  Imported: #imported-date · Last verified: #last-verified \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
-]
-
-// === PAGE 4: DO NOT LIST & EQUIPMENT ===
+// ============================================================
+// PAGE 3: Steps 8-11, Reference
+// ============================================================
 #pagebreak()
 
-#align(center)[
-  #text(size: 20pt, weight: "bold")[HEAD & SPINAL INJURY — CRITICAL REMINDERS]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Red Flags and Monitoring -- Steps 8-11]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 8:* #action[ASSESS] for red flags: \
+      loss of consciousness, seizures, \
+      repeated vomiting, unequal \
+      pupils, fluid from ears/nose, \
+      limb weakness, bulging fontanelle.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Step 9:* #action[COVER] child \
+      with blanket to prevent \
+      hypothermia. Do not move \
+      child to cover them.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Step 10:* #action[MONITOR] \
+      continuously. Check breathing, \
+      AVPU, and symptom changes. \
+      Note time of injury. \
+      Do not leave child alone.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Does the child vomit?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      Carefully log-roll onto \
+      side with second person \
+      supporting head/neck \
+      alignment as one unit.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      Maintain current \
+      position. Continue \
+      monitoring.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 11:* Do #text(fill: clr-warning, weight: "bold")[NOT] \
+      remove a helmet. Leave \
+      for MDA paramedics \
+      (requires 2 trained rescuers).
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 60mm, inset: 8pt),
+  )
 ]
 
-#v(6pt)
+#v(10pt)
 
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-#all-emergency-numbers()
-
-#v(8pt)
-
-// === DO NOT LIST ===
 #do-not-box((
-  "Move the child unless they are in immediate life-threatening danger (fire, traffic, structural collapse)",
-  "Remove a helmet -- leave this for MDA paramedics (requires two trained rescuers)",
-  "Allow the child to stand up or walk, even if they want to -- standing or walking does NOT exclude spinal injury",
-  "Give the child food or drink (they may need surgery or imaging under anaesthesia)",
-  "Apply pressure to a depressed skull fracture or push back any protruding matter",
-  "Insert anything into a wound",
-  "Attempt to straighten the neck if it is in an abnormal position",
-  "Use head-tilt chin-lift to open the airway -- use jaw thrust only",
-  "Shake the child to assess responsiveness",
-  "Leave the child alone -- continuous monitoring is essential",
-  "Stop the flow of clear fluid from ears or nose (may be cerebrospinal fluid)",
+  "Do NOT move the child unless in immediate life-threatening danger.",
+  "Do NOT remove a helmet -- leave for MDA paramedics.",
+  "Do NOT allow the child to stand up or walk -- does NOT exclude spinal injury.",
+  "Do NOT give food or drink (may need surgery/anaesthesia).",
+  "Do NOT apply pressure to a depressed skull fracture or push back protruding matter.",
+  "Do NOT insert anything into a wound.",
+  "Do NOT attempt to straighten the neck if in abnormal position.",
+  "Do NOT use head-tilt chin-lift -- use jaw thrust only.",
+  "Do NOT shake the child to assess responsiveness.",
+  "Do NOT leave the child alone.",
+  "Do NOT stop clear fluid flow from ears or nose (may be cerebrospinal fluid).",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// === EQUIPMENT ===
 #equipment-box((
   "Disposable gloves",
   "Clean cloth or sterile bandages for wound control",
   "Blanket or coat for warmth",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority | #source-document | #source-url \
-  Imported: #imported-date · Last verified: #last-verified \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency. \
-  Protocol ID: IL-CHILD-HEAD-SPINAL-INJURY-001
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) -- BLS Guide (2016), ALS Professional Manual (2024), Israeli Standard-of-Care Paediatric Head Injury Guidance \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Both follow PHTLS-based trauma assessment (ABCDE) and selective immobilisation.
 ]

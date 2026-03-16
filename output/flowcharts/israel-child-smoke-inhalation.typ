@@ -1,316 +1,439 @@
-// First Aid Protocol Flowchart — Smoke / Tear Gas Inhalation — Child — Israel
-// Generated from: IL-CHILD-SMOKE-INHALATION-001
-// Source: Magen David Adom (MDA)
+// Israel Child Smoke Inhalation Flowchart -- V2
 // Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-CHILD-SMOKE-INHALATION-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-CHILD-SMOKE-INHALATION-001"
+#let protocol-title = "Smoke / Tear Gas Inhalation First Aid -- Child"
+#let protocol-subject = "SMOKE INHALATION"
+#let age-group = "CHILD"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
+#let last-verified = "2026-03-16"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number + 102]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt, width: 100%)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold", size: 11pt)[YES:] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold", size: 11pt)[NO:] #content
-  ]
-}
-
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[#sym.arrow.b]
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === PAGE 1: RESCUE, POSITIONING & OXYGEN ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
 
-// Header
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1
+// ============================================================
+
 #align(center)[
-  #text(size: 22pt, weight: "bold")[SMOKE / TEAR GAS INHALATION — CHILD]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Child]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) + 102 (FIRE)]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  When a child has inhaled smoke, tear gas, toxic fumes, or combustion byproducts. Common Israeli contexts: Lag B'Omer bonfire smoke, apartment fires (winter space heaters), tear gas near residential areas, cleaning product fumes. Children more vulnerable: smaller airways, higher respiratory rate, proximity to ground-level gases.
 ]
 
 #v(6pt)
 
-#emergency-box("101", "MDA")
-
-#v(4pt)
-
-#all-emergency-numbers()
-
-#v(4pt)
-
-#text(size: 9pt, fill: rgb("#6b7280"))[
-  *When to call:* Call MDA at 101 immediately for any child with smoke or toxic inhalation exposure. Also call Fire Department at 102 if the fire is ongoing. Children should be assessed even with light smoke exposure due to their vulnerability. Alternatively, call United Hatzalah at 1221.
+#rect(fill: rgb("#f0fdf4"), stroke: 1pt + rgb("#16a34a"), radius: 6pt, width: 100%, inset: 10pt)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Do NOT re-enter hazardous area. Remove child to fresh air. Call 101 and 102. Seat upright. Administer oxygen if available. Watch for stridor (airway swelling). Symptoms can be delayed by hours -- all exposed children need hospital evaluation.
 ]
 
-#v(6pt)
+#v(8pt)
 
-#step-box(1, "Ensure your own safety first.",
-  detail: "Use protective equipment if available. Do NOT re-enter a burning building or hazardous area to rescue the child. Maintain distance from the exposure source. If the area is filled with smoke or gas, wait for Fire Department (102) rescue teams with breathing apparatus.",
-  warning: "Do NOT enter a hazardous environment without proper protective equipment. More rescuers die from inhalation than from any other fire-related cause."
-)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Rescue and Assessment -- Steps 1-5]
+  #v(4pt)
 
-#arrow-down()
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#step-box(2, "Remove the child from the exposure source to fresh air immediately.",
-  detail: "Move the child as far from the smoke, gas, or fumes as possible. Move to an open, well-ventilated area. If indoors, move outdoors. Remove any contaminated clothing. If tear gas exposure, move upwind from the gas source.",
-  warning: "Heavier gases (including some combustion byproducts) concentrate at ground level where children breathe. Move the child to higher ground or a ventilated area."
-)
+    node((0, 0), align(center)[
+      *Step 1:* #action[ENSURE] your own \
+      safety first. Do NOT re-enter \
+      burning building. Wait for \
+      Fire Dept (102) if needed.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[More rescuers die from \
+      inhalation than any \
+      other fire-related cause.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#step-box(3, "Call 101 (MDA) and 102 (Fire Department).",
-  detail: "Report the type of exposure (smoke, tear gas, chemical fumes), the child's age and condition, and whether the exposure was in an enclosed space. Enclosed space exposure is more dangerous due to higher gas concentrations."
-)
+    edge((0, 0), (0, 1), "->"),
 
-#arrow-down()
+    node((0, 1), align(center)[
+      *Step 2:* #action[REMOVE] child \
+      from exposure to fresh air. \
+      Remove contaminated clothing. \
+      If tear gas: move upwind.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#step-box(4, "Position the child upright to ease breathing.",
-  detail: "Seat the child in a comfortable upright position. This position maximises lung expansion and eases breathing effort. If the child is unconscious but breathing, place in the recovery position."
-)
+    edge((0, 1), (0, 2), "->"),
 
-#arrow-down()
+    node((0, 2), align(center)[
+      *Step 3:* #action[CALL] 101 (MDA) \
+      and 102 (Fire). Report \
+      type of exposure and \
+      whether enclosed space.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#decision-box("Is the child conscious?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Seat the child upright. Calm and reassure them. Proceed to Step 5.],
-  no-branch[If breathing: place in recovery position (see recovery position protocol). If not breathing: begin CPR immediately.],
-)
+    edge((0, 2), (0, 3), "->"),
 
-#arrow-down()
+    node((0, 3), align(center)[
+      *Step 4:* Is the child \
+      *conscious?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#step-box(5, "Administer high-concentration oxygen if available.",
-  detail: "If supplemental oxygen is available, administer at maximum concentration via face mask. This is critical for carbon monoxide poisoning (CO displaces oxygen from haemoglobin) and cyanide exposure. High-flow oxygen is the primary field treatment for inhalation injuries."
-)
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#arrow-down()
+    node((1, 3), align(center)[
+      #action[SEAT] child upright. \
+      Calm and reassure.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#decision-box("Is supplemental oxygen available?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Administer high-concentration oxygen via face mask. Continue until handover to emergency services.],
-  no-branch[Ensure the child is in the freshest air possible. Keep them calm to reduce oxygen demand. Monitor breathing closely.],
-)
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(1fr)
+    node((-1, 3), align(center)[
+      If breathing: recovery \
+      position. If not breathing: \
+      #action[BEGIN] CPR \
+      immediately.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) (2026-01-01) · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 5:* Is supplemental \
+      *oxygen available?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      #action[ADMINISTER] high-flow \
+      O2 via face mask. \
+      Critical for CO and \
+      cyanide exposure.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      Keep in freshest air. \
+      Keep calm to reduce \
+      O2 demand. Monitor \
+      breathing closely.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
 ]
 
-// === PAGE 2: STRIDOR, POISONING, TEAR GAS & MONITORING ===
+// ============================================================
+// PAGE 2: Stridor, Tear Gas, Monitoring
+// ============================================================
 #pagebreak()
 
-#align(center)[
-  #text(size: 20pt, weight: "bold")[SMOKE / TEAR GAS INHALATION — CHILD (continued)]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Stridor, Poisoning Signs, Tear Gas & Monitoring]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Airway Assessment and Tear Gas -- Steps 6-9]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 6:* Does the child \
+      *have stridor or severe* \
+      *breathing difficulty?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      Urgent. Keep calm and \
+      upright. Do NOT examine \
+      throat. Ensure 101 called. \
+      Be prepared for CPR.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 0), (-1, 0), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 0), align(center)[
+      Continue monitoring. \
+      Delayed onset of \
+      respiratory distress \
+      can develop hours later.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    node((0, 1), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Stridor after inhalation = \
+      danger sign. Airway may \
+      swell further and close. \
+      Do NOT examine throat.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 60mm, inset: 6pt),
+
+    edge((0, 0), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Step 7:* #action[MONITOR] for CO \
+      (pink lips, headache, confusion) \
+      and cyanide (seizures, altered \
+      consciousness) signs. Note \
+      materials that were burning.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 8 -- Tear gas:* \
+      #action[IRRIGATE] eyes with \
+      clean water for 15 min. \
+      #action[WASH] skin with soap. \
+      Remove contaminated clothing. \
+      Move upwind.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT rub eyes after \
+      tear gas -- worsens \
+      irritation.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Step 9:* #action[COVER] with blanket. \
+      #action[MONITOR] breathing \
+      continuously until EMS. \
+      Be prepared for CPR. \
+      All exposed children \
+      need hospital evaluation.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Symptoms can be \
+      delayed by hours. \
+      A well-appearing child \
+      may deteriorate later. \
+      Hospital evaluation \
+      required for all.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
 ]
 
-#v(6pt)
+#v(10pt)
 
-#emergency-box("101", "MDA")
-
-#v(4pt)
-
-#all-emergency-numbers()
-
-#v(8pt)
-
-#step-box(6, "Assess for stridor and airway compromise.",
-  detail: "Listen for stridor (high-pitched noisy breathing) which indicates upper airway swelling. In children, stridor is common between ages 3 months to 5 years and indicates significant airway compromise. Stridor after smoke exposure is urgent and indicates potential thermal airway injury. Croup-like symptoms (barking cough, stridor) after smoke exposure require urgent attention.",
-  warning: "Stridor in a child after inhalation injury is a danger sign -- the airway may swell further and close. This child needs advanced airway management from emergency services."
-)
-
-#arrow-down()
-
-#decision-box("Does the child have stridor or severe breathing difficulty?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[This is urgent. Keep the child calm and upright. Do not examine the throat. Ensure 101 has been called. Cool mist humidifier if available. Be prepared for CPR if airway closes.],
-  no-branch[Continue monitoring. Watch for delayed onset of respiratory distress which can develop hours after exposure.],
-)
-
-#arrow-down()
-
-#step-box(7, "Monitor for signs of specific poisoning.",
-  detail: "Carbon monoxide (CO): pink/reddish lips, headache, confusion, dizziness -- from incomplete combustion in enclosed spaces. Cyanide: altered consciousness, seizures -- from burning plastics, foam, paints. Both are colourless. Note any chemical containers or materials that were burning to report to emergency services.",
-  warning: "Symptoms of inhalation injury can be delayed by hours. A child who appears well immediately after exposure may deteriorate later. All exposed children should be evaluated at hospital."
-)
-
-#arrow-down()
-
-#step-box(8, "For tear gas exposure: irrigate eyes and exposed skin.",
-  detail: "If tear gas (CS/OC) exposure: irrigate the child's eyes with clean flowing water for 15 minutes. Wash exposed skin with soap and water. Remove contaminated clothing. Move upwind from the gas source. Fresh air is the primary treatment.",
-  warning: "Do NOT rub the eyes after tear gas exposure -- this worsens irritation. In enclosed spaces, tear gas concentration can become dangerous rather than merely irritating."
-)
-
-#arrow-down()
-
-#step-box(9, "Prevent hypothermia and monitor continuously until emergency services arrive.",
-  detail: "Cover the child with a blanket -- children lose heat rapidly. Monitor breathing continuously. Be prepared to perform CPR if breathing stops. Note the duration of exposure and any substances involved for medical staff. Ensure adequate hydration if the child is alert and able to swallow."
-)
-
-#v(8pt)
-
-// === DO NOT LIST ===
 #do-not-box((
-  "Re-enter a burning building or hazardous area -- wait for Fire Department rescue teams.",
-  "Ignore light smoke exposure in a child -- children should be assessed even with mild exposure.",
-  "Assume a well-appearing child is uninjured -- respiratory deterioration can be delayed by hours.",
-  "Rub the eyes after tear gas exposure -- this worsens irritation.",
-  "Give food or drink to a child with stridor or significant breathing difficulty -- aspiration risk.",
-  "Examine the throat of a child with stridor -- this can worsen airway swelling.",
-  "Leave the child unattended -- monitor breathing continuously.",
-  "Position a child with breathing difficulty lying flat -- keep upright.",
+  "Do NOT re-enter a burning building or hazardous area -- wait for Fire Department.",
+  "Do NOT ignore light smoke exposure in a child -- assess even with mild exposure.",
+  "Do NOT assume a well-appearing child is uninjured -- respiratory deterioration can be delayed by hours.",
+  "Do NOT rub eyes after tear gas exposure -- worsens irritation.",
+  "Do NOT give food or drink to a child with stridor or significant breathing difficulty.",
+  "Do NOT examine the throat of a child with stridor -- can worsen airway swelling.",
+  "Do NOT leave the child unattended -- monitor breathing continuously.",
+  "Do NOT position a child with breathing difficulty lying flat -- keep upright.",
 ))
 
-#v(6pt)
+#v(10pt)
 
 #equipment-box((
-  "Supplemental oxygen and face mask (if available -- typically first responder equipment)",
+  "Supplemental oxygen and face mask (if available)",
   "Clean water (for eye irrigation after tear gas)",
   "Blanket (to prevent hypothermia)",
   "Cool mist humidifier (if available, for stridor management)",
   "Phone (to call 101 and 102)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) (2026-01-01) · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency. \
-  Protocol ID: IL-CHILD-SMOKE-INHALATION-001
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) -- supplemented by Ichud Hatzalah inhalation poisoning and respiratory distress guidelines \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Publication date:] 2026-01-01 \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
+  #strong[Notes:] Common Israeli contexts: Lag B'Omer bonfires, winter apartment fires, tear gas near residential areas. Children vulnerable due to smaller airways and higher respiratory rate.
 ]

@@ -1,67 +1,139 @@
-// First Aid Protocol Flowchart — Drowning (Near-Drowning) — Adult — Israel
-// Generated from: IL-ADULT-DROWNING-001
+// Israel Adult Drowning Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Generated: 2026-03-15
+// Protocol ID: IL-ADULT-DROWNING-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-DROWNING-001"
+#let protocol-title = "Drowning (Near-Drowning) — Adult"
+#let protocol-subject = "DROWNING"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
+#let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
+}
+
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let warning-box(content) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 4pt,
+      width: 100%,
+      inset: 8pt,
+    )[
+      #text(fill: clr-warning, weight: "bold", size: 10pt)[WARNING: #content]
+    ]
   ]
 }
 
 #let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
-      #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+  keep-together[
+    #rect(
+      fill: clr-step,
+      stroke: 1pt + clr-step-stroke,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #strong[Step #number:] #instruction
+      #if detail != none [
+        #v(4pt)
+        #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
+      ]
+      #if warning != none [
+        #v(4pt)
+        #rect(fill: clr-warning-fill, stroke: 1pt + clr-warning, radius: 4pt, inset: 6pt)[
+          #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING: #warning]
+        ]
       ]
     ]
   ]
@@ -69,240 +141,481 @@
 
 #let decision-box(condition) = {
   rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
+    fill: clr-decision,
+    stroke: 2pt + clr-decision-stroke,
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
+    #set text(size: 11pt, weight: "bold", fill: rgb("#1e40af"))
     #align(center)[#condition]
   ]
 }
 
 #let yes-branch(content) = {
   rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
+    fill: clr-yes-fill,
+    stroke: 1pt + clr-yes,
     radius: 4pt,
     width: 100%,
     inset: 8pt,
   )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES → ] #content
+    #text(fill: clr-yes, weight: "bold")[YES ->] #content
   ]
 }
 
 #let no-branch(content) = {
   rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
+    fill: clr-no-fill,
+    stroke: 1pt + clr-no,
     radius: 4pt,
     width: 100%,
     inset: 8pt,
   )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO → ] #content
+    #text(fill: clr-no, weight: "bold")[NO ->] #content
   ]
 }
 
 #let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
+      #v(4pt)
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
+      ]
     ]
   ]
 }
 
 #let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
+    ]
+  ]
+}
+
+#let emergency-numbers-strip() = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ #sym.arrow.b]
-  ]
-}
+// ============================================================
+// PAGE 1: Title, Emergency Numbers, Assessment (Steps 1-4)
+// ============================================================
 
-// === DOCUMENT ===
-
-// Header
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[DROWNING (NEAR-DROWNING)]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 14pt, weight: "bold")[Adult Protocol]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
 #v(6pt)
-
-// Emergency number (primary)
-#emergency-box("101", [MDA (#heb[מד״א])])
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// Summary
 #rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(size: 10pt, weight: "bold", fill: rgb("#5b21b6"))[SUMMARY: ]
-  #text(size: 10pt)[Rescue from water, assess breathing, perform CPR (ABC sequence preferred for trained rescuers), and transport to hospital -- even if the person recovers.]
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY
+  ]
 ]
-
 #v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
 
-// === PROTOCOL STEPS ===
-
-// Step 1
-#step-box(1, "Ensure your own safety before attempting any rescue.",
-  detail: "Assess the scene. Do not enter the water unless you are a trained swimmer or lifeguard. Use reaching aids (pole, rope, flotation device) if possible. Alert a lifeguard if one is present.",
-  warning: "Untrained rescuers who enter the water frequently become drowning victims themselves.",
-)
-
-#v(2pt)
-
-#decision-box("Are you a trained swimmer or lifeguard?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[You may enter the water to perform a rescue, using appropriate technique and flotation aids.],
-  no-branch[Do NOT enter the water. Use reaching aids (pole, rope, flotation device), throw a buoyant object, or call for a trained rescuer. Wait for the person to be brought to shore.],
-)
-
-#arrow-down()
-
-// Step 2
-#step-box(2, "Call 101 (MDA) immediately.",
-  detail: "Keep the dispatcher on speakerphone. Provide your exact location (beach name, pool address, GPS coordinates if possible). If another person is present, send them to locate the nearest AED. AEDs are commonly found at lifeguard stations, first aid rooms, and public facilities with 500+ occupants in Israel.",
-)
-
-#arrow-down()
-
-// Step 3
-#step-box(3, "Remove the person from the water as quickly as possible.",
-  detail: "Extract the drowning person from the water. Move them to a dry area away from the water's edge. Do not endanger yourself in the process.",
-)
-
-#arrow-down()
-
-// Step 4
-#step-box(4, "Check responsiveness and breathing.",
-  detail: "Call to the person and tap their shoulder. Observe the chest: is it rising and falling? Listen for breath sounds. Look for signs of life.",
-)
-
-#v(2pt)
-
-#decision-box("Is the person responsive and breathing normally?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Place in recovery position (on their side). Monitor breathing continuously until MDA arrives. Keep warm -- remove wet clothing, cover with dry blankets. Go to Step 8.],
-  no-branch[The person needs immediate CPR. Proceed to Step 5.],
-)
-
-#arrow-down()
-
-// Step 5
-#step-box(5, "Position the person on their back on a firm, flat surface away from the water.",
-  detail: "Ensure the surface is dry. This is essential for effective chest compressions and safe AED use.",
-)
-
-#arrow-down()
-
-// Step 6
-#step-box(6, "Begin CPR.",
-  detail: "Drowning is a hypoxic (oxygen-deprivation) emergency, making rescue breaths especially important. The recommended CPR sequence for drowning differs from standard cardiac arrest.",
-)
-
-#v(2pt)
-
-#decision-box("Are you trained in full CPR with rescue breaths?")
-#v(2pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Use the ABC approach (Airway, Breathing, Compressions): open the airway, give 2 rescue breaths, then begin chest compressions. Continue at 30:2 ratio. Compress at 100/min.],
-  no-branch[Perform hands-only CPR (chest compressions only) at 100 compressions per minute. Use "Stayin' Alive" by the Bee Gees as a tempo guide. Continue without stopping until MDA arrives.],
-)
-
-#arrow-down()
-
-// Step 7
-#step-box(7, "Use an AED if one is available.",
-  detail: "Dry the patient's chest thoroughly and ensure they are on a dry surface before applying AED pads. Follow the AED's voice prompts. Continue CPR between AED analysis/shock cycles as directed by the device.",
-  warning: "Using an AED on a wet patient or wet surface risks electrical injury to the patient and rescuer. Always dry the chest and move to a dry area first.",
-)
-
-#arrow-down()
-
-// Step 8
-#step-box(8, "Continue CPR or monitoring until MDA paramedics arrive.",
-  detail: "Do not stop CPR unless the person begins breathing on their own or professional medical help takes over. If the person regains consciousness, place them in the recovery position and monitor continuously.",
-)
-
-#arrow-down()
-
-// Step 9
-#step-box(9, "Ensure hospital transport regardless of apparent recovery.",
-  detail: "Even if the person regains consciousness and appears stable, mandatory hospital transport is required. Dangerous electrolyte imbalances can develop after drowning. Secondary drowning (delayed pulmonary edema) can cause symptoms 1-24 hours after the incident.",
-  warning: "Do NOT allow the person to refuse treatment or walk away. A person who appears recovered can deteriorate rapidly hours later due to secondary drowning or electrolyte toxicity.",
-)
-
-#v(8pt)
-
-// DO NOT list
-#do-not-box((
-  "DO NOT enter the water to rescue someone unless you are a trained swimmer or lifeguard -- untrained rescuers frequently become drowning victims.",
-  "DO NOT attempt to remove water from the victim's lungs. MDA states this is impossible, dangerous, and a waste of critical time.",
-  "DO NOT perform the Heimlich maneuver, turn the person upside down, or use any other method to 'drain' water from the lungs.",
-  "DO NOT use an AED on a wet patient or on a wet surface -- dry the chest and move to a dry area first.",
-  "DO NOT allow a near-drowning victim to refuse hospital transport, even if they appear fully recovered.",
-  "DO NOT stop CPR until the person is breathing on their own or professional medical help takes over.",
-  "DO NOT delay calling 101 -- call immediately, even before attempting rescue if you are alone.",
-))
+// --- When to Apply ---
+#when-to-apply[
+  Person found submerged or immersed in water, rescued from water who is unresponsive or not breathing, or who has experienced a near-drowning event in any body of water including pools, sea, lakes, or the Dead Sea.
+]
 
 #v(6pt)
 
-// Equipment
+// --- Summary ---
+#rect(
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Rescue from water, assess breathing, perform CPR (ABC sequence preferred for trained rescuers), and transport to hospital -- even if the person recovers.
+]
+
+#v(8pt)
+
+// --- Rescue and Initial Assessment: Steps 1-4 ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Rescue and Initial Assessment]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Scene safety
+    node((0, 0), align(center)[
+      *Step 1:* #action[ENSURE] your own safety \
+      before attempting rescue. \
+      Use reaching aids if possible.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: trained swimmer?
+    node((0, 1), align(center)[
+      *Are you a trained* \
+      *swimmer or lifeguard?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> enter water
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      You may enter water \
+      to perform rescue. \
+      Use flotation aids.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> stay out
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      Do NOT enter water. \
+      Use pole, rope, or \
+      throw buoyant object. \
+      Wait for trained rescuer.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    // Warning
+    node((-1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Untrained rescuers \
+      who enter the water \
+      frequently become \
+      drowning victims.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 2: Call 101
+    node((0, 2), align(center)[
+      *Step 2:* #action[CALL] 101 (MDA) immediately. \
+      Speakerphone. Provide location. \
+      Send bystander for AED.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 3: Remove from water
+    node((0, 3), align(center)[
+      *Step 3:* #action[REMOVE] person from \
+      water as quickly as possible. \
+      Move to dry area.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 4: Check responsiveness
+    node((0, 4), align(center)[
+      *Step 4:* #action[CHECK] responsiveness \
+      and breathing. Call out, \
+      tap shoulder, observe chest.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: responsive and breathing?
+    node((0, 5), align(center)[
+      *Is the person responsive* \
+      *and breathing normally?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> recovery position
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Recovery position. \
+      Monitor breathing. \
+      Keep warm -- remove \
+      wet clothing, cover \
+      with dry blankets. \
+      Go to Step 8.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> CPR needed
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      Immediate CPR needed. \
+      Proceed to Step 5.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 2: CPR for Drowning — Steps 5-7
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[CPR for Drowning]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 5: Position
+    node((0, 0), align(center)[
+      *Step 5:* #action[POSITION] person \
+      on back on firm, flat, \
+      dry surface away from water.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 6: Begin CPR
+    node((0, 1), align(center)[
+      *Step 6:* #action[BEGIN] CPR. \
+      Drowning is a hypoxic emergency -- \
+      rescue breaths are especially important.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Decision: trained in rescue breaths?
+    node((0, 2), align(center)[
+      *Are you trained in full* \
+      *CPR with rescue breaths?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> ABC approach
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      Use ABC approach: \
+      #action[OPEN] airway, \
+      give 2 rescue breaths, \
+      then 30 compressions. \
+      Continue 30:2 ratio. \
+      Rate: 100/min.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> hands-only
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      Hands-only CPR: \
+      continuous compressions \
+      at 100/min. \
+      Do not stop until \
+      MDA arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 7: AED
+    node((0, 3), align(center)[
+      *Step 7:* #action[USE] AED if available. \
+      Dry the chest thoroughly. \
+      Ensure dry surface. \
+      Follow AED voice prompts.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning for AED
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Using AED on wet \
+      patient or wet surface \
+      risks electrical injury. \
+      Always dry chest and \
+      move to dry area first.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 8: Continue until EMS
+    node((0, 4), align(center)[
+      *Step 8:* #action[CONTINUE] CPR or \
+      monitoring until MDA arrives. \
+      If person regains consciousness, \
+      recovery position and monitor.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Step 9: Hospital transport
+    node((0, 5), align(center)[
+      *Step 9:* #action[ENSURE] hospital \
+      transport regardless of \
+      apparent recovery.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Critical warning
+    node((1, 5), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT allow person \
+      to refuse treatment. \
+      Secondary drowning can \
+      cause death 1--24 hours \
+      after the incident. \
+      Electrolyte imbalances \
+      can be fatal.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 3: DO NOT List, Equipment, Source
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
+#v(6pt)
+
+// --- DO NOT List ---
+#do-not-box((
+  "Do NOT enter the water to rescue someone unless you are a trained swimmer or lifeguard -- untrained rescuers frequently become drowning victims.",
+  "Do NOT attempt to remove water from the victim's lungs. MDA states this is impossible, dangerous, and a waste of critical time.",
+  "Do NOT perform the Heimlich maneuver, turn the person upside down, or use any method to 'drain' water from the lungs.",
+  "Do NOT use an AED on a wet patient or on a wet surface -- dry the chest and move to a dry area first.",
+  "Do NOT allow a near-drowning victim to refuse hospital transport, even if they appear fully recovered. Secondary drowning and electrolyte imbalances can be fatal hours later.",
+  "Do NOT stop CPR until the person is breathing on their own or professional medical help takes over.",
+  "Do NOT delay calling 101 -- call immediately, even before attempting rescue if you are alone.",
+))
+
+#v(10pt)
+
+// --- Equipment ---
 #equipment-box((
   "AED (defibrillator) -- commonly available at lifeguard stations and public facilities in Israel",
   "Reaching aids (pole, rope, flotation device) for water rescue",
   "Dry blankets or clothing to keep the victim warm after extraction",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) -- MDA 101 Public First Aid Guidance Series; corroborated by MDA ALS Manual April 2024 \
-  Protocol ID: IL-ADULT-DROWNING-001 · Imported: 2026-03-15 · Last verified: 2026-03-15 \
-  *Personal reference only -- not medical advice.* Always call 101 in an emergency.
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "Drowning -- MDA 101 Public First Aid Guidance Series; corroborated by MDA ALS Manual April 2024" \
+  #strong[URL:] https://www.mdais.org/101/drowning \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Includes Israel-specific context for Dead Sea, Mediterranean, and Kinneret hazards.
 ]

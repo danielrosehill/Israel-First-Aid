@@ -1,338 +1,454 @@
-// First Aid Protocol Flowchart — Tourniquet Application (Adult, Israel)
-// Generated from protocol IL-ADULT-TOURNIQUET-001
+// Israel Adult Tourniquet Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Font: IBM Plex Sans with IBM Plex Sans Hebrew fallback
+// Protocol ID: IL-ADULT-TOURNIQUET-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-TOURNIQUET-001"
+#let protocol-title = "Tourniquet Application — Adult"
+#let protocol-subject = "TOURNIQUET"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-03-16"
+#let last-verified = "2026-03-16"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES →] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO →] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === DOCUMENT HEADER ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1: Title, Assessment, Steps 1-6
+// ============================================================
 
 #align(center)[
-  #text(size: 22pt, weight: "bold")[Tourniquet Application — Adult Protocol]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
-  #v(2pt)
-  #text(size: 9pt, fill: rgb("#9ca3af"))[ID: IL-ADULT-TOURNIQUET-001]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
-#v(8pt)
-
-// Primary emergency number
-#emergency-box("101", [MDA (#heb[מד״א])])
-
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) — LOSS OF LIMB IS PREFERABLE TO LOSS OF LIFE]
+]
 #v(4pt)
-
-// All emergency numbers strip
-#all-emergency-numbers()
-
+#emergency-numbers-strip()
 #v(6pt)
 
-// When to apply
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#5b21b6"))[When to apply:]
-  #v(4pt)
-  #text(size: 10pt)[Life-threatening bleeding from a limb that cannot be controlled by direct pressure. Specific indications: direct pressure fails to control bleeding, partial or complete amputation, severe crushing injury to a limb, uncontrollable hemorrhage from a limb wound, multi-casualty situations where sustained direct pressure on each wound is not feasible, circumstances preventing sustained direct pressure (need to move casualty, treat others, or environment is too dangerous).]
-]
-
-#v(4pt)
-
-// Summary
-#rect(
-  fill: rgb("#ecfdf5"),
-  stroke: 1pt + rgb("#059669"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#065f46"))[Summary:]
-  #v(4pt)
-  #text(size: 10pt)[Apply a tourniquet for life-threatening limb hemorrhage when direct pressure fails, for amputations, severe crushing injuries, or multi-casualty situations. Place above the injury, tighten until bleeding stops, document the time, and never remove once applied.]
+#when-to-apply[
+  Life-threatening bleeding from a limb that cannot be controlled by direct pressure. Specific indications: direct pressure fails, partial or complete amputation, severe crushing injury, multi-casualty situations where sustained direct pressure is not feasible.
 ]
 
 #v(8pt)
 
-// === PROTOCOL STEPS ===
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Assessment and Application]
+  #v(4pt)
 
-// Step 1
-#step-box(1, "Attempt direct pressure first (unless circumstances demand immediate tourniquet).",
-  detail: "MDA teaches a progressive approach: direct pressure with hand or gauze, then Israeli bandage, then wound packing, then pressure points, then tourniquet. In multi-casualty or active-threat situations, skip directly to tourniquet.")
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#v(4pt)
+    // Step 1: Direct pressure first
+    node((0, 0), align(center)[
+      *Step 1:* #action[ATTEMPT] direct \
+      pressure first (unless immediate \
+      tourniquet is needed).
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Decision point for Step 1
-#decision-box("Is direct pressure controlling the bleeding, or is the situation stable enough for graduated hemorrhage control?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue with direct pressure. Apply an Israeli bandage to maintain sustained pressure. Verify pulse distal to the bandage. Monitor closely.],
-  no-branch[Proceed immediately to tourniquet application (Step 2). Apply a tourniquet when: direct pressure fails, there is amputation or crushing, you are in a multi-casualty situation, or you cannot maintain sustained pressure.],
-)
+    edge((0, 0), (0, 1), "->"),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Decision: direct pressure working?
+    node((0, 1), align(center)[
+      *Is direct pressure* \
+      *controlling the bleeding?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 2
-#step-box(2, "Expose the wound.",
-  detail: "Cut or remove clothing to identify the bleeding source and determine correct tourniquet placement.")
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    node((1, 1), align(center)[
+      Continue with direct \
+      pressure. Apply Israeli \
+      bandage. Verify distal \
+      pulse. Monitor.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// Step 3
-#step-box(3, "Position the tourniquet above the injury site.",
-  detail: "Place the tourniquet between the wound and the heart, on the limb above the bleeding site. Position over a single bone if possible -- upper arm or upper thigh is preferred for most effective compression.",
-  warning: "Tourniquets are NOT suitable for junctional zones (groin, armpit, neck), head wounds, or abdominal wounds. For these locations, use direct pressure, wound packing, or pressure points instead.")
+    edge((0, 1), (0, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 2: Expose wound
+    node((0, 2), align(center)[
+      *Step 2:* #action[EXPOSE] the wound. \
+      Cut or remove clothing to \
+      identify bleeding source.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 4
-#step-box(4, "Tighten the tourniquet strap and secure it.",
-  detail: "Pull the strap tight and fasten it. If using a CAT tourniquet, proceed to twist the windlass.")
+    edge((0, 2), (0, 3), "->"),
 
-#v(4pt)
+    // Step 3: Position tourniquet
+    node((0, 3), align(center)[
+      *Step 3:* #action[POSITION] tourniquet \
+      above the injury site, between \
+      wound and heart. Prefer upper \
+      arm or upper thigh.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Decision point for Step 4
-#decision-box("Are you using a commercial tourniquet (CAT or similar)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Twist the windlass rod (Step 5) until bleeding stops completely.],
-  no-branch[If improvising (shirt, towel, belt, etc.), apply as tightly as possible until bleeding stops. Improvised tourniquets are less reliable but can be effective as a last resort.],
-)
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[NOT suitable for groin, \
+      armpit, neck, head, or \
+      abdomen. Use direct \
+      pressure for these areas.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 3), (0, 4), "->"),
 
-// Step 5
-#step-box(5, "Twist the windlass until bleeding stops.",
-  detail: "On a CAT tourniquet, turn the windlass rod until bleeding stops completely. Then secure the windlass by locking the rod in the clip or holder so it cannot unwind.")
+    // Step 4: Tighten
+    node((0, 4), align(center)[
+      *Step 4:* #action[TIGHTEN] the strap \
+      and secure it.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 4), (0, 5), "->"),
 
-// Step 6
-#step-box(6, "Verify that bleeding has stopped.",
-  detail: "Check that there is no further blood flow from the wound.")
+    // Decision: CAT or improvised?
+    node((0, 5), align(center)[
+      *Using a commercial* \
+      *tourniquet (CAT)?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-// Decision point for Step 6
-#decision-box("Has the bleeding stopped completely?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to document the time (Step 7).],
-  no-branch[Apply a second tourniquet above the first one. Tighten and verify again.],
-)
+    node((1, 5), align(center)[
+      *Step 5:* #action[TWIST] windlass \
+      rod until bleeding stops. \
+      Lock rod in clip.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-// Step 7
-#step-box(7, "Document the time of tourniquet application.",
-  detail: "Write the time on the tourniquet's white tab, on the patient's skin, or in any obvious visible location. This is critical -- hospital teams need this information to assess whether the limb can be saved.",
-  warning: "Time documentation is critical for limb viability assessment. If you forget, estimate the time as accurately as possible.")
+    node((-1, 5), align(center)[
+      Improvised (shirt, towel, \
+      belt): apply as tightly \
+      as possible. Less reliable \
+      but can be effective.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 5), (0, 6), "->"),
 
-// Step 8
-#step-box(8, "Call MDA at 101.",
-  detail: "Always mention that a tourniquet has been applied when calling emergency services. Report the location, the injury, and the time the tourniquet was applied.")
+    // Step 6: Verify
+    node((0, 6), align(center)[
+      *Step 6:* #action[VERIFY] bleeding \
+      has stopped completely.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    edge((0, 6), (0, 7), "->"),
 
-// Step 9
-#step-box(9, "Monitor the victim while awaiting MDA.",
-  detail: "Watch for signs of shock (rapid pulse, pale/cold skin, confusion). Keep the victim calm and still. Do not allow them to walk or move the affected limb.")
+    // Decision: stopped?
+    node((0, 7), align(center)[
+      *Has bleeding stopped* \
+      *completely?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 7), (1, 7), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-// Decision point for Step 9
-#decision-box("Is the victim conscious and breathing?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue monitoring and reassurance until MDA arrives. Keep the victim warm.],
-  no-branch[If unconscious but breathing, place in recovery position. If not breathing, begin CPR. Report status change to MDA dispatch.],
-)
+    node((1, 7), align(center)[
+      Proceed to document \
+      time (*Step 7*).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 7), (-1, 7), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 7), align(center)[
+      #action[APPLY] a second \
+      tourniquet above the \
+      first one. Tighten \
+      and verify again.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Steps 7-9, DO NOT, Equipment
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Documentation and Monitoring]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 7: Document time
+    node((0, 0), align(center)[
+      *Step 7:* #action[DOCUMENT] the time \
+      of tourniquet application. \
+      Write on tourniquet tab, \
+      patient's skin, or visible location.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[CRITICAL] \
+      #text(size: 8pt)[Time documentation is \
+      critical for limb viability \
+      assessment at hospital.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 8: Call 101
+    node((0, 1), align(center)[
+      *Step 8:* #action[CALL] 101. Mention \
+      tourniquet has been applied. \
+      Report location, injury, \
+      and time of application.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 9: Monitor
+    node((0, 2), align(center)[
+      *Step 9:* #action[MONITOR] the victim. \
+      Watch for shock (rapid pulse, \
+      pale/cold skin, confusion). \
+      Keep calm and still.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: conscious?
+    node((0, 3), align(center)[
+      *Is the victim conscious* \
+      *and breathing?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      Continue monitoring \
+      and reassurance. \
+      Keep warm until \
+      MDA arrives.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      Unconscious + breathing: \
+      recovery position. \
+      Not breathing: \
+      #action[BEGIN] CPR.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
 #v(10pt)
 
-// === DO NOT LIST ===
 #do-not-box((
-  "DO NOT remove the tourniquet once applied -- only medical professionals should decide whether to release or convert a tourniquet.",
-  "DO NOT apply a tourniquet to junctional zones (groin, armpit, neck), head, or abdomen -- use direct pressure, wound packing, or pressure points for these areas.",
-  "DO NOT apply the tourniquet over a joint -- place it on the limb above the wound, preferably over a single bone (upper arm or upper thigh).",
-  "DO NOT loosen or adjust the tourniquet to 'check if bleeding has stopped' -- this can restart hemorrhage.",
-  "DO NOT delay tourniquet application in life-threatening hemorrhage due to fear of limb loss -- loss of a limb is preferable to loss of life.",
-  "DO NOT allow the victim to walk or move the affected limb after tourniquet application.",
-  "DO NOT attempt tourniquet conversion (replacing tourniquet with direct pressure) -- this is a professional-level decision under medical direction only.",
+  "Do NOT remove the tourniquet once applied -- only medical professionals should decide to release or convert.",
+  "Do NOT apply a tourniquet to junctional zones (groin, armpit, neck), head, or abdomen.",
+  "Do NOT apply the tourniquet over a joint -- place on the limb above the wound.",
+  "Do NOT loosen or adjust the tourniquet to 'check if bleeding has stopped' -- this can restart hemorrhage.",
+  "Do NOT delay tourniquet application in life-threatening hemorrhage due to fear of limb loss.",
+  "Do NOT allow the victim to walk or move the affected limb after tourniquet application.",
+  "Do NOT attempt tourniquet conversion -- this is a professional-level decision under medical direction only.",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// === EQUIPMENT ===
 #equipment-box((
   "CAT tourniquet (Combat Application Tourniquet) -- preferred",
   "Improvised tourniquet material (shirt, towel, belt) as last resort",
-  "Scissors or Leatherman Raptor for cutting clothing to expose the wound",
+  "Scissors or Leatherman Raptor for cutting clothing",
   "Pen or marker to document tourniquet application time",
   "Phone to call 101 (MDA)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// === FOOTER ===
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) — MDA First Aid Guidelines - Tourniquet Application and Hemorrhage Control \
-  Imported: 2026-03-16 · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — MDA First Aid Guidelines and 'First Seven Minutes' initiative \
+  #strong[URL:] https://www.mdais.org/media/4954/mda-first-aid-guidelines-en.pdf \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
+  #strong[Notes:] Approximately 500,000 people trained by MDA in 2024. MDA presents tourniquet as part of a progressive hemorrhage control sequence.
 ]

@@ -1,285 +1,593 @@
-// First Aid Protocol Flowchart — Heatstroke and Heat Exhaustion (Adult, Israel)
-// Generated from: IL-ADULT-HEATSTROKE-001
+// Israel Adult Heatstroke Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
+// Protocol ID: IL-ADULT-HEATSTROKE-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: "Noto Sans", size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "HEATSTROKE & HEAT EXHAUSTION"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-HEATSTROKE-001"
+#let protocol-title = "Heatstroke and Heat Exhaustion — Adult"
+#let protocol-subject = "HEATSTROKE"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-date = "2026-03-15"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
+    )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"))[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let section-header(title) = {
+#let emergency-numbers-strip() = {
   rect(
-    fill: rgb("#1e40af"),
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
-    inset: 8pt,
+    inset: 10pt,
   )[
-    #set text(fill: white, weight: "bold", size: 14pt)
-    #align(center)[#title]
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ v]
-  ]
-}
+// ============================================================
+// PAGE 1: Title, Assessment, Heat Stroke Pathway (Steps 1-7)
+// ============================================================
 
-// === DOCUMENT ===
-
-// Header
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(
+  fill: rgb("#dc2626"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY IF IN DOUBT
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+// --- When to Apply ---
+#when-to-apply[
+  Person showing signs of heat-related illness after prolonged heat exposure or physical exertion in hot conditions. Signs: heavy sweating, dizziness, nausea, confusion, hot dry skin, or loss of consciousness.
+]
+
+#v(6pt)
+
+// --- Summary ---
+#rect(
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Assessment and first aid for heat exhaustion and heat stroke in adults, including recognition, cooling, and escalation to emergency services.
 ]
 
 #v(8pt)
 
-// Emergency number
-#emergency-box(emergency-number, emergency-service)
+// --- Assessment and Triage ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Assessment: Heat Stroke vs. Heat Exhaustion]
+  #v(4pt)
 
-#v(4pt)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#text(size: 9pt, fill: rgb("#6b7280"))[
-  *When to use this protocol:* Person showing signs of heat-related illness after prolonged heat exposure or physical exertion in hot conditions. Signs include heavy sweating, dizziness, nausea, confusion, hot dry skin, or loss of consciousness.
+    // Step 1: Assess
+    node((0, 0), align(center)[
+      *Step 1:* #action[CHECK] the person's \
+      condition. Assess for heat \
+      stroke vs. heat exhaustion.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: heat stroke?
+    node((0, 1), align(center)[
+      *Signs of heat stroke?* \
+      (confusion, hot dry skin, \
+      temp above 40C, seizures, \
+      loss of consciousness)
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> heat stroke pathway
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      *HEAT STROKE* \
+      Life-threatening \
+      emergency. \
+      Go to Step 2.
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 8pt),
+
+    // NO -> heat exhaustion
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      *HEAT EXHAUSTION* \
+      Heavy sweating, \
+      dizziness, nausea. \
+      Go to Step 8.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+  )
 ]
 
 #v(6pt)
 
-// ========================================
-// STEP 1 — Initial Assessment
-// ========================================
-#step-box(1, "Assess the person's condition to determine whether this is heat exhaustion or heat stroke.",
-  detail: "Heat exhaustion: heavy sweating, warm moist skin, dizziness, nausea, headache, weakness, muscle cramps, rapid pulse. Heat stroke: body temperature above 40 C, hot dry skin (sweating may have stopped), confusion, disorientation, staggering gait, seizures, hallucinations, loss of consciousness."
-)
+// --- Heat Stroke Steps 2-5 ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Heat Stroke Pathway (EMERGENCY)]
+  #v(4pt)
 
-#arrow-down()
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#decision-box("Does the person show signs of HEAT STROKE?\n(confusion, hot dry skin, temperature above 40 C,\nseizures, loss of consciousness)")
+    // Step 2: Call 101
+    node((0, 0), align(center)[
+      *Step 2:* #action[CALL] 101 (MDA) \
+      immediately. Heat stroke is \
+      a life-threatening emergency.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Life-threatening emergency. Go to HEAT STROKE pathway below.],
-  no-branch[Treat as heat exhaustion. Go to HEAT EXHAUSTION pathway below.],
-)
+    // Warning
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do not delay calling \
+      101 for suspected \
+      heat stroke.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 3: Move to shade
+    node((0, 1), align(center)[
+      *Step 3:* Move person to shade \
+      or air-conditioned area.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 4: Remove clothing
+    node((0, 2), align(center)[
+      *Step 4:* #action[REMOVE] \
+      unnecessary clothing.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 5: Aggressive cooling
+    node((0, 3), align(center)[
+      *Step 5:* #action[COOL] aggressively: \
+      Wet towels on neck, armpits, \
+      groin. Spray/pour cool water. \
+      Fan vigorously. Cold packs \
+      to neck, armpits, groin.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Detail note
+    node((1, 3), align(center)[
+      #text(size: 8pt, fill: rgb("#6b7280"))[Target areas where \
+      major blood vessels \
+      are near the skin \
+      for maximum cooling.]
+    ],
+      shape: rect, fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"),
+      width: 48mm, inset: 6pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Heat Stroke Monitoring + Heat Exhaustion Pathway
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Heat Stroke: Fluids and Monitoring]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 6: Fluids decision
+    node((0, 0), align(center)[
+      *Is the person fully conscious* \
+      *and able to swallow?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> sips
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      #action[GIVE] small sips of \
+      cool water continuously.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> no fluids
+    edge((0, 0), (-1, 0), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 0), align(center)[
+      Do NOT give fluids. \
+      #action[PLACE] in recovery \
+      position if breathing. \
+      #action[MONITOR] airway.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    // Warning
+    node((0, 1), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do not give fluids to a person \
+      who is not fully conscious -- \
+      aspiration risk.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 60mm, inset: 6pt),
+
+    edge((0, 0), (0, 2), "->"),
+
+    // Step 7: Monitor
+    node((0, 2), align(center)[
+      *Step 7:* #action[MONITOR] continuously \
+      until MDA arrives. \
+      #action[ELEVATE] legs if BP drops.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: unresponsive?
+    node((0, 3), align(center)[
+      *Has the person become* \
+      *unresponsive and stopped* \
+      *breathing?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> CPR
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      #action[BEGIN] CPR \
+      immediately.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> continue
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      Continue cooling \
+      and monitoring. \
+      Stay with patient \
+      until ambulance arrives.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
 #v(10pt)
 
-// ========================================
-// HEAT STROKE PATHWAY (Steps 2-7)
-// ========================================
-#section-header("HEAT STROKE PATHWAY — LIFE-THREATENING EMERGENCY")
+// --- Heat Exhaustion Pathway ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Heat Exhaustion Pathway]
+  #v(4pt)
 
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 8: Move to shade
+    node((0, 0), align(center)[
+      *Step 8:* Move to shade or \
+      air-conditioned location.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 9: Lie down
+    node((0, 1), align(center)[
+      *Step 9:* Have person lie down. \
+      #action[ELEVATE] legs slightly \
+      if BP appears low.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Steps 10-11: Clothing + cooling
+    node((0, 2), align(center)[
+      *Steps 10--11:* #action[REMOVE] excess \
+      clothing. #action[COOL] with wet \
+      towels, spray cool water, fan.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 12: Fluids
+    node((0, 3), align(center)[
+      *Fully conscious and* \
+      *able to swallow?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> water
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      #action[GIVE] small sips of \
+      cool water continuously.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> call 101
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      Do NOT give fluids. \
+      #action[CALL] 101 (MDA) \
+      immediately.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 13: Monitor
+    node((0, 4), align(center)[
+      *Are symptoms improving?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> continue
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      Continue cooling \
+      and hydration. \
+      Keep monitoring.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> escalate
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      #action[CALL] 101 (MDA). \
+      May be progressing \
+      to heat stroke. \
+      Reassess from Step 1.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 3: DO NOT, Equipment, Source
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
 #v(6pt)
 
-#step-box(2, "HEAT STROKE: Call MDA immediately at 101.",
-  detail: "Heat stroke is a life-threatening emergency. Do not delay calling emergency services.",
-  warning: "Do not delay calling 101 for suspected heat stroke."
-)
-
-#arrow-down()
-
-#step-box(3, "Move the person to shade or an air-conditioned area immediately.")
-
-#arrow-down()
-
-#step-box(4, "Remove unnecessary clothing.")
-
-#arrow-down()
-
-#step-box(5, "Begin aggressive cooling: apply wet towels to the body (especially neck, armpits, groin), spray or pour cool/cold water on the body, fan the person vigorously, and apply cold packs to neck, armpits, and groin if available.",
-  detail: "Target the neck, armpits, and groin where major blood vessels are close to the skin surface for maximum cooling effect."
-)
-
-#arrow-down()
-
-#step-box(6, "Assess whether the person is fully conscious and able to swallow.",
-  warning: "Do not give fluids to a person who is not fully conscious -- aspiration risk."
-)
-
-#v(4pt)
-
-#decision-box("Is the person fully conscious and able to swallow?")
-
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Offer small sips of cool water continuously.],
-  no-branch[Do NOT give any fluids. Place in recovery position if breathing. Monitor airway.],
-)
-
-#arrow-down()
-
-#step-box(7, "Monitor the person continuously until MDA arrives.",
-  detail: "Elevate legs if blood pressure drops (signs of shock). If the person becomes unresponsive and stops breathing, begin CPR."
-)
-
-#v(4pt)
-
-#decision-box("Has the person become unresponsive and stopped breathing?")
-
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Begin CPR immediately.],
-  no-branch[Continue cooling and monitoring. Stay with the patient until ambulance arrives.],
-)
-
-#v(10pt)
-
-// ========================================
-// HEAT EXHAUSTION PATHWAY (Steps 8-13)
-// ========================================
-#section-header("HEAT EXHAUSTION PATHWAY")
-
-#v(6pt)
-
-#step-box(8, "HEAT EXHAUSTION: Move the person to a shaded or air-conditioned location.")
-
-#arrow-down()
-
-#step-box(9, "Have the person lie down. Elevate legs slightly if blood pressure appears low.")
-
-#arrow-down()
-
-#step-box(10, "Remove excess or tight clothing.")
-
-#arrow-down()
-
-#step-box(11, "Begin cooling: apply wet towels, spray with cool water, fan the person.")
-
-#arrow-down()
-
-#step-box(12, "Assess whether the person is fully conscious and able to swallow.")
-
-#v(4pt)
-
-#decision-box("Is the person fully conscious and able to swallow?")
-
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Offer small sips of cool water continuously.],
-  no-branch[Do NOT give fluids. Call MDA at 101 immediately.],
-)
-
-#arrow-down()
-
-#step-box(13, "Monitor for deterioration.")
-
-#v(4pt)
-
-#decision-box("Are symptoms improving with first aid?")
-
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue cooling and hydration. Keep monitoring.],
-  no-branch[Call MDA at 101. Condition may be progressing to heat stroke. Return to Step 1 and reassess.],
-)
-
-#v(10pt)
-
-// ========================================
-// DO NOT LIST
-// ========================================
+// --- DO NOT List ---
 #do-not-box((
   "Do not administer fever-reducing medications (paracetamol, ibuprofen) -- antipyretics do not work for environmental hyperthermia and may cause harm.",
   "Do not give fluids to a person who is not fully conscious or who cannot swallow safely.",
@@ -288,34 +596,29 @@
   "Do not leave the person unattended while waiting for emergency services.",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// ========================================
-// EQUIPMENT
-// ========================================
+// --- Equipment ---
+#equipment-box((
+  "Wet towels or cloths",
+  "Cool/cold water (for spraying, pouring, and drinking)",
+  "Cold packs or ice packs (if available)",
+  "Fan or other means of air circulation (if available)",
+))
+
+#v(10pt)
+
+// --- Source and Verification ---
 #rect(
   fill: rgb("#f9fafb"),
-  stroke: 1pt + rgb("#d1d5db"),
-  radius: 6pt,
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", size: 11pt)[Equipment needed:]
-  #v(4pt)
-  #text(size: 10pt)[
-    - Wet towels or cloths \
-    - Cool/cold water (for spraying, pouring, and drinking) \
-    - Cold packs or ice packs (if available) \
-    - Fan or other means of air circulation (if available)
-  ]
-]
-
-#v(1fr)
-
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority (#source-date) · Last verified: #last-verified · Protocol ID: IL-ADULT-HEATSTROKE-001 \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "MDA First Aid Guidelines -- Heat-Related Illness" \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. MDA allows small sips of cool water if patient is fully conscious (Hatzalah recommends withholding all fluids in confirmed heat stroke). MDA guidance followed here.
 ]

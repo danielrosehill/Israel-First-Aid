@@ -1,342 +1,419 @@
-// First Aid Protocol Flowchart — Spider Bites (Adult, Israel)
-// Generated from protocol IL-ADULT-SPIDER-BITES-001
+// Israel Adult Spider Bites Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Font: IBM Plex Sans with IBM Plex Sans Hebrew fallback
+// Protocol ID: IL-ADULT-SPIDER-BITES-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-SPIDER-BITES-001"
+#let protocol-title = "Spider Bites — Adult"
+#let protocol-subject = "SPIDER BITES"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-03-16"
+#let last-verified = "2026-03-16"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES →] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO →] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === DOCUMENT HEADER ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1: Title, Initial Care (Steps 1-6)
+// ============================================================
 
 #align(center)[
-  #text(size: 22pt, weight: "bold")[Spider Bites — Adult Protocol]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
-  #v(2pt)
-  #text(size: 9pt, fill: rgb("#9ca3af"))[ID: IL-ADULT-SPIDER-BITES-001]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
-#v(8pt)
-
-// Primary emergency number
-#emergency-box("101", [MDA (#heb[מד״א])])
-
-#v(4pt)
-
-// All emergency numbers strip
-#all-emergency-numbers()
-
-#v(4pt)
-
-// Poison Information Center
-#rect(
-  fill: rgb("#fef9c3"),
-  stroke: 1pt + rgb("#ca8a04"),
-  radius: 6pt,
-  width: 100%,
-  inset: 8pt,
-)[
-  #set text(size: 10pt)
-  #align(center)[
-    #strong[Israel Poison Information Center (24/7):] 04-7771900 — Rambam Health Care Campus, Haifa
-  ]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) / POISON CENTER 04-7771900]
 ]
-
+#v(4pt)
+#emergency-numbers-strip()
 #v(6pt)
 
-// When to apply
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#5b21b6"))[When to apply:]
-  #v(4pt)
-  #text(size: 10pt)[Person has been bitten or suspected bitten by a spider. Signs vary by species: local pain, swelling, redness at bite site; for recluse bites -- initially painless "pricking sensation" progressing to burning, swelling, blistering, and blue-white-red concentric pattern; for black widow bites -- local pain (onset 15 minutes to 1 hour), two fang marks, spreading pain, muscle cramps/spasms (especially abdominal), sweating.]
-]
-
-#v(4pt)
-
-// Summary
-#rect(
-  fill: rgb("#ecfdf5"),
-  stroke: 1pt + rgb("#059669"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#065f46"))[Summary:]
-  #v(4pt)
-  #text(size: 10pt)[Stay calm, clean the bite with soap and water, apply cool compress, elevate the bitten area, do not apply tourniquet or cut the wound, attempt spider identification if safe, call MDA at 101 or the Poison Center at 04-7771900 if symptoms are severe or involve a suspected black widow or recluse bite.]
+#when-to-apply[
+  Person has been bitten or suspected bitten by a spider. Two species of medical significance in Israel: Mediterranean recluse (Loxosceles rufescens) -- initially painless, progressive necrosis; Mediterranean black widow (Latrodectus tredecimguttatus) -- neurotoxic venom, antivenom available.
 ]
 
 #v(8pt)
 
-// === PROTOCOL STEPS ===
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Care and Assessment]
+  #v(4pt)
 
-// Step 1
-#step-box(1, "Stay calm and move away from the spider.",
-  detail: "Reassure the victim that most spider bites in Israel are not life-threatening. Do not attempt to catch the spider, but if safely possible, note its appearance or take a photo for identification.")
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 1: Stay calm
+    node((0, 0), align(center)[
+      *Step 1:* #action[STAY] calm. Move \
+      away from the spider. Most \
+      bites in Israel are not \
+      life-threatening.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 2
-#step-box(2, "Clean the bite wound with mild soap and water.",
-  detail: "Gently wash the bite area to reduce infection risk.")
+    edge((0, 0), (0, 1), "->"),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 2: Clean wound
+    node((0, 1), align(center)[
+      *Step 2:* #action[CLEAN] the bite \
+      with mild soap and water.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 3
-#step-box(3, "Apply a cool compress to the bite site.",
-  detail: "Use a clean cloth dampened with cold water or a wrapped ice pack. Apply for 15 minutes per hour to reduce pain and swelling. Do not apply ice directly to skin.")
+    edge((0, 1), (0, 2), "->"),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 3: Cool compress
+    node((0, 2), align(center)[
+      *Step 3:* #action[APPLY] cool compress. \
+      Wrapped ice pack, 15 min/hr. \
+      Do not apply ice directly.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 4
-#step-box(4, "Keep the bitten area elevated and still.",
-  detail: "Elevate the bitten limb above heart level if possible. Minimise movement of the affected area.")
+    edge((0, 2), (0, 3), "->"),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 4: Elevate
+    node((0, 3), align(center)[
+      *Step 4:* #action[ELEVATE] bitten area \
+      above heart level. Minimise \
+      movement of affected area.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 5
-#step-box(5, "Attempt to identify the spider if it can be done safely.",
-  detail: "Photograph the spider or note its colour, size, and distinguishing features. Do not risk another bite. Two species of medical significance in Israel: Mediterranean recluse (Loxosceles rufescens) -- small brown 'violin spider,' very common in citrus groves and buildings; Mediterranean black widow (Latrodectus tredecimguttatus) -- dark with markings, less common but more systemically dangerous.")
+    edge((0, 3), (0, 4), "->"),
 
-#v(4pt)
+    // Step 5: Identify spider
+    node((0, 4), align(center)[
+      *Step 5:* Can spider be \
+      safely identified?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-// Decision point for Step 5
-#decision-box("Can the spider be safely identified or photographed without risk of additional bites?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Take a photograph or note distinguishing features. Share with medical responders.],
-  no-branch[Do not approach the spider. Report any details you observed to paramedics when they arrive.],
-)
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    node((1, 4), align(center)[
+      #action[PHOTOGRAPH] or note \
+      features. Share with \
+      medical responders.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-// Step 6
-#step-box(6, "Assess whether the bite requires emergency medical attention.")
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
+    node((-1, 4), align(center)[
+      Do not approach. \
+      Report details \
+      to paramedics.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
 
-// Decision point for Step 6
-#decision-box("Is the victim showing any of the following: severe pain, muscle cramps/spasms (especially abdominal), difficulty breathing, nausea/vomiting/fever, spreading redness or discolouration, or any systemic symptoms beyond the bite site?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Call MDA at 101 immediately. Also call the Poison Center at 04-7771900. This requires urgent medical evaluation. Proceed to Step 7.],
-  no-branch[Monitor the bite. Call the Poison Center at 04-7771900 for guidance. Seek medical attention if symptoms worsen or the victim is a child, elderly, or has pre-existing conditions.],
-)
+    edge((0, 4), (0, 5), "->"),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    // Step 6: Emergency assessment
+    node((0, 5), align(center)[
+      *Step 6:* Severe pain, muscle \
+      cramps, difficulty breathing, \
+      nausea/vomiting, spreading \
+      redness, systemic symptoms?
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 7
-#step-box(7, "Determine suspected spider type for appropriate monitoring.")
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#v(4pt)
+    node((1, 5), align(center)[
+      #action[CALL] 101 immediately. \
+      Also call Poison Center \
+      04-7771900. Go to \
+      *Step 7* (next page).
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 8pt),
 
-// Decision point for Step 7
-#decision-box("Is a black widow (Latrodectus) bite suspected? Signs: local pain onset within an hour, muscle cramps/spasms, abdominal pain, sweating, spreading pain.")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Call MDA at 101 immediately -- black widow bites require hospital evaluation and possible antivenom. Monitor breathing closely as respiratory compromise is possible in severe cases. Keep the victim calm and still.],
-  no-branch[If recluse (Loxosceles) suspected: initially painless bite progressing to burning, blistering, blue-white-red pattern. Call Poison Center (04-7771900) for guidance. Seek medical attention -- do not wait for symptoms to worsen. Do NOT attempt to cut out or excise the bite wound.],
-)
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
+    node((-1, 5), align(center)[
+      Monitor the bite. \
+      Call Poison Center \
+      (04-7771900) for \
+      guidance. Seek medical \
+      attention if worsens.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
-// Step 8
-#step-box(8, "Monitor the victim while awaiting medical help.",
-  detail: "Watch for worsening local symptoms (spreading redness, necrosis, increasing swelling) and systemic symptoms (muscle cramps, breathing difficulty, nausea, fever, confusion). Be prepared to report all observations to arriving paramedics.")
+// ============================================================
+// PAGE 2: Species Identification, Monitoring (Steps 7-8), DO NOT, Equipment
+// ============================================================
+#pagebreak()
 
-#v(4pt)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Species-Specific Response and Monitoring]
+  #v(4pt)
 
-// Decision point for Step 8
-#decision-box("Is the victim conscious and breathing adequately?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue monitoring. Keep the bitten area elevated, cool compress applied, and the victim calm.],
-  no-branch[If unconscious but breathing, place in recovery position. If not breathing, begin CPR immediately. Call MDA at 101 if not already done.],
-)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 7: Species determination
+    node((0, 0), align(center)[
+      *Step 7:* Black widow \
+      (Latrodectus) suspected? \
+      Pain onset within 1hr, \
+      muscle cramps, abdominal \
+      pain, sweating.
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      #action[CALL] 101 -- requires \
+      hospital evaluation and \
+      possible antivenom. \
+      Monitor breathing closely.
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 0), (-1, 0), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 0), align(center)[
+      Recluse (Loxosceles) \
+      suspected: painless bite \
+      progressing to burning, \
+      blistering. Call Poison \
+      Center. Do NOT cut/excise.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 8: Monitor
+    node((0, 1), align(center)[
+      *Step 8:* #action[MONITOR] victim. \
+      Watch for worsening local \
+      and systemic symptoms.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Decision: conscious?
+    node((0, 2), align(center)[
+      *Is the victim conscious* \
+      *and breathing adequately?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      Continue monitoring. \
+      Keep elevated, cool \
+      compress applied, \
+      victim calm.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      Unconscious + breathing: \
+      recovery position. \
+      Not breathing: \
+      #action[BEGIN] CPR.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
 
 #v(10pt)
 
-// === DO NOT LIST ===
 #do-not-box((
-  "DO NOT apply a tourniquet -- spider venom is not stopped by tourniquets and a tourniquet will cause tissue damage.",
-  "DO NOT cut, suck, or apply suction to the bite wound -- this is ineffective and increases infection risk.",
-  "DO NOT apply heat to the bite -- use only cool compresses.",
-  "DO NOT attempt to catch the spider at risk of additional bites -- photograph from a safe distance if possible.",
-  "DO NOT attempt to cut out or excise a recluse spider bite wound -- early surgical excision is contraindicated and worsens outcomes.",
-  "DO NOT apply ice directly to skin -- wrap in cloth first.",
-  "DO NOT ignore initially mild symptoms -- recluse bites are often painless at first but progress to serious tissue necrosis over hours to days.",
-  "DO NOT assume a bite is from a spider without confirmation -- 83.5% of cases presenting as 'spider bites' are actually other conditions (bacterial infections, allergic reactions, other arthropod bites).",
+  "Do NOT apply a tourniquet -- spider venom is not stopped by tourniquets and it will cause tissue damage.",
+  "Do NOT cut, suck, or apply suction to the bite wound -- ineffective and increases infection risk.",
+  "Do NOT apply heat to the bite -- use only cool compresses.",
+  "Do NOT attempt to catch the spider at risk of additional bites.",
+  "Do NOT attempt to cut out or excise a recluse spider bite wound -- early excision worsens outcomes.",
+  "Do NOT apply ice directly to skin -- wrap in cloth first.",
+  "Do NOT ignore initially mild symptoms -- recluse bites progress to serious necrosis over hours to days.",
+  "Do NOT assume a bite is from a spider without confirmation -- 83.5% of cases presenting as 'spider bites' are actually other conditions.",
 ))
 
-#v(8pt)
+#v(10pt)
 
-// === EQUIPMENT ===
 #equipment-box((
   "Phone to call 101 (MDA) and 04-7771900 (Israel Poison Information Center)",
-  "Phone or camera to photograph the spider if safe to do so",
+  "Phone or camera to photograph the spider if safe",
   "Mild soap and clean water for wound cleaning",
   "Clean cloth or wrapped ice pack for cool compress",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// === FOOTER ===
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) — First Aid for Spider Bites - Mediterranean Recluse and Black Widow \
-  Imported: 2026-03-16 · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — First Aid for Spider Bites \
+  #strong[URL:] https://www.mdais.org/media/4954/mda-first-aid-guidelines-en.pdf \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
+  #strong[Notes:] Two medically significant species in Israel: Mediterranean recluse (Loxosceles rufescens) and Mediterranean black widow (Latrodectus tredecimguttatus). Israel Poison Information Center: 04-7771900 (24/7).
 ]

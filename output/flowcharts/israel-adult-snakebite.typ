@@ -1,338 +1,569 @@
-// First Aid Protocol Flowchart — Snakebite (Adult, Israel)
-// Generated from protocol IL-ADULT-SNAKEBITE-001
+// Israel Adult Snakebite Flowchart — V2
+// Generated: 2026-03-16
 // Source: Magen David Adom (MDA)
-// Font: IBM Plex Sans with IBM Plex Sans Hebrew fallback
+// Protocol ID: IL-ADULT-SNAKEBITE-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-ADULT-SNAKEBITE-001"
+#let protocol-title = "Snakebite — Adult"
+#let protocol-subject = "SNAKEBITE"
+#let age-group = "ADULT"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
+#let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
+}
+
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let warning-box(content) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 4pt,
+      width: 100%,
+      inset: 8pt,
+    )[
+      #text(fill: clr-warning, weight: "bold", size: 10pt)[WARNING: #content]
+    ]
   ]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES →] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO →] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let equipment-box(items) = {
+#let emergency-numbers-strip() = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
+
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-// === DOCUMENT HEADER ===
+// ============================================================
+// PAGE 1: Title, Emergency Numbers, Steps 1-5
+// ============================================================
 
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[Snakebite — Adult Protocol]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Adult]
-  #v(2pt)
-  #text(size: 9pt, fill: rgb("#9ca3af"))[ID: IL-ADULT-SNAKEBITE-001]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(
+  fill: rgb("#dc2626"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+// --- When to Apply ---
+#when-to-apply[
+  Person has been bitten or suspected bitten by a snake. Signs include: puncture marks on skin, pain and swelling at bite site, redness or bruising around the wound. May progress to nausea, vomiting, abdominal pain, tachycardia, hypotension, difficulty breathing, or altered consciousness.
+]
+
+#v(6pt)
+
+// --- Summary ---
+#rect(
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Immobilise the victim and bitten limb, call 101 immediately, clean wound with soap and water only, monitor for systemic reaction, and transport to hospital for evaluation and possible antivenom.
 ]
 
 #v(8pt)
 
-// Primary emergency number
-#emergency-box("101", [MDA (#heb[מד״א])])
+// --- Initial Response: Steps 1-5 ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Response]
+  #v(4pt)
 
-#v(4pt)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-// All emergency numbers strip
-#all-emergency-numbers()
+    // Step 1: Call 101
+    node((0, 0), align(center)[
+      *Step 1:* #action[CALL] 101 (MDA) \
+      immediately. MDA will provide \
+      phone guidance until arrival.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 0), (0, 1), "->"),
 
-// Poison Information Center
-#rect(
-  fill: rgb("#fef9c3"),
-  stroke: 1pt + rgb("#ca8a04"),
-  radius: 6pt,
-  width: 100%,
-  inset: 8pt,
-)[
-  #set text(size: 10pt)
-  #align(center)[
-    #strong[Israel Poison Information Center (24/7):] 04-7771900 — Rambam Health Care Campus, Haifa
+    // Step 2: Keep calm
+    node((0, 1), align(center)[
+      *Step 2:* #action[KEEP] victim calm \
+      and completely still. \
+      Have them lie down. \
+      Immobility slows venom spread.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 3: Immobilise limb
+    node((0, 2), align(center)[
+      *Step 3:* #action[IMMOBILISE] bitten limb. \
+      Position below heart level. \
+      Splint against the body.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 4: Remove constrictive items
+    node((0, 3), align(center)[
+      *Step 4:* #action[REMOVE] jewellery, \
+      watches, rings, tight clothing \
+      from bite area and limb.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Swelling can progress \
+      rapidly. Remove all \
+      constrictive items \
+      as early as possible.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 5: Clean wound
+    node((0, 4), align(center)[
+      *Step 5:* #action[CLEAN] bite wound \
+      with soap and water only. \
+      Do NOT use alcohol-based \
+      disinfectants.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning for step 5
+    node((-1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT use alcohol- \
+      based disinfectants \
+      on the bite wound.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 2: Identification and Monitoring — Steps 6-8
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Identification and Monitoring]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 6: Identify snake
+    node((0, 0), align(center)[
+      *Step 6:* #action[IDENTIFY] the snake \
+      if it can be done safely. \
+      Do NOT approach or catch it.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Decision: can photograph safely?
+    node((0, 1), align(center)[
+      *Can the snake be safely* \
+      *photographed from at* \
+      *least 2 metres away?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> photograph
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      #action[PHOTOGRAPH] snake. \
+      Note colour, pattern, \
+      size. Share with \
+      arriving paramedics.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> note details
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      Do not approach. \
+      Note any observed \
+      details (colour, size, \
+      head shape). Report \
+      to paramedics.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 7: Monitor
+    node((0, 2), align(center)[
+      *Step 7:* #action[MONITOR] for systemic \
+      reaction or anaphylaxis. \
+      Watch for: difficulty breathing, \
+      spreading swelling, rash, nausea, \
+      changes in consciousness.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: severe reaction?
+    node((0, 3), align(center)[
+      *Severe systemic reaction?* \
+      *(breathing difficulty, altered* \
+      *consciousness, hypotension)*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> escalate
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      #action[REPORT] to MDA \
+      dispatch immediately. \
+      Prepare to manage \
+      airway. If breathing \
+      stops, begin CPR. \
+      Legs elevated if \
+      blood pressure drops.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> continue monitoring
+    edge((0, 3), (-1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 3), align(center)[
+      Continue monitoring. \
+      Keep victim calm \
+      and still. Await \
+      paramedic arrival.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 8: Hospital transport
+    node((0, 4), align(center)[
+      *Step 8:* #action[WAIT] for MDA and \
+      prepare for hospital transport. \
+      Hospital evaluation and possible \
+      antivenom administration required.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: remote location?
+    node((0, 5), align(center)[
+      *Is the victim in a remote* \
+      *location with delayed* \
+      *MDA response?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> transport
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Begin moving to \
+      nearest hospital. \
+      Keep victim immobile, \
+      limb below heart. \
+      Maintain phone contact \
+      with MDA dispatch.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> wait
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      Wait for MDA. \
+      Do not move the \
+      victim unnecessarily.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+
+// ============================================================
+// PAGE 3: DO NOT List, Equipment, Israel Species Info, Source
+// ============================================================
+#pagebreak()
+
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
+#v(6pt)
+
+// --- Israel Venomous Snakes ---
+#keep-together[
+  #rect(
+    fill: rgb("#eff6ff"),
+    stroke: 2pt + rgb("#2563eb"),
+    radius: 6pt,
+    width: 100%,
+    inset: 12pt,
+  )[
+    #text(fill: rgb("#1e40af"), weight: "bold", size: 13pt)[Dangerous Venomous Snakes in Israel]
+    #v(6pt)
+    #grid(
+      columns: (1fr, 1fr, 1fr),
+      gutter: 8pt,
+      [#strong[Daboia palaestinae] \ (Palestine viper) \ Antivenom: available],
+      [#strong[Echis coloratus] \ (Painted saw-scaled viper) \ Antivenom: available],
+      [#strong[Atractaspis engaddensis] \ (Israeli mole viper) \ Antivenom: NONE],
+    )
+    #v(4pt)
+    #text(size: 9pt, fill: rgb("#6b7280"))[Peak snakebite season: spring/summer. Poison Center: 04-7771900]
   ]
 ]
 
-#v(6pt)
+#v(10pt)
 
-// When to apply
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#5b21b6"))[When to apply:]
-  #v(4pt)
-  #text(size: 10pt)[Person has been bitten or suspected bitten by a snake. Signs include: puncture marks on skin, pain and swelling at bite site, redness or bruising around the wound. May progress to nausea, vomiting, abdominal pain, tachycardia, hypotension, difficulty breathing, or altered consciousness.]
-]
-
-#v(6pt)
-
-// Summary
-#rect(
-  fill: rgb("#ecfdf5"),
-  stroke: 1pt + rgb("#059669"),
-  radius: 6pt,
-  width: 100%,
-  inset: 10pt,
-)[
-  #text(weight: "bold", size: 11pt, fill: rgb("#065f46"))[Summary:]
-  #v(4pt)
-  #text(size: 10pt)[Immobilise the victim and bitten limb, call 101 immediately, clean wound with soap and water only, monitor for systemic reaction, and transport to hospital for evaluation and possible antivenom.]
-]
-
-#v(8pt)
-
-// === PROTOCOL STEPS ===
-
-// Step 1
-#step-box(1, "Call MDA immediately at 101.",
-  detail: "MDA dispatch will provide real-time telephone guidance until paramedics arrive. Remain calm when calling -- do not create panic, as stress increases the victim's heart rate and accelerates venom spread.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 2
-#step-box(2, "Keep the victim calm and completely still.",
-  detail: "Reassure the victim and reduce their stress and anxiety. Have them lie down. Immobility and a low heart rate are critical to slowing the spread of venom through the body. Panic increases heart rate and accelerates venom circulation.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 3
-#step-box(3, "Position and immobilise the bitten limb.",
-  detail: "Position the bitten limb below heart level. The limb should not move at all. Immobilise (splint) the affected limb against the body to prevent any movement.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 4
-#step-box(4, "Remove constrictive items from the bite area.",
-  detail: "Remove jewellery, watches, rings, and tight clothing from the bitten area and the entire affected limb. The bite area will swell, and constrictive items can cause additional tissue damage.",
-  warning: "Swelling can progress rapidly. Remove all constrictive items as early as possible.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 5
-#step-box(5, "Clean the bite wound with soap and water only.",
-  detail: "Gently wash the bite area with soap and water. Do NOT use alcohol-based disinfectants or any other cleaning agents.",
-  warning: "Do NOT use alcohol-based disinfectants on the bite wound.")
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 6
-#step-box(6, "Attempt to identify the snake if it can be done safely.",
-  detail: "If possible, photograph the snake from at least 2 metres away while remaining safe. If the snake is dead, keep it to show medical staff. Identification helps determine whether antivenom is needed and which type.",
-  warning: "Do NOT attempt to catch or kill the snake. All snakes in Israel are protected under the Wildlife Protection Law. Approaching a snake risks additional bites.")
-
-#v(4pt)
-
-// Decision point for Step 6
-#decision-box("Can the snake be safely photographed from at least 2 metres away?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Take a clear photograph of the snake and share it with arriving paramedics. Note the snake's colour, pattern, and approximate size.],
-  no-branch[Do not approach the snake. Note any details you observed (colour, size, head shape) and report them to paramedics.],
-)
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 7
-#step-box(7, "Monitor the victim for signs of systemic reaction or anaphylaxis.",
-  detail: "Continuously watch for: difficulty breathing or swallowing, swelling spreading beyond the bite area, rash or itching, abdominal pain, nausea, vomiting, changes in consciousness, drop in blood pressure, rapid heart rate.")
-
-#v(4pt)
-
-// Decision point for Step 7
-#decision-box("Is the victim showing signs of severe systemic reaction (difficulty breathing, altered consciousness, severe swelling, hypotension)?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Report symptoms immediately to MDA dispatch on the phone. Prepare to manage airway if victim loses consciousness. If the victim stops breathing, begin CPR. Keep the victim lying down with legs elevated if blood pressure drops.],
-  no-branch[Continue monitoring while keeping the victim calm and still. Await paramedic arrival.],
-)
-
-#v(4pt)
-#align(center)[#text(size: 14pt, fill: rgb("#3b82f6"), weight: "bold")[|]]
-#v(4pt)
-
-// Step 8
-#step-box(8, "Wait for MDA paramedics and prepare for hospital transport.",
-  detail: "The victim must be transported to a hospital for evaluation and possible antivenom administration. Antivenom is available for Daboia palaestinae and Echis coloratus bites (polyvalent equine-derived antiserum manufactured by Kamada Ltd.). Note: there is no antivenom available for Atractaspis engaddensis (Israeli mole viper) bites.")
-
-#v(4pt)
-
-// Decision point for Step 8
-#decision-box("Is the victim in a remote location where MDA response will be significantly delayed?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[If safe transport is available, begin moving the victim to the nearest hospital while keeping them immobile and the bitten limb below heart level. Maintain phone contact with MDA dispatch for guidance.],
-  no-branch[Wait for MDA paramedics to arrive. Do not move the victim unnecessarily.],
-)
+// --- DO NOT List ---
+#do-not-box((
+  "Do NOT apply a tourniquet -- it traps venom locally and causes severe tissue damage.",
+  "Do NOT suck the venom out of the wound -- this is ineffective and dangerous.",
+  "Do NOT cut or incise the bite area -- this increases infection risk and does not help remove venom.",
+  "Do NOT cool or apply ice to the bite area -- this can worsen tissue damage.",
+  "Do NOT give the victim food or drink -- this may complicate hospital treatment.",
+  "Do NOT induce vomiting.",
+  "Do NOT give aspirin, ibuprofen, or naproxen -- these can worsen bleeding because viper venom is often anticoagulant.",
+  "Do NOT use alcohol-based disinfectants on the wound.",
+  "Do NOT attempt to catch or kill the snake -- snakes are protected under Israeli law and approaching them risks additional bites.",
+  "Do NOT allow the victim to walk or move the bitten limb -- movement accelerates venom circulation.",
+))
 
 #v(10pt)
 
-// === DO NOT LIST ===
-#do-not-box((
-  "DO NOT apply a tourniquet -- it traps venom locally and causes severe tissue damage.",
-  "DO NOT suck the venom out of the wound -- this is ineffective and dangerous.",
-  "DO NOT cut or incise the bite area -- this increases infection risk and does not help remove venom.",
-  "DO NOT cool or apply ice to the bite area -- this can worsen tissue damage.",
-  "DO NOT give the victim food or drink -- this may complicate hospital treatment.",
-  "DO NOT induce vomiting.",
-  "DO NOT give aspirin, ibuprofen, or naproxen -- these can worsen bleeding because viper venom is often anticoagulant.",
-  "DO NOT use alcohol-based disinfectants on the wound.",
-  "DO NOT attempt to catch or kill the snake -- snakes are protected under Israeli law and approaching them risks additional bites.",
-  "DO NOT allow the victim to walk or move the bitten limb -- movement accelerates venom circulation.",
-))
-
-#v(8pt)
-
-// === EQUIPMENT ===
+// --- Equipment ---
 #equipment-box((
   "Splint or improvised immobilisation material",
   "Soap and clean water for wound cleaning",
   "Phone or camera to photograph the snake",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// === FOOTER ===
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) — "How to Treat a Snake Bite (#heb[כיצד לטפל בהכשת נחש])" · MDA 101 Public First Aid Guidance Series \
-  Imported: 2026-03-15 · Last verified: 2026-03-15 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "How to Treat a Snake Bite -- MDA 101 Public First Aid Guidance Series; corroborated by Israeli Ministry of Health guidelines" \
+  #strong[URL:] https://www.mdais.org/101/snake-bite \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Israel Poison Information Center 24/7 hotline: 04-7771900.
 ]

@@ -1,194 +1,211 @@
-// First Aid Protocol Flowchart — Shock (Helem) — Adult — Israel
-// Generated from: IL-ADULT-SHOCK-001
-// Generated on: 2026-03-15
+// Israel Adult Shock Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-ADULT-SHOCK-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "SHOCK (HELEM)"
-#let protocol-category = "shock"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-SHOCK-001"
+#let protocol-title = "Shock (Helem) — Adult"
+#let protocol-subject = "SHOCK"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
-#let source-date = "2026-03-15"
+#let source-authority = "Magen David Adom"
+#let source-date = "2026-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
-
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) -- CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt, width: 100%)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES ->] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO ->] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"))[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ v]
+#let emergency-numbers-strip() = {
+  rect(
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
   ]
 }
 
-#let equipment-box(items) = {
+#let when-to-apply(content) = {
   rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
     radius: 6pt,
     width: 100%,
     inset: 10pt,
   )[
     #set text(size: 10pt)
-    #text(fill: rgb("#ca8a04"), weight: "bold", size: 12pt)[EQUIPMENT NEEDED:]
-    #v(4pt)
-    #for item in items [
-      - #item \
-    ]
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
   ]
 }
 
-// === DOCUMENT ===
+// ============================================================
+// PAGE 1: Title, Assessment, Steps 1-5
+// ============================================================
 
-// Header
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country -- #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
 ]
-
-#v(8pt)
-
-// Emergency number (primary)
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// All emergency numbers reference strip
-#all-emergency-numbers()
-
 #v(6pt)
-
-// When to apply
 #rect(
-  fill: rgb("#faf5ff"),
-  stroke: 1pt + rgb("#7c3aed"),
+  fill: rgb("#dc2626"),
   radius: 6pt,
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", fill: rgb("#7c3aed"), size: 11pt)[WHEN TO APPLY:] Patient presents with signs of shock: rapid weak pulse, pale/cold/clammy skin, cold perspiration, rapid shallow breathing, decreased consciousness or confusion, falling blood pressure, weakness, dizziness, fainting, nausea, vomiting, or thirst. May result from massive blood loss (hypovolemic), spinal cord injury (neurogenic), heart failure (cardiogenic), severe infection (septic), or severe allergic reaction (anaphylactic).
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY IF IN DOUBT
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+// --- When to Apply ---
+#when-to-apply[
+  Patient presents with signs of shock: rapid weak pulse, pale/cold/clammy skin, cold perspiration, rapid shallow breathing, decreased consciousness or confusion, falling blood pressure, weakness, dizziness, fainting, nausea, vomiting, or thirst. May result from blood loss, spinal injury, heart failure, severe infection, or severe allergic reaction.
 ]
 
 #v(6pt)
 
-// Summary
+// --- Summary ---
 #rect(
   fill: rgb("#f0fdf4"),
   stroke: 1pt + rgb("#16a34a"),
@@ -196,160 +213,420 @@
   width: 100%,
   inset: 10pt,
 )[
-  #text(weight: "bold", fill: rgb("#16a34a"), size: 11pt)[SUMMARY:] Identify shock type, call 101, perform ABC assessment, control bleeding, elevate legs approximately 30 cm, maintain body temperature, give nothing by mouth, and monitor until MDA arrives.
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  Identify shock type, call 101, perform ABC assessment, control bleeding, elevate legs ~30 cm, maintain body temperature, give nothing by mouth, and monitor until MDA arrives.
 ]
-
-#v(6pt)
-
-// --- FLOWCHART STEPS ---
-
-#step-box(1, "Call 101 (MDA) immediately.",
-  detail: "Provide the dispatcher with your location, number of casualties, nature of the incident, and the patient's condition. Keep the line open if possible.")
-
-#arrow-down()
-
-#step-box(2, "Ensure the scene is safe.",
-  detail: "Confirm the scene is safe for you and the patient before approaching. In security incidents, be aware of secondary threats.")
-
-#arrow-down()
-
-#step-box(3, "Perform primary assessment (ABC).",
-  detail: "A - Airway: ensure the airway is open and clear; tilt chin up slightly if needed. B - Breathing: check if the person is breathing effectively. C - Circulation: check for pulse and identify any severe bleeding.")
-
-#v(4pt)
-
-#decision-box("Is the patient breathing?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue to Step 4 to assess and treat the cause of shock.],
-  no-branch[Begin CPR immediately. Follow the CPR protocol (IL-ADULT-CPR-001).],
-)
-
-#arrow-down()
-
-#step-box(4, "Identify the likely type of shock if possible.",
-  detail: "Hypovolemic: blood loss, dehydration, burns (rapid pulse, pale/cold skin). Neurogenic: spinal injury (normal or slow pulse, warm red skin below injury). Cardiogenic: heart attack, cardiac tamponade (elevated jugular venous pressure, rapid or slow pulse). Septic: infection with high fever (gradual onset). Anaphylactic: allergic reaction with rash, swelling, wheeze, stridor.")
-
-#v(4pt)
-
-#decision-box("Is the shock caused by visible bleeding?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Proceed to Step 5 for bleeding control before positioning.],
-  no-branch[Skip to Step 6 for patient positioning.],
-)
-
-#arrow-down()
-
-#step-box(5, "Control any severe bleeding.",
-  detail: "Apply direct pressure to wounds. Pack wounds if direct pressure is insufficient. Apply a tourniquet to limbs if bleeding cannot be controlled by other means. Note the time of tourniquet application. Use an Israeli bandage (emergency bandage) if available.",
-  warning: "Tourniquet use is widely taught in Israeli civilian first aid due to security context. Always note the time a tourniquet is applied and report it to the MDA team.")
-
-#arrow-down()
-
-#step-box(6, "Position the patient appropriately.",
-  detail: "If conscious: lay the patient on their back and gently elevate legs approximately 30 cm (12 inches) above the level of the heart to improve blood flow to vital organs.")
-
-#v(4pt)
-
-#decision-box("Is the patient conscious?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Lay on back with legs elevated approximately 30 cm, unless contraindicated (head/neck/spinal injury, broken hip or leg, causes pain, or patient has difficulty breathing).],
-  no-branch[If unconscious but breathing, place in the recovery position (on their side). If not breathing, begin CPR.],
-)
-
-#pagebreak()
-
-// Page 2 header
-#align(center)[
-  #text(size: 18pt, weight: "bold")[#protocol-title (continued)]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country -- #age-group]
-]
-
-#v(4pt)
-#emergency-box(emergency-number, emergency-service)
-#v(4pt)
-#all-emergency-numbers()
-#v(6pt)
-
-#step-box(7, "Handle contraindications for leg elevation.",
-  detail: "If the patient has difficulty breathing, keep them semi-upright instead of elevating legs. If head, neck, or spinal injury is suspected, do not elevate legs and do not move the patient unnecessarily. If broken hip or leg bones are suspected, do not elevate legs.")
-
-#v(4pt)
-
-#decision-box("Does the patient have suspected head/neck/spinal injury, broken hip/leg, difficulty breathing, or does leg elevation cause pain?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Do NOT elevate legs. Keep patient flat (spinal/fracture) or semi-upright (breathing difficulty). Minimise movement.],
-  no-branch[Elevate legs approximately 30 cm above heart level.],
-)
-
-#arrow-down()
-
-#step-box(8, "Maintain body temperature.",
-  detail: "Cover the patient with a blanket, coat, or any available covering to prevent heat loss. Place insulation underneath the patient to protect from cold ground. Shock patients lose body heat even in hot weather.",
-  warning: "In Israeli summer conditions, shade the patient from direct sun but still keep them warm. Do not overheat the patient.")
-
-#arrow-down()
-
-#step-box(9, "Do NOT give food or drink.",
-  detail: "Do not give the patient anything to eat or drink. If the patient is thirsty, moisten their lips with water only.",
-  warning: "Giving food or drink to a shock patient may cause vomiting and aspiration, and may complicate potential surgery.")
-
-#arrow-down()
-
-#step-box(10, "Administer epinephrine for anaphylactic shock if available.",
-  detail: "If anaphylactic shock is suspected (allergic reaction with rash, swelling, wheeze, stridor) and the patient has a prescribed EpiPen, assist with administration.")
-
-#v(4pt)
-
-#decision-box("Is anaphylactic shock suspected and is an EpiPen available?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Assist the patient with their EpiPen. Follow the anaphylaxis protocol (IL-ADULT-ALLERGIC-REACTION-001).],
-  no-branch[Continue monitoring and supportive care. Keep the patient positioned and warm.],
-)
-
-#arrow-down()
-
-#step-box(11, "Monitor and reassure the patient continuously.",
-  detail: "Monitor breathing and pulse continuously. Reassure and comfort the patient; keep them calm. Stay with the patient until MDA emergency services arrive.")
-
-#v(4pt)
-
-#decision-box("Does the patient vomit?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[If no spinal injury is suspected, turn the patient on their side to prevent choking. Clear the airway.],
-  no-branch[Continue monitoring in current position.],
-)
-
-#arrow-down()
-
-#step-box(12, "Document and report to the arriving MDA team.",
-  detail: "Note the time of injury or onset of symptoms. Note any treatments given, including tourniquet application time, medications administered, and changes in patient condition. Report all information to the arriving MDA paramedics.")
-
-#v(10pt)
-
-// Do Not list
-#do-not-box((
-  "Do not give the patient anything to eat or drink -- moisten lips only if thirsty.",
-  "Do not elevate legs if head, neck, or spinal injury is suspected.",
-  "Do not elevate legs if the patient has a broken hip or leg.",
-  "Do not elevate legs if it causes the patient pain or further injury.",
-  "Do not elevate legs if the patient has difficulty breathing -- keep them semi-upright instead.",
-  "Do not overheat the patient when maintaining body temperature.",
-  "Do not move a patient with suspected spinal injury unnecessarily.",
-  "Do not delay calling 101 -- shock is a life-threatening emergency.",
-  "Do not remove a tourniquet once applied -- leave removal to MDA paramedics.",
-  "Do not leave the patient unattended.",
-))
 
 #v(8pt)
 
-// Equipment
+// --- Steps 1-4: Initial Assessment ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Assessment]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Call 101
+    node((0, 0), align(center)[
+      *Step 1:* #action[CALL] 101 (MDA) \
+      immediately. Provide location, \
+      casualties, nature of incident.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 2: Scene safety
+    node((0, 1), align(center)[
+      *Step 2:* #action[CHECK] scene safety. \
+      In security incidents, be \
+      aware of secondary threats.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 3: ABC
+    node((0, 2), align(center)[
+      *Step 3:* #action[CHECK] ABC: \
+      A -- Airway open and clear \
+      B -- Breathing effectively \
+      C -- Circulation (pulse, bleeding)
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Decision: breathing?
+    node((0, 3), align(center)[
+      *Is the patient breathing?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> Step 4
+    edge((0, 3), (0, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    // NO -> CPR
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((1, 3), align(center)[
+      #action[BEGIN] CPR \
+      immediately. Follow \
+      CPR protocol \
+      (IL-ADULT-CPR-001).
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    // Step 4: Identify shock type
+    node((0, 4), align(center)[
+      *Step 4:* Identify likely shock type. \
+      Hypovolemic: blood loss, pale \
+      Neurogenic: spinal, warm skin \
+      Cardiogenic: heart failure \
+      Septic: infection, fever \
+      Anaphylactic: rash, wheeze
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: visible bleeding?
+    node((0, 5), align(center)[
+      *Is the shock caused* \
+      *by visible bleeding?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> bleeding control
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Go to Step 5: \
+      #action[STOP] bleeding first \
+      (direct pressure, pack, \
+      tourniquet as needed).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> positioning
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      Skip to Step 6: \
+      Patient positioning.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
+]
+
+// ============================================================
+// PAGE 2: Bleeding Control, Positioning, Maintenance (Steps 5-9)
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Bleeding Control and Positioning]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 5: Control bleeding
+    node((0, 0), align(center)[
+      *Step 5:* #action[APPLY] direct \
+      pressure. Pack wounds. \
+      #action[APPLY] tourniquet to limbs \
+      if uncontrolled. Record time.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Always record time of \
+      tourniquet application. \
+      Report to MDA team.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 6: Position
+    node((0, 1), align(center)[
+      *Is the patient conscious?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> legs up
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      Lay on back. \
+      #action[ELEVATE] legs ~30 cm \
+      above heart level.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> recovery
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      If breathing: recovery \
+      position (on side). \
+      If not breathing: \
+      #action[BEGIN] CPR.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Step 7: Contraindications
+    node((0, 2), align(center)[
+      *Contraindications for* \
+      *leg elevation?* \
+      (spinal/head injury, broken \
+      hip/leg, breathing difficulty, \
+      causes pain)
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> flat or semi-upright
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      Do NOT elevate legs. \
+      Keep flat (spinal) or \
+      semi-upright (breathing). \
+      Minimise movement.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> elevate
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      #action[ELEVATE] legs ~30 cm \
+      above heart level.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 8: Maintain temp
+    node((0, 3), align(center)[
+      *Step 8:* #action[COVER] patient with \
+      blanket or coat. Insulate \
+      from cold ground. Shock \
+      patients lose heat even \
+      in hot weather.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[In Israeli summer: \
+      shade the patient but \
+      still keep warm. \
+      Do not overheat.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 9: Nothing by mouth
+    node((0, 4), align(center)[
+      *Step 9:* Do NOT give food \
+      or drink. If thirsty, moisten \
+      lips with water only.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 4), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Food/drink may cause \
+      vomiting, aspiration, \
+      and complicate surgery.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
+]
+
+// ============================================================
+// PAGE 3: Anaphylaxis Check, Monitoring, DO NOT, Equipment
+// ============================================================
+#pagebreak()
+
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Anaphylaxis Check and Continuous Monitoring]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 10: Anaphylactic shock?
+    node((0, 0), align(center)[
+      *Is anaphylactic shock suspected* \
+      *and is an EpiPen available?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> EpiPen
+    edge((0, 0), (1, 0), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 0), align(center)[
+      Assist with EpiPen. \
+      #action[FOLLOW] anaphylaxis \
+      protocol \
+      (IL-ADULT-ALLERGIC- \
+      REACTION-001).
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> continue
+    edge((0, 0), (-1, 0), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 0), align(center)[
+      Continue monitoring \
+      and supportive care. \
+      Keep positioned \
+      and warm.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 11: Monitor
+    node((0, 1), align(center)[
+      *Step 11:* #action[MONITOR] and \
+      reassure continuously. \
+      #action[CHECK] breathing and \
+      pulse. Keep patient calm.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Decision: vomiting?
+    node((0, 2), align(center)[
+      *Does the patient vomit?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> turn on side
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      If no spinal injury: \
+      #action[TURN] on side to \
+      prevent choking. \
+      #action[OPEN] airway.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> continue
+    edge((0, 2), (-1, 2), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 2), align(center)[
+      Continue monitoring \
+      in current position.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    // Step 12: Document
+    node((0, 3), align(center)[
+      *Step 12:* Document and report \
+      to arriving MDA team: \
+      time of onset, treatments \
+      given, tourniquet time, \
+      medications, changes.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
+]
+
+#v(10pt)
+
+// --- DO NOT List ---
+#do-not-box((
+  "DO NOT give the patient anything to eat or drink -- moisten lips only if thirsty.",
+  "DO NOT elevate legs if head, neck, or spinal injury is suspected.",
+  "DO NOT elevate legs if the patient has a broken hip or leg.",
+  "DO NOT elevate legs if it causes the patient pain or further injury.",
+  "DO NOT elevate legs if the patient has difficulty breathing -- keep them semi-upright instead.",
+  "DO NOT overheat the patient when maintaining body temperature.",
+  "DO NOT move a patient with suspected spinal injury unnecessarily.",
+  "DO NOT delay calling 101 -- shock is a life-threatening emergency.",
+  "DO NOT remove a tourniquet once applied -- leave removal to MDA paramedics.",
+  "DO NOT leave the patient unattended.",
+))
+
+#v(10pt)
+
+// --- Equipment ---
 #equipment-box((
   "Tourniquet -- widely available in Israeli first aid kits due to security context",
   "Israeli bandage (emergency bandage / amtza'sh) -- for wound packing and pressure",
@@ -358,12 +635,19 @@
   "EpiPen (epinephrine auto-injector) -- for anaphylactic shock if patient has a prescription",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority (#source-date) · Last verified: #last-verified · ID: IL-ADULT-SHOCK-001 \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+// --- Source and Verification ---
+#rect(
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "Shock (Helem) - MDA-Approved First Aid Curriculum and BLS Guide" \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Includes Israel-specific context for desert heat, security/blast injuries, and tourniquet/Israeli bandage use.
 ]

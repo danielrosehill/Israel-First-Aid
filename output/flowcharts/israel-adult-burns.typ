@@ -1,306 +1,520 @@
-// First Aid Protocol Flowchart — Burns (Adult) — Israel
-// Generated from: protocols/adult/israel/burns.json
-// Generated on: 2026-03-15
+// Israel Adult Burns Flowchart — V2
+// Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-ADULT-BURNS-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: "Noto Sans", size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === CONFIGURATION ===
-#let protocol-title = "BURNS FIRST AID PROTOCOL (ADULT)"
-#let protocol-category = "burns"
+// === METADATA ===
+#let protocol-id = "IL-ADULT-BURNS-001"
+#let protocol-title = "Burns First Aid Protocol — Adult"
+#let protocol-subject = "BURNS"
+#let age-group = "ADULT"
 #let country = "Israel"
-#let age-group = "Adult"
 #let emergency-number = "101"
 #let emergency-service = "MDA"
-#let source-authority = "Magen David Adom (MDA)"
+#let source-authority = "Magen David Adom"
 #let source-date = "2026-01-01"
 #let last-verified = "2026-03-15"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
+    )
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
+
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+// === ACTION WORD HIGHLIGHTING ===
+#let action(word) = {
+  text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)]
 }
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+// === COLOUR CONSTANTS ===
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+// === HELPER FUNCTIONS ===
+#let keep-together(body) = {
+  block(breakable: false)[#body]
+}
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-warning-fill,
+      stroke: 2pt + clr-warning,
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold")[YES →] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold")[NO →] #content
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"))[X] #item \
+#let equipment-box(items) = {
+  keep-together[
+    #rect(
+      fill: clr-equip-fill,
+      stroke: 1pt + rgb("#ca8a04"),
+      radius: 6pt,
+      width: 100%,
+      inset: 10pt,
+    )[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [
+        — #item \
+      ]
     ]
   ]
 }
 
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[|\ V]
+#let emergency-numbers-strip() = {
+  rect(
+    fill: rgb("#fef2f2"),
+    stroke: 1pt + rgb("#dc2626"),
+    radius: 4pt,
+    width: 100%,
+    inset: 6pt,
+  )[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101],
+      [#strong[Police:] 100],
+      [#strong[Fire:] 102],
+      [#strong[Hatzalah:] 1221],
+      [#strong[Poison:] 04-7771900],
+    )
   ]
 }
 
-// === DOCUMENT ===
+#let when-to-apply(content) = {
+  rect(
+    fill: rgb("#faf5ff"),
+    stroke: 1pt + rgb("#7c3aed"),
+    radius: 6pt,
+    width: 100%,
+    inset: 10pt,
+  )[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
 
-// Header
+// ============================================================
+// PAGE 1: Title, Assessment, Initial Treatment (Steps 1-5)
+// ============================================================
+
+// --- Title Block ---
 #align(center)[
-  #text(size: 22pt, weight: "bold")[#protocol-title]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[#country — #age-group]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(
+  fill: rgb("#dc2626"),
+  radius: 6pt,
+  width: 100%,
+  inset: 10pt,
+)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[
+    CALL #emergency-number (#emergency-service) — CALL IMMEDIATELY IF IN DOUBT
+  ]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+// --- When to Apply ---
+#when-to-apply[
+  When an adult has sustained a burn from heat, chemicals, electricity, or radiation. Signs: redness, swelling, blisters, white/grey/black discolouration of skin, or pain at injury site.
 ]
 
 #v(6pt)
 
-// Emergency number — prominent
-#emergency-box(emergency-number, emergency-service)
-
-#v(4pt)
-
-// When to call 101
+// --- Summary ---
 #rect(
-  fill: rgb("#fef2f2"),
-  stroke: 1pt + rgb("#dc2626"),
+  fill: rgb("#f0fdf4"),
+  stroke: 1pt + rgb("#16a34a"),
   radius: 6pt,
   width: 100%,
-  inset: 8pt,
+  inset: 10pt,
 )[
-  #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[Call 101 immediately for:] #text(size: 9pt)[extensive burns with severe pain; white/grey/black discolouration; multiple blisters; burns on face, mouth, tongue, hands, feet, genitals, or groin; burns larger than the casualty's palm; chemical or electrical burns; inhalation injuries; high-risk patients (pregnant, elderly, chemotherapy).]
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Summary:]
+  First aid for thermal, chemical, and electrical burns: cooling, protecting the wound, and recognising when to call emergency services.
 ]
 
-#v(4pt)
+#v(8pt)
 
-// Summary
-#rect(
-  fill: rgb("#f5f3ff"),
-  stroke: 1pt + rgb("#7c3aed"),
-  radius: 6pt,
-  width: 100%,
-  inset: 8pt,
-)[
-  #text(size: 10pt, weight: "bold", fill: rgb("#7c3aed"))[When to apply:] #text(size: 9pt)[When an adult has sustained a burn from heat, chemicals, electricity, or radiation. Signs include redness, swelling, blisters, white/grey/black discolouration of skin, or pain at the injury site.]
+// --- Initial Treatment Steps 1-4 ---
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Initial Assessment and Treatment]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    // Step 1: Scene safety
+    node((0, 0), align(center)[
+      *Step 1:* #action[CHECK] scene safety. \
+      #action[REMOVE] casualty from \
+      heat source.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    // Step 2: Assess severity
+    node((0, 1), align(center)[
+      *Step 2:* Assess burn severity. \
+      1st: red, painful, no blisters \
+      2nd: blisters, severe pain \
+      3rd: white/grey/black, stiff, \
+      reduced pain
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    // Decision: severe?
+    node((0, 2), align(center)[
+      *Is the burn severe?* \
+      (3rd degree, larger than palm, \
+      face/hands/feet/genitals, \
+      chemical/electrical/inhalation)
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> call 101
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 2), align(center)[
+      #action[CALL] 101 (MDA) \
+      immediately. \
+      Continue first aid \
+      while waiting.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> continue
+    edge((0, 2), (0, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    // Step 3: Cool
+    node((0, 3), align(center)[
+      *Step 3:* #action[COOL] burn under \
+      cool (not cold) running water \
+      for at least 10 minutes.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    // Warning
+    node((1, 3), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT apply ice or \
+      ice-cold water. Extreme \
+      cold causes additional \
+      tissue damage.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+
+    edge((0, 3), (0, 4), "->"),
+
+    // Step 4: Remove jewellery
+    node((0, 4), align(center)[
+      *Step 4:* #action[REMOVE] rings, \
+      bracelets, watches, loose \
+      clothing before swelling.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    // Decision: clothing stuck?
+    node((0, 5), align(center)[
+      *Is clothing stuck to the burn?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    // YES -> cut around
+    edge((0, 5), (1, 5), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 5), align(center)[
+      Cut around stuck \
+      clothing. Do NOT \
+      pull it off.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    // NO -> remove gently
+    edge((0, 5), (-1, 5), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 5), align(center)[
+      Gently remove \
+      clothing from \
+      the burn area.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+  )
 ]
 
-#v(6pt)
+// ============================================================
+// PAGE 2: Cover, Chemical/Electrical Burns (Steps 5-9)
+// ============================================================
+#pagebreak()
 
-// === PROTOCOL STEPS ===
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Wound Protection and Special Burns]
+  #v(4pt)
 
-// Step 1
-#step-box(1, "Ensure scene safety and remove the casualty from the heat source.",
-  detail: "Make sure the scene is safe for the rescuer before approaching. Remove the casualty from the source of the burn (fire, hot liquid, chemical, electrical source)."
-)
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#arrow-down()
+    // Step 5: Cover
+    node((0, 0), align(center)[
+      *Step 5:* #action[COVER] burn loosely \
+      with cling film, clean plastic \
+      bag, or non-fluffy dressing. \
+      Do not wrap tightly.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Step 2
-#step-box(2, "Assess the burn severity.",
-  detail: "First-degree: red, slightly swollen, painful, no blisters. Second-degree: severe pain, redness, fluid-filled blisters. Third-degree: brown-white, grey, yellowish, or black tissue, stiff and dry, reduced or absent pain due to nerve destruction."
-)
+    // Warning
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT apply toothpaste, \
+      coffee, raw egg, yogurt, \
+      butter, or home remedies. \
+      They trap heat.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#v(4pt)
+    edge((0, 0), (0, 1), "->"),
 
-#decision-box("Is the burn severe? (Third-degree, covers more than the palm, affects face/hands/feet/genitals, or is chemical/electrical/inhalation)")
+    // Step 6: Position
+    node((0, 1), align(center)[
+      *Step 6:* #action[POSITION] patient \
+      lying down. Keep warm \
+      to prevent hypothermia.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    edge((0, 1), (0, 2), "->"),
 
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Call 101 (MDA) immediately, then continue first aid steps while waiting for emergency services.],
-  no-branch[Continue first aid steps. Monitor for worsening and seek medical evaluation if concerned.],
-)
+    // Step 7: Chemical burn?
+    node((0, 2), align(center)[
+      *Was the burn caused by* \
+      *a chemical substance?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    // YES -> chemical treatment
+    edge((0, 2), (1, 2), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-// Step 3
-#step-box(3, "Cool the burn under cool (not cold) running water for at least 10 minutes.",
-  detail: "Begin cooling as soon as possible. Use cool or lukewarm water. Continue for 10 to 20 minutes or until pain subsides.",
-  warning: "Do NOT apply ice or ice-cold water. Extreme cold can cause additional tissue and blood vessel damage."
-)
+    node((1, 2), align(center)[
+      #action[REMOVE] contaminated \
+      clothing (protect yourself). \
+      #action[FLUSH] with massive \
+      cool water 15--20 min. \
+      Eyes: flush 15 min. \
+      Do NOT neutralise. \
+      #action[CALL] 101.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#arrow-down()
+    // NO -> check electrical
+    edge((0, 2), (0, 3), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-// Step 4
-#step-box(4, "Remove rings, bracelets, watches, and loose clothing from the affected area.",
-  detail: "Do this before swelling begins to prevent circulation problems."
-)
+    // Step 8: Electrical burn?
+    node((0, 3), align(center)[
+      *Was the burn caused* \
+      *by electricity?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
 
-#v(4pt)
+    // YES -> electrical treatment
+    edge((0, 3), (1, 3), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
 
-#decision-box("Is clothing stuck to the burn?")
+    node((1, 3), align(center)[
+      Ensure power source \
+      disconnected first. \
+      #action[CALL] 101. \
+      Be prepared for CPR. \
+      Internal injuries may \
+      not be visible.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
 
-#v(4pt)
+    // NO -> monitor
+    edge((0, 3), (0, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
 
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Cut around the stuck clothing. Do NOT pull it off.],
-  no-branch[Gently remove the clothing from the burn area.],
-)
-
-#arrow-down()
-
-// Step 5
-#step-box(5, "Cover the burn loosely with cling film (food wrap), a clean plastic bag, or a clean non-fluffy dressing.",
-  detail: "Do not wrap tightly. The covering protects the wound from contamination while allowing for swelling.",
-  warning: "Do NOT apply toothpaste, ground coffee, raw egg, yogurt, butter, fat-based creams, or any home remedies. These trap heat and increase infection risk."
-)
-
-#arrow-down()
-
-// Step 6
-#step-box(6, "Position the patient lying down to reduce shock damage.",
-  detail: "Keep the patient warm to prevent hypothermia, especially with large burns."
-)
-
-#arrow-down()
-
-// Step 7
-#step-box(7, "Assess for chemical burn.")
-
-#v(4pt)
-
-#decision-box("Was the burn caused by a chemical substance?")
-
-#v(4pt)
-
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Remove contaminated clothing carefully (protect yourself). Rinse with massive amount of cool running water for at least 15--20 minutes. If in eyes, flush for at least 15 minutes. Do NOT attempt chemical neutralisation. Call 101.],
-  no-branch[Proceed to assess for electrical burn.],
-)
-
-#arrow-down()
-
-// Step 8
-#step-box(8, "Assess for electrical burn.")
-
-#v(4pt)
-
-#decision-box("Was the burn caused by electricity?")
-
-#v(4pt)
-
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Ensure power source is disconnected before approaching. Call 101 immediately. Be prepared to perform CPR if patient becomes unresponsive. Electrical burns may cause internal injuries not visible on the surface.],
-  no-branch[Continue monitoring the patient until emergency services arrive or the patient receives medical evaluation.],
-)
-
-#arrow-down()
-
-// Step 9
-#step-box(9, "Monitor for complications while waiting for emergency services.",
-  detail: "Watch for signs of infection (redness, warmth, pus, fever), respiratory issues (if inhalation injury suspected), and signs of hypovolemic shock. For mild first-degree burns, ibuprofen or paracetamol may be used for pain relief."
-)
+    // Step 9: Monitor
+    node((0, 4), align(center)[
+      *Step 9:* #action[MONITOR] for \
+      complications: infection, \
+      respiratory issues, shock. \
+      For mild 1st-degree burns: \
+      ibuprofen or paracetamol \
+      for pain relief.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
+]
 
 #v(10pt)
 
-// === DO NOT LIST ===
+// --- DO NOT List ---
 #do-not-box((
   "Do NOT apply ice or ice-cold water to the burn -- extreme cold causes additional tissue and blood vessel damage.",
   "Do NOT apply toothpaste, ground coffee, raw egg, yogurt, butter, or other home remedies -- these trap heat and increase infection risk.",
   "Do NOT rupture or pop blisters -- the fluid inside protects the underlying tissue during healing.",
   "Do NOT use fat-based creams or ointments on fresh burns.",
   "Do NOT remove clothing that is stuck to the burn -- cut around it instead.",
-  "Do NOT attempt chemical neutralisation on chemical burns (do not apply acid to a base burn or vice versa).",
+  "Do NOT attempt chemical neutralisation on chemical burns.",
   "Do NOT approach an electrical burn casualty until the power source is confirmed disconnected.",
 ))
 
-#v(8pt)
+// ============================================================
+// PAGE 3: Equipment, Source
+// ============================================================
+#pagebreak()
 
-// === EQUIPMENT NEEDED ===
+#text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Reference]
+#v(6pt)
+
+// --- Equipment ---
+#equipment-box((
+  "Cool running water source",
+  "Cling film (food wrap) or clean plastic bag",
+  "Clean non-fluffy dressings or bandages",
+  "Scissors (to cut clothing around stuck areas)",
+  "Blanket (to keep patient warm and prevent hypothermia)",
+))
+
+#v(10pt)
+
+// --- Source and Verification ---
 #rect(
-  fill: rgb("#f0f9ff"),
-  stroke: 1pt + rgb("#3b82f6"),
-  radius: 6pt,
+  fill: rgb("#f9fafb"),
+  stroke: 0.5pt + rgb("#d1d5db"),
+  radius: 4pt,
   width: 100%,
-  inset: 8pt,
+  inset: 10pt,
 )[
-  #text(size: 11pt, weight: "bold", fill: rgb("#3b82f6"))[Equipment needed:]
-  #v(4pt)
-  #text(size: 9pt)[
-    - Cool running water source \
-    - Cling film (food wrap) or clean plastic bag \
-    - Clean non-fluffy dressings or bandages \
-    - Scissors (to cut clothing around stuck areas) \
-    - Blanket (to keep patient warm and prevent hypothermia)
-  ]
-]
-
-#v(1fr)
-
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: #source-authority (#source-date) · Last verified: #last-verified · Protocol ID: IL-ADULT-BURNS-001 \
-  *Personal reference only -- not medical advice.* Always call #emergency-number in an emergency.
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) — "MDA Burns First Aid Guidelines" \
+  #strong[URL:] https://www.mdais.org/101/burns \
+  #strong[Publication date:] 2026-01-01 \
+  #strong[Imported:] 2026-03-15 · #strong[Last verified:] 2026-03-15 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. MDA specifies "cool (not cold) running water" for at least 10 minutes. MDA is used as the authoritative default per project rules.
 ]

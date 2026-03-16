@@ -1,284 +1,386 @@
-// First Aid Protocol Flowchart — Hypothermia / Cold Exposure — Child — Israel
-// Generated from: IL-CHILD-HYPOTHERMIA-001
-// Source: Magen David Adom (MDA)
+// Israel Child Hypothermia Flowchart -- V2
 // Generated: 2026-03-16
+// Source: Magen David Adom (MDA)
+// Protocol ID: IL-CHILD-HYPOTHERMIA-001
 
-#set page(paper: "a4", margin: 1.5cm)
-#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 11pt)
+#import "@preview/fletcher:0.5.7": diagram, node, edge
 
-// === HEBREW HELPER ===
-#let heb(content) = {
-  text(font: "IBM Plex Sans Hebrew", dir: rtl)[#content]
-}
+// === METADATA ===
+#let protocol-id = "IL-CHILD-HYPOTHERMIA-001"
+#let protocol-title = "Hypothermia First Aid -- Child"
+#let protocol-subject = "HYPOTHERMIA"
+#let age-group = "CHILD"
+#let country = "Israel"
+#let emergency-number = "101"
+#let emergency-service = "MDA"
+#let source-authority = "Magen David Adom"
+#let source-date = "2024-04-01"
+#let last-verified = "2026-03-16"
+#let generation-date = "2026-03-16"
+#let version = "2.0"
 
-// === STYLES ===
-#let emergency-box(number, service) = {
-  rect(
-    fill: rgb("#dc2626"),
-    radius: 8pt,
-    width: 100%,
-    inset: 12pt,
-  )[
-    #set text(fill: white, weight: "bold", size: 18pt)
-    #align(center)[
-      CALL #number (#service) — CALL IMMEDIATELY IF IN DOUBT
-    ]
-  ]
-}
-
-#let all-emergency-numbers() = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 1pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #set text(size: 10pt)
-    #grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 8pt,
-      [#strong[MDA (#heb[מד״א]):] 101],
-      [#strong[Police (#heb[משטרה]):] 100],
-      [#strong[Fire (#heb[כיבוי]):] 102],
-      [#strong[Hatzalah (#heb[הצלה]):] 1221],
+// === PAGE SETUP (A4) ===
+#set page(
+  paper: "a4",
+  margin: (top: 2.2cm, bottom: 2cm, left: 1.5cm, right: 1.5cm),
+  header: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 14pt, weight: "bold", fill: rgb("#1e40af"))[
+          #upper(age-group) — #upper(protocol-subject)
+        ]
+      ],
+      align(center)[
+        #rect(fill: rgb("#dc2626"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(fill: white, weight: "bold", size: 10pt)[CALL #emergency-number]
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 4pt, inset: (x: 8pt, y: 3pt))[
+          #text(weight: "bold", size: 11pt)[Pg #page-num / #page-total]
+        ]
+      ],
     )
-  ]
-}
+    line(length: 100%, stroke: 1pt + rgb("#d1d5db"))
+  },
+  footer: context {
+    let page-num = counter(page).get().first()
+    let page-total = counter(page).final().first()
+    line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
+    v(3pt)
+    grid(
+      columns: (1fr, auto, 1fr),
+      gutter: 0pt,
+      align(left)[
+        #text(size: 7pt, fill: rgb("#9ca3af"))[
+          #protocol-id · v#version · Generated: #generation-date · Source: #source-authority (#source-date)
+        ]
+      ],
+      align(center)[
+        #text(size: 7pt, fill: rgb("#9ca3af"), weight: "bold")[
+          Personal reference only — not medical advice
+        ]
+      ],
+      align(right)[
+        #rect(fill: rgb("#fbbf24"), radius: 3pt, inset: (x: 6pt, y: 2pt))[
+          #text(weight: "bold", size: 8pt)[#page-num / #page-total]
+        ]
+      ],
+    )
+  },
+)
 
-#let step-box(number, instruction, detail: none, warning: none) = {
-  rect(
-    fill: rgb("#f0f9ff"),
-    stroke: 1pt + rgb("#3b82f6"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 11pt)
-    #strong[Step #number:] #instruction
-    #if detail != none [
+#set text(font: ("IBM Plex Sans", "IBM Plex Sans Hebrew"), size: 10pt, dir: ltr)
+
+#let action(word) = { text(weight: "bold", fill: rgb("#1e40af"), size: 11pt)[#upper(word)] }
+
+#let clr-step = rgb("#f0f9ff")
+#let clr-step-stroke = rgb("#3b82f6")
+#let clr-decision = rgb("#eff6ff")
+#let clr-decision-stroke = rgb("#2563eb")
+#let clr-yes = rgb("#16a34a")
+#let clr-yes-fill = rgb("#f0fdf4")
+#let clr-no = rgb("#dc2626")
+#let clr-no-fill = rgb("#fef2f2")
+#let clr-warning = rgb("#dc2626")
+#let clr-warning-fill = rgb("#fef2f2")
+#let clr-equip = rgb("#92400e")
+#let clr-equip-fill = rgb("#fefce8")
+
+#let keep-together(body) = { block(breakable: false)[#body] }
+
+#let do-not-box(items) = {
+  keep-together[
+    #rect(fill: clr-warning-fill, stroke: 2pt + clr-warning, radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-warning, weight: "bold", size: 13pt)[DO NOT:]
       #v(4pt)
-      #text(size: 9pt, fill: rgb("#6b7280"))[#detail]
-    ]
-    #if warning != none [
-      #v(4pt)
-      #rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, inset: 6pt, width: 100%)[
-        #text(fill: rgb("#dc2626"), weight: "bold", size: 10pt)[WARNING: #warning]
+      #for item in items [
+        #text(fill: clr-warning, weight: "bold")[X] #item \
       ]
     ]
   ]
 }
 
-#let decision-box(condition) = {
-  rect(
-    fill: rgb("#eff6ff"),
-    stroke: 2pt + rgb("#2563eb"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 12pt, weight: "bold", fill: rgb("#1e40af"))
-    #align(center)[#condition]
-  ]
-}
-
-#let yes-branch(content) = {
-  rect(
-    fill: rgb("#f0fdf4"),
-    stroke: 1pt + rgb("#16a34a"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#16a34a"), weight: "bold", size: 11pt)[YES:] #content
-  ]
-}
-
-#let no-branch(content) = {
-  rect(
-    fill: rgb("#fff7ed"),
-    stroke: 1pt + rgb("#ea580c"),
-    radius: 4pt,
-    width: 100%,
-    inset: 8pt,
-  )[
-    #text(fill: rgb("#ea580c"), weight: "bold", size: 11pt)[NO:] #content
-  ]
-}
-
-#let arrow-down() = {
-  align(center)[
-    #text(size: 16pt, fill: rgb("#6b7280"))[#sym.arrow.b]
-  ]
-}
-
-#let do-not-box(items) = {
-  rect(
-    fill: rgb("#fef2f2"),
-    stroke: 2pt + rgb("#dc2626"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#dc2626"), weight: "bold", size: 13pt)[DO NOT:]
-    #v(4pt)
-    #for item in items [
-      #text(fill: rgb("#dc2626"), weight: "bold")[X] #item \
-    ]
-  ]
-}
-
 #let equipment-box(items) = {
-  rect(
-    fill: rgb("#fefce8"),
-    stroke: 1pt + rgb("#ca8a04"),
-    radius: 6pt,
-    width: 100%,
-    inset: 10pt,
-  )[
-    #set text(size: 10pt)
-    #text(fill: rgb("#92400e"), weight: "bold", size: 11pt)[Equipment needed:]
-    #v(4pt)
-    #for item in items [
-      — #item \
+  keep-together[
+    #rect(fill: clr-equip-fill, stroke: 1pt + rgb("#ca8a04"), radius: 6pt, width: 100%, inset: 10pt)[
+      #set text(size: 10pt)
+      #text(fill: clr-equip, weight: "bold", size: 11pt)[Equipment needed:]
+      #v(4pt)
+      #for item in items [ — #item \ ]
     ]
   ]
 }
 
-// === PAGE 1 ===
+#let emergency-numbers-strip() = {
+  rect(fill: rgb("#fef2f2"), stroke: 1pt + rgb("#dc2626"), radius: 4pt, width: 100%, inset: 6pt)[
+    #set text(size: 9pt)
+    #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
+      [#strong[MDA:] 101], [#strong[Police:] 100], [#strong[Fire:] 102], [#strong[Hatzalah:] 1221], [#strong[Poison:] 04-7771900],
+    )
+  ]
+}
 
-// Header
+#let when-to-apply(content) = {
+  rect(fill: rgb("#faf5ff"), stroke: 1pt + rgb("#7c3aed"), radius: 6pt, width: 100%, inset: 10pt)[
+    #set text(size: 10pt)
+    #text(fill: rgb("#5b21b6"), weight: "bold", size: 11pt)[When to apply:]
+    #v(3pt)
+    #content
+  ]
+}
+
+// ============================================================
+// PAGE 1
+// ============================================================
+
 #align(center)[
-  #text(size: 22pt, weight: "bold")[HYPOTHERMIA / COLD EXPOSURE — CHILD]
+  #text(size: 20pt, weight: "bold")[#protocol-title]
   #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Israel — Child (including Infants)]
+  #text(size: 12pt, fill: rgb("#6b7280"))[#country — #age-group]
+]
+#v(6pt)
+#rect(fill: rgb("#dc2626"), radius: 6pt, width: 100%, inset: 10pt)[
+  #set text(fill: white, weight: "bold", size: 16pt)
+  #align(center)[CALL #emergency-number (#emergency-service) — HANDLE GENTLY]
+]
+#v(4pt)
+#emergency-numbers-strip()
+#v(6pt)
+
+#when-to-apply[
+  When a child shows signs of hypothermia (core temperature below 35 C): shivering (may be absent in infants), cold pale skin, confusion, slurred speech, lethargy. Infants may show bright red cold skin, low energy, weak cry. Children are at higher risk due to immature thermoregulation and higher surface-area-to-mass ratio.
 ]
 
 #v(6pt)
 
-#emergency-box("101", "MDA")
-
-#v(4pt)
-
-#all-emergency-numbers()
-
-#v(4pt)
-
-#text(size: 9pt, fill: rgb("#6b7280"))[
-  *When to call:* Call MDA at 101 immediately for any child showing signs of moderate or severe hypothermia (confusion, loss of consciousness, severe shivering or paradoxical cessation of shivering, muscle rigidity). Call for any infant with suspected hypothermia. Alternatively, call United Hatzalah at 1221.
+#rect(fill: rgb("#f0fdf4"), stroke: 1pt + rgb("#16a34a"), radius: 6pt, width: 100%, inset: 10pt)[
+  #text(fill: rgb("#166534"), weight: "bold", size: 10pt)[Key Principle:]
+  "No one is dead until they are warm and dead." A severely hypothermic child may appear dead but can recover with proper rewarming. Handle with extreme gentleness -- a cold heart can develop fatal arrhythmias from rough movement.
 ]
 
-#v(6pt)
+#v(8pt)
 
-// --- Steps ---
-#step-box(1, "Remove the child from the cold environment immediately.",
-  detail: "Move the child to a warm, sheltered location. Handle the child very gently -- rough movement can trigger cardiac arrhythmias in a cold heart.",
-  warning: "Minimise all movement and jostling. A cold heart is extremely sensitive to movement and can develop fatal arrhythmias."
-)
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Rewarming Protocol -- Steps 1-5]
+  #v(4pt)
 
-#arrow-down()
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
 
-#step-box(2, "Remove any wet clothing.",
-  detail: "Carefully cut or remove wet clothing. Wet clothing accelerates heat loss. Replace with dry clothing or blankets."
-)
+    node((0, 0), align(center)[
+      *Step 1:* #action[REMOVE] child from \
+      cold environment. Handle \
+      very gently.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#arrow-down()
+    node((1, 0), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Minimise all movement. \
+      A cold heart is extremely \
+      sensitive and can develop \
+      fatal arrhythmias.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
 
-#step-box(3, "Dry the child and wrap in warm blankets.",
-  detail: "Dry the child thoroughly. Position the child horizontally. Cover with warmed blankets, focusing on the head, neck, chest, and groin areas where major blood vessels are close to the surface."
-)
+    edge((0, 0), (0, 1), "->"),
 
-#arrow-down()
+    node((0, 1), align(center)[
+      *Step 2:* #action[REMOVE] wet clothing. \
+      Cut or carefully remove. \
+      Replace with dry clothing.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#step-box(4, "Perform ABC assessment (Airway, Breathing, Circulation).",
-  detail: "Check airway patency, breathing, and pulse. For infants, maintain nasal patency as they are obligate nasal breathers. Take up to 60 seconds to assess pulse and breathing in hypothermic patients, as vital signs may be very slow."
-)
+    edge((0, 1), (0, 2), "->"),
 
-#arrow-down()
+    node((0, 2), align(center)[
+      *Step 3:* #action[DRY] the child. \
+      #action[WRAP] in warm blankets. \
+      Position horizontally. \
+      Cover head, neck, chest, groin.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-#decision-box("Is the child breathing and has a pulse?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Continue rewarming. Monitor breathing and pulse continuously. Place in recovery position if unconscious but breathing.],
-  no-branch[Begin CPR immediately. Continue CPR and rewarming until emergency services arrive. A hypothermic patient may appear dead but can recover with proper rewarming.],
-)
+    edge((0, 2), (0, 3), "->"),
 
-#v(1fr)
+    node((0, 3), align(center)[
+      *Step 4:* #action[CHECK] ABC \
+      (Airway, Breathing, Circulation). \
+      Take up to 60 seconds for \
+      pulse/breathing assessment.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) (2024-04-01) · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency.
+    edge((0, 3), (0, 4), "->"),
+
+    node((0, 4), align(center)[
+      *Is the child breathing* \
+      *and has a pulse?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 4), (1, 4), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 4), align(center)[
+      Continue rewarming. \
+      Monitor continuously. \
+      Recovery position if \
+      unconscious but breathing.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (-1, 4), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 4), align(center)[
+      #action[BEGIN] CPR immediately. \
+      Continue CPR and \
+      rewarming until \
+      emergency services arrive.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 4), (0, 5), "->"),
+
+    node((0, 5), align(center)[
+      *Step 5:* #action[APPLY] warm blankets \
+      or wrapped heat packs to \
+      head, neck, chest, groin. \
+      Warm core first, not extremities.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    node((1, 5), align(center)[
+      #text(fill: clr-warning, weight: "bold", size: 9pt)[WARNING] \
+      #text(size: 8pt)[Do NOT apply direct \
+      heat to skin -- risk \
+      of burns. Always wrap \
+      heat sources in cloth.]
+    ],
+      shape: rect, fill: clr-warning-fill, stroke: 2pt + clr-warning,
+      width: 48mm, inset: 6pt),
+  )
 ]
 
-// === PAGE 2 ===
+// ============================================================
+// PAGE 2: Steps 6-8, Severity, Reference
+// ============================================================
 #pagebreak()
 
-#align(center)[
-  #text(size: 20pt, weight: "bold")[HYPOTHERMIA — CHILD (continued)]
-  #v(2pt)
-  #text(size: 13pt, fill: rgb("#6b7280"))[Rewarming, Severity Assessment & Transport]
+#block(breakable: false)[
+  #text(size: 13pt, weight: "bold", fill: rgb("#1e40af"))[Severity Assessment and Transport -- Steps 6-8]
+  #v(4pt)
+
+  #diagram(
+    spacing: (12mm, 10mm),
+    node-stroke: 1pt,
+    edge-stroke: 1.5pt,
+
+    node((0, 0), align(center)[
+      *Step 6:* #action[ASSESS] severity: \
+      Stage 1 (37--35 C): shivering \
+      Stage 2 (35--32 C): confusion \
+      Stage 3 (32--28 C): rigidity \
+      Stage 4 (below 28 C): unconscious
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 0), (0, 1), "->"),
+
+    node((0, 1), align(center)[
+      *Is the child conscious* \
+      *and able to swallow safely?*
+    ],
+      shape: rect, fill: clr-decision, stroke: 2pt + clr-decision-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 1), (1, 1), "->",
+      label: text(fill: clr-yes, weight: "bold", size: 11pt)[YES],
+      label-side: center),
+
+    node((1, 1), align(center)[
+      #action[OFFER] warm (not hot) \
+      sweet drinks. \
+      No alcohol or caffeine.
+    ],
+      shape: rect, fill: clr-yes-fill, stroke: 1pt + clr-yes,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (-1, 1), "->",
+      label: text(fill: clr-no, weight: "bold", size: 11pt)[NO],
+      label-side: center),
+
+    node((-1, 1), align(center)[
+      Do NOT give fluids \
+      by mouth. Maintain \
+      airway. Continue \
+      rewarming. Transport \
+      urgently.
+    ],
+      shape: rect, fill: clr-no-fill, stroke: 1pt + clr-no,
+      width: 48mm, inset: 8pt),
+
+    edge((0, 1), (0, 2), "->"),
+
+    node((0, 2), align(center)[
+      *Step 7:* #action[CALL] 101 and \
+      #action[TRANSPORT] to hospital. \
+      Keep child horizontal. \
+      Minimise jostling.
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+
+    edge((0, 2), (0, 3), "->"),
+
+    node((0, 3), align(center)[
+      *Step 8:* #action[MONITOR] continuously. \
+      Breathing, pulse, consciousness. \
+      Be prepared for CPR. \
+      #text(size: 8pt)[Infants may NOT shiver even \
+      when hypothermic.]
+    ],
+      shape: rect, fill: clr-step, stroke: 1pt + clr-step-stroke,
+      width: 60mm, inset: 8pt),
+  )
 ]
 
-#v(6pt)
+#v(10pt)
 
-#emergency-box("101", "MDA")
-
-#v(4pt)
-
-#all-emergency-numbers()
-
-#v(8pt)
-
-#step-box(5, "Apply passive and active rewarming to the core body areas.",
-  detail: "Apply warmed blankets or heat packs (wrapped in cloth to avoid burns) to the head, neck, chest, and groin. Warm the core first, not the extremities. For infants, ensure thorough coverage of the entire body.",
-  warning: "Do NOT apply direct heat sources (hot water bottles, heating pads) directly against skin -- risk of burns. Always wrap heat sources in cloth."
-)
-
-#arrow-down()
-
-#step-box(6, "Assess severity of hypothermia.",
-  detail: "Stage 1 (37-35C): shivering, normal judgement. Stage 2 (35-32C): severe shivering, confusion, slurred speech, pallor. Stage 3 (32-28C): deteriorating consciousness, muscle rigidity, weakening reflexes. Stage 4 (below 28C): unconsciousness, absent reflexes, severely slowed or absent breathing."
-)
-
-#arrow-down()
-
-#decision-box("Is the child conscious and able to swallow safely?")
-#v(4pt)
-#grid(columns: (1fr, 1fr), gutter: 8pt,
-  yes-branch[Offer warm (not hot) sweet drinks. No alcohol or caffeine.],
-  no-branch[Do not give any fluids by mouth. Maintain airway and continue rewarming. Transport urgently.],
-)
-
-#arrow-down()
-
-#step-box(7, "Call 101 (MDA) and transport urgently to hospital.",
-  detail: "All children with suspected hypothermia should be evaluated at hospital. During transport, continue to minimise movement and maintain rewarming. Keep the child horizontal during transport.",
-  warning: "Minimise jostling during transport -- may trigger cardiac arrhythmias."
-)
-
-#arrow-down()
-
-#step-box(8, "Monitor continuously until handover to emergency services.",
-  detail: "Monitor breathing, pulse, and level of consciousness. Be prepared to perform CPR if the child deteriorates. Note: infants may NOT shiver even when hypothermic -- absence of shivering does not rule out hypothermia in infants."
-)
-
-#v(8pt)
-
-// === DO NOT LIST ===
 #do-not-box((
-  "Give alcohol, caffeine, or allow smoking -- these worsen hypothermia.",
-  "Make excessive or rough movements -- risk of cardiac arrhythmias in a cold heart.",
-  "Apply direct heat to skin without a cloth barrier -- risk of burns.",
-  "Rewarm extremities before the core -- can cause dangerous drop in core temperature as cold blood returns to the heart.",
-  "Give fluids by mouth to an unconscious or semi-conscious child -- aspiration risk.",
-  "Assume a severely hypothermic child is dead -- 'no one is dead until they are warm and dead.'",
-  "Use hot water immersion for rewarming in the field -- risk of burns and cardiac arrhythmias.",
-  "Jostle or move the child unnecessarily during transport.",
+  "Do NOT give alcohol, caffeine, or allow smoking -- worsen hypothermia.",
+  "Do NOT make excessive or rough movements -- risk of cardiac arrhythmias.",
+  "Do NOT apply direct heat to skin without a cloth barrier -- risk of burns.",
+  "Do NOT rewarm extremities before the core -- dangerous core temperature drop as cold blood returns to heart.",
+  "Do NOT give fluids by mouth to unconscious or semi-conscious child -- aspiration risk.",
+  "Do NOT assume a severely hypothermic child is dead -- 'no one is dead until they are warm and dead.'",
+  "Do NOT use hot water immersion for rewarming in the field.",
+  "Do NOT jostle or move the child unnecessarily during transport.",
 ))
 
-#v(6pt)
+#v(10pt)
 
 #equipment-box((
   "Warm blankets or sleeping bags",
@@ -287,13 +389,13 @@
   "Phone (to call 101)",
 ))
 
-#v(1fr)
+#v(10pt)
 
-// Footer
-#line(length: 100%, stroke: 0.5pt + rgb("#d1d5db"))
-#v(4pt)
-#text(size: 8pt, fill: rgb("#9ca3af"))[
-  Source: Magen David Adom (MDA) (2024-04-01) · Last verified: 2026-03-16 \
-  *Personal reference only — not medical advice.* Always call 101 in an emergency. \
-  Protocol ID: IL-CHILD-HYPOTHERMIA-001
+#rect(fill: rgb("#f9fafb"), stroke: 0.5pt + rgb("#d1d5db"), radius: 4pt, width: 100%, inset: 10pt)[
+  #set text(size: 8pt, fill: rgb("#6b7280"))
+  #strong[Source:] Magen David Adom (MDA) -- ALS Professional Manual (April 2024), supplemented by Ichud Hatzalah hypothermia guidelines \
+  #strong[URL:] https://www.mdais.org/101/first-aid \
+  #strong[Publication date:] 2024-04-01 \
+  #strong[Imported:] 2026-03-16 · #strong[Last verified:] 2026-03-16 \
+  #strong[Notes:] Unified from MDA and United Hatzalah sources. Four-stage severity classification from Hatzalah incorporated.
 ]
